@@ -1,12 +1,8 @@
-import Link from "next/link";
-import { routes } from "@/constants/routes";
+import type { Metadata } from "next";
+import Register from "@/components/auth/register/Register";
+
+export const metadata: Metadata = { title: "Реєстрація" };
 
 export default function RegisterPage() {
-  return (
-    <>
-      <h1>Реєстрація</h1>
-      <p>Форму реєстрації ще не підключено.</p>
-      <Link href={routes.login}>Увійти</Link>
-    </>
-  );
+  return <Register />;
 }

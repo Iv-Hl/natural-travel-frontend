@@ -1,12 +1,8 @@
-import Link from "next/link";
-import { routes } from "@/constants/routes";
+import type { Metadata } from "next";
+import Login from "@/components/auth/login/Login";
+
+export const metadata: Metadata = { title: "Вхід" };
 
 export default function LoginPage() {
-  return (
-    <>
-      <h1>Вхід</h1>
-      <p>Форму входу ще не підключено.</p>
-      <Link href={routes.register}>Зареєструватися</Link>
-    </>
-  );
+  return <Login />;
 }
