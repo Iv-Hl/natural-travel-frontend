@@ -1,0 +1,15 @@
+.shell {
+  margin-inline: auto;
+  padding-block: 1rem;
+}
+
+.navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-block: 1rem;
+}
+
+.navigation a:hover {
+  text-decoration-thickness: 2px;
+}
