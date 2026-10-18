@@ -1,15 +1,157 @@
-.shell {
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   margin-inline: auto;
   padding-block: 1rem;
+  
 }
 
-.navigation {
+.logo {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-block: 1rem;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 100%;
+  letter-spacing: -0.01em;
+  width: 124px;
+  height: 36px;
+  gap: 6px;
+  
 }
 
-.navigation a:hover {
-  text-decoration-thickness: 2px;
+.logoIcon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  background-color: var(--color-brand);
+  -webkit-mask: url("/images/eco-mark.svg") center / contain no-repeat;
+  mask: url("/images/eco-mark.svg") center / contain no-repeat;
 }
+
+ .navigation{
+  display: none;
+ }
+.authLinks {
+  display: none;
+}
+
+.menuButton {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 4px;
+}
+
+.menuIcon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  fill: currentColor;
+}
+@media (min-width: 768px) {
+
+.header {
+  
+  justify-content: space-between;
+}
+.logo {
+  margin-right: 346px;
+}
+.authLinks {
+    display: flex;
+    gap: 16px;
+    font-weight: 500;
+    height: 32px;
+  }
+
+.loginLink {
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  width: 56px;
+  height: 32px;
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--color-primary-hover-text)
+}
+
+.loginLink:hover {
+  background-color: var(--color-primary-button-bg);
+  color: var(--color-primary-text);
+  border: 1px solid transparent;
+}
+ .registerLink {
+   padding: 4px 10px;
+   border: 1px solid transparent;
+   border-radius: var(--radius-sm);
+   width: 114px;
+   height: 32px;
+   color: var(--color-primary-text);
+   background-color: var(--color-primary-button-bg);
+   
+ }
+.registerLink:hover {
+  background-color: var(--color-primary-hover-bg);
+  color: var(--color-primary-hover-text);
+  border: 1px solid var(--color-primary-button-bg);
+}
+ .menuButton {
+  margin-left: 16px;
+ }
+
+}
+
+@media (min-width: 1440px) {
+
+ 
+
+ .navigation {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 32px;
+    font-size: 18px;
+    line-height: 150%;
+  }
+
+ 
+
+  .navigation a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+    .authLinks {
+      font-size: 20px;
+      height: 40px;
+    }
+
+
+  .loginLink {
+    
+    width: 65px;
+    height: 38px;
+   
+  }
+
+  .registerLink {
+    width: 137px;
+    height: 38px;
+    
+  }
+
+  .menuButton {
+    display: none;
+  }
+
+  .logo {
+    margin-right: 420px;
+  }
+
+}
+
+
+

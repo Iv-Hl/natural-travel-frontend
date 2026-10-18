@@ -1,21 +1,57 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { routes } from "@/constants/routes";
 import styles from "./Layout.module.css";
+import Modal from "@/components/modals/Modal";
+import MobileMenu from "@/components/authbar/AuthBar";
 
 export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const closeMenu = () => { setIsMenuOpen(false) };
+  
   return (
-    <header>
-      <Link href={routes.home}>Природні мандри</Link>
-      <nav aria-label="Основна навігація" className={styles.navigation}>
-        <Link href={routes.home}>Головна</Link>
-        <Link href={routes.stories}>Історії</Link>
-        <Link href={routes.travellers}>Мандрівники</Link>
-        <Link href={routes.profile}>Збережені історії</Link>
-        <Link href={routes.ownStories}>Мої історії</Link>
-        <Link href={routes.newStory}>Створити історію</Link>
-        <Link href={routes.login}>Увійти</Link>
-        <Link href={routes.register}>Зареєструватися</Link>
-      </nav>
+    <header className={`${styles.header} container`}>
+      <Link href={routes.home} className={styles.logo}>
+       <span className={styles.logoIcon} aria-hidden="true" />
+          <span>Природні мандри</span>
+      </Link>
+        <nav
+          aria-label="Основна навігація"
+          className={styles.navigation}>
+          <Link href={routes.home}>Головна</Link>
+          <Link href={routes.stories}>Статті</Link>
+          <Link href={routes.travellers}>Еко-Мандрівники</Link>
+        </nav>
+       
+        <div className={styles.authLinks}>
+              <Link href={routes.login} className={styles.loginLink}>
+                Вхід
+              </Link>
+              <Link href={routes.register} className={styles.registerLink}>
+                Реєстрація
+              </Link>
+        </div>
+      
+      <button className={styles.menuButton}
+        aria-label="Відкрити меню"
+        type="button"
+        aria-expanded={isMenuOpen}
+        aria-controls="mobile-navigation"
+        onClick={() => setIsMenuOpen(true)}
+      >
+        <svg className={styles.menuIcon}
+          aria-hidden="true">
+          <use href="/icons/sprite.svg#menu" />
+        </svg>
+      </button>
+  {isMenuOpen && (
+        <Modal onClose={closeMenu}>
+          <MobileMenu onClose={closeMenu} />
+        </Modal>
+  )}   
+          
     </header>
   );
 }
