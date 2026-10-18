@@ -12,6 +12,7 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.104.4",
     "formik": "2.4.9",
     "modern-normalize": "3.0.1",
     "next": "15.5.28",

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "modern-normalize/modern-normalize.css";
 import "./globals.css";
 import { Montserrat } from "next/font/google";
+import QueryProvider from "@/components/providers/QueryProvider";
 
 const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],
@@ -25,7 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="uk" className={montserrat.variable}>
-      <body>{children}</body>
+      <body>
+        <QueryProvider>{children}</QueryProvider>
+      </body>
     </html>
   );
 }
