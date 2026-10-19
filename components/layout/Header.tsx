@@ -12,7 +12,7 @@ export default function Header() {
   const closeMenu = () => { setIsMenuOpen(false) };
   
   return (
-    <header className={`${styles.header} container`}>
+    <header className={styles.header}>
       <Link href={routes.home} className={styles.logo}>
        <span className={styles.logoIcon} aria-hidden="true" />
           <span>Природні мандри</span>
