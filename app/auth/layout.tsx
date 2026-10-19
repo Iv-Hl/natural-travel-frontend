@@ -1,18 +1,23 @@
-import Link from "next/link";
-import { routes } from "@/constants/routes";
-import styles from "@/components/layout/Layout.module.css";
+import AuthFooter from "@/components/auth/AuthFooter/AuthFooter";
+import AuthHeader from "@/components/auth/AuthHeader/AuthHeader";
+import styles from "./layout.module.css";
 
 export default function AuthLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <div className={`container ${styles.shell}`}>
-      <header>
-        <Link href={routes.home}>Природні мандри</Link>
+    <div className={`${styles.page} container`}>
+      <header className={styles.header}>
+        <div className={styles.headerInner}>
+          <AuthHeader />
+        </div>
       </header>
-      <main>{children}</main>
+      <main className={styles.main}>{children}</main>
+      <footer className={styles.footer}>
+        <AuthFooter />
+      </footer>
     </div>
   );
 }
