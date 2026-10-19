@@ -116,13 +116,12 @@
     gap: 32px;
     font-size: 18px;
     line-height: 150%;
+    margin-right: 32px;
   }
 
  
 
-  .navigation a:hover {
-    text-decoration-thickness: 2px;
-  }
+  
 
     .authLinks {
       font-size: 20px;
@@ -148,7 +147,7 @@
   }
 
   .logo {
-    margin-right: 420px;
+    margin-right: 576px;
   }
 
 }
