@@ -1,0 +1,217 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #eef8ee;
+  color: #203f24;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 24px rgb(32 63 36 / 10%);
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: #dce9dc;
+}
+
+.image {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.02);
+}
+
+.categoryBadge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #eef8ee;
+  color: #203f24;
+  font-size: 14px;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 20px 20px;
+}
+
+.metaInfo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.author {
+  font-weight: 600;
+}
+
+.separator {
+  font-weight: 700;
+}
+
+.rate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rate svg {
+  width: 18px;
+  height: 18px;
+}
+
+.title {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: #203f24;
+  font-size: clamp(22px, 2vw, 30px);
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.readTime {
+  margin: -12px 0 0;
+  color: #526b55;
+  font-size: 14px;
+}
+
+.actions {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.viewButton,
+.saveButton {
+  display: flex;
+  min-height: 60px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #c7dcc8;
+  border-radius: 10px;
+  background: #dfefdf;
+  color: #203f24;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.viewButton {
+  flex: 1;
+  gap: 12px;
+  padding: 12px 16px;
+  font: inherit;
+  font-size: clamp(15px, 1.5vw, 22px);
+}
+
+.saveButton {
+  width: 60px;
+  flex-shrink: 0;
+  padding: 12px;
+}
+
+.viewButton:hover,
+.saveButton:hover {
+  background: #cfe5cf;
+}
+
+.saveButton.saved {
+  border-color: #438f49;
+  background: #438f49;
+  color: #fff;
+}
+
+.saveButton:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.viewButton:focus-visible,
+.saveButton:focus-visible {
+  outline: 2px solid #438f49;
+  outline-offset: 3px;
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.error {
+  margin: -12px 0 0;
+  color: #b42318;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 767px) {
+  .content {
+    gap: 18px;
+    padding: 18px 16px 16px;
+  }
+
+  .metaInfo {
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  .viewButton,
+  .saveButton {
+    min-height: 52px;
+  }
+
+  .saveButton {
+    width: 52px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .image,
+  .viewButton,
+  .saveButton {
+    transition: none;
+  }
+
+  .spinner {
+    animation-duration: 1.5s;
+  }
+}
