@@ -1,4 +1,3 @@
-import TravellerInfo from "@/components/travellers/TravellerInfo";
 import MessageNoStories from "@/components/shared/MessageNoStories";
 import { routes } from "@/constants/routes";
 import styles from "./page.module.css";
@@ -68,12 +67,6 @@ export default async function TravellerPage({ params }: TravellerPageProps) {
 
   return (
     <div className={styles.page}>
-      <TravellerInfo
-        name={data.user.name}
-        articlesCount={data.user.articlesAmount}
-        avatar={data.user.avatarUrl}
-      />
-
       <section className={styles.storiesSection}>
         <h2 className={styles.sectionTitle}>Історії Мандрівника</h2>
 
