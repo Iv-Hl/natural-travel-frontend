@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { routes } from "@/constants/routes";
 import styles from "./AuthBar.module.css";
+import ThemeToggle from "../themeswitcher/ThemeSwitcher";
 
 type MobileMenuProps = {
     onClose: () => void;
@@ -15,7 +16,8 @@ export default function MobileMenu({ onClose }: MobileMenuProps)
                 onClick={onClose}>
                <span className={styles.logoIcon} aria-hidden="true" />
                 <span>Природні мандри</span>
-            </Link>
+                </Link>
+                <ThemeToggle/>
             <button
                 type="button"
                 className={styles.closeButton}

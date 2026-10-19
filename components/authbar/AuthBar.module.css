@@ -24,6 +24,7 @@
     width: 124px;
     height: 36px;
     gap: 6px;
+    margin-right: 120px;
 }
 
 .logoIcon {
@@ -88,7 +89,7 @@
     height: 32px;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.05);
-    color: var(--color-primary-hover-text)
+    
 }
 
 .login:hover {
@@ -117,7 +118,9 @@
 }
 
 @media (min-width: 768px) {
-
+.logo {
+    margin-right: 82px;
+}
 .authLinks {
     position:absolute;
     top: 3px;
