@@ -8,7 +8,7 @@ type MobileMenuProps = {
 export default function MobileMenu({ onClose }: MobileMenuProps)
 {
     return (
-        <div className={`${styles.menu} container`}>
+        <div className={styles.menu}>
         <div className={styles.topBar}>
             <Link href={routes.home}
                 className={styles.logo}
