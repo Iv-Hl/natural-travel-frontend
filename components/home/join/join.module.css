@@ -1,0 +1,176 @@
+/* Mobile: від 320px */
+.section {
+    padding-block: 32px;
+    background-color: var(--color-page-bg, #eef8ee);
+    scroll-margin-top: 24px;
+}
+
+.container {
+    width: 100%;
+    max-width: 375px;
+    margin-inline: auto;
+    padding-inline: 20px;
+}
+
+.banner {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    overflow: hidden;
+
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+
+    color: #fff;
+    background-color: #08170c;
+    background-image: url("/images/join/join-mobile.webp");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    min-width: 0;
+}
+
+.title {
+    margin: 0 0 24px;
+
+    font-family: inherit;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+
+    color: #fff;
+    overflow-wrap: break-word;
+}
+
+.description {
+    margin: 0 0 32px;
+
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: normal;
+
+    color: #fff;
+}
+
+.link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 48px;
+    padding: 6px 12px;
+
+    border: 1px solid var(--color-primary-button-bg, #4a9849);
+    border-radius: 6px;
+
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: center;
+    text-decoration: none;
+
+    color: #fff;
+    background-color: var(--color-primary-button-bg, #4a9849);
+
+    transition:
+        background-color 150ms ease,
+        border-color 150ms ease,
+        color 150ms ease;
+}
+
+.link:hover {
+    border-color: var(--color-primary-hover-bg, #def2de);
+    color: var(--color-primary-hover-text, #1b391b);
+    background-color: var(--color-primary-hover-bg, #def2de);
+}
+
+.link:active {
+    border-color: var(--color-primary-active-bg, #254c24);
+    color: #fff;
+    background-color: var(--color-primary-active-bg, #254c24);
+}
+
+.link:focus-visible {
+    outline: 3px solid var(--color-focus, #8dd18c);
+    outline-offset: 4px;
+}
+
+/* Tablet: від 768px */
+@media (min-width: 768px) {
+    .container {
+        max-width: 768px;
+        padding-inline: 32px;
+    }
+
+    .banner {
+        background-image: url("/images/join/join-tablet.webp");
+    }
+
+    .title {
+        font-size: 32px;
+    }
+
+    .description {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.5;
+    }
+
+    .link {
+        width: auto;
+    }
+}
+
+/* Desktop: від 1440px */
+@media (min-width: 1440px) {
+    .section {
+        padding-block: 48px;
+    }
+
+    .container {
+        max-width: 1440px;
+        padding-inline: 64px;
+    }
+
+    .banner {
+        min-height: 436px;
+        padding: 64px;
+        background-image: url("/images/join/join-desktop.webp");
+    }
+
+    .content {
+        max-width: 768px;
+    }
+
+    .title {
+        font-size: 48px;
+    }
+
+    .description {
+        font-size: 20px;
+    }
+
+    .link {
+        font-size: 20px;
+    }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    .link {
+        transition: none;
+    }
+}
