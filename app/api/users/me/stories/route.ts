@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_URL = process.env.BACKEND_URL;
+const API_URL = process.env.BACKEND_API_URL;
 
 export async function GET(request: NextRequest) {
   if (!API_URL) {
     return NextResponse.json(
-      { message: "BACKEND_URL is not configured" },
+      { message: "BACKEND_API_URL is not configured" },
       { status: 500 },
     );
   }
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const response = await fetch(
-      `${API_URL}/api/users/me/stories?${searchParams.toString()}`,
+      `${API_URL}/users/me/stories?${searchParams.toString()}`,
       {
         headers: {
           cookie: request.headers.get("cookie") ?? "",

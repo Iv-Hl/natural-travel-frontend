@@ -124,9 +124,35 @@ export default function TravellersStories() {
     );
   };
 
+  const handleRetry = () => {
+    if (isLoading) return;
+
+    const controller = new AbortController();
+    loadMoreControllerRef.current?.abort();
+    loadMoreControllerRef.current = controller;
+
+    void fetchStories(
+      error && stories.length === 0 ? 1 : page + 1,
+      controller.signal,
+    );
+  };
+
   return (
     <section className={styles.container}>
-      {error && <p role="alert">{error}</p>}
+      {error && (
+        <div>
+          <p role="alert">{error}</p>
+
+          <button
+            type="button"
+            onClick={handleRetry}
+            disabled={isLoading}
+            className={styles.retryButton}
+          >
+            Спробувати ще раз
+          </button>
+        </div>
+      )}
 
       <ul className={styles.list}>
         {stories.map((story, index) => (
@@ -154,7 +180,7 @@ export default function TravellersStories() {
         <p>У вас поки немає історій.</p>
       )}
 
-      {page < totalPages && (
+      {!error && page < totalPages && (
         <button
           type="button"
           onClick={handleLoadMore}

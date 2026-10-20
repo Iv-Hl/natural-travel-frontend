@@ -11,7 +11,7 @@
 
 .imageWrapper {
   width: 100%;
-  aspect-ratio: 421 / 330;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
 }
 
@@ -155,9 +155,6 @@
 }
 .saveButton img {
   transition: filter 250ms ease-in-out;
-}
-
-@media screen and (min-width: 768px) {
 }
 
 /* Комп'ютер */

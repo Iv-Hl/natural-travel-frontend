@@ -58,13 +58,45 @@
   cursor: not-allowed;
 }
 
+.retryButton {
+  margin-top: 16px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #4a9849;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  transition:
+    background-color 250ms ease-in-out,
+    color 250ms ease-in-out;
+}
+
+.retryButton:hover:not(:disabled) {
+  background-color: #254c24;
+}
+
+.retryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 @media screen and (min-width: 768px) {
+  .list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .loadMoreButton {
     width: 133px;
   }
 }
 
 @media screen and (min-width: 1440px) {
+  .list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .loadMoreButton {
     width: 160px;
   }
