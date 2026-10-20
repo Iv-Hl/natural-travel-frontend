@@ -1,10 +1,13 @@
 .footer {
-  background-color: #DEF2DE;
+  background-color: var(--footer-bg, #def2de);
+  color: var(--footer-text, #1b3b2b);
   padding: 30px 0 20px;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid var(--footer-border, rgba(0, 0, 0, 0.08));
+  width: 100%;
 }
 
 .container {
+  width: 100%;
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 24px;
@@ -26,12 +29,11 @@
   font-weight: 600;
   font-size: 0.85rem;
   line-height: 1.1;
-  color: #1b3b2b;
+  color: var(--footer-text, #1b3b2b);
   text-align: left;
 }
 
 /*==========================================================*/
-
 
 /* Мобільна версія: меню у стовпчик і по центру */
 .navList {
@@ -47,13 +49,13 @@
 
 .navList a {
   text-decoration: none;
-  color: #2f3e46;
+  color: var(--footer-link, #2f3e46);
   font-size: 0.95rem;
   transition: color 0.2s;
 }
 
 .navList a:hover {
-  color: #2d6a4f;
+  color: var(--footer-link-hover, #2d6a4f);
 }
 
 .socialList {
@@ -72,8 +74,8 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.05);
-  color: #1b3b2b;
+  background-color: var(--footer-social-bg, rgba(0, 0, 0, 0.05));
+  color: var(--footer-text, #1b3b2b);
   text-decoration: none;
   font-size: 0.75rem;
   font-weight: bold;
@@ -82,35 +84,32 @@
 .copyright {
   text-align: center;
   font-size: 0.8rem;
-  color: #55695e;
-  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  color: var(--footer-muted, #55695e);
+  border-top: 1px solid var(--footer-border-light, rgba(0, 0, 0, 0.15));
   padding-top: 15px;
   margin-top: 5px;
   width: 100%;
 }
 
-
-
 /*==========================================================*/
-
-
-
 
 /* Планшетна версія (від 768px до 1439px) */
 @media (min-width: 768px) and (max-width: 1439px) {
   .container {
     padding: 0 40px;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto auto;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
   }
 
   .logoLink {
-    align-self: flex-start;
-    grid-column: auto;
-    grid-row: auto;
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    align-self: center;
   }
 
   .logoText {
@@ -118,10 +117,18 @@
   }
 
   .socialList {
-    align-self: flex-end;
-    margin-top: -32px; 
-    grid-column: auto;
-    grid-row: auto;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    margin-top: 0;
+  }
+
+  .container nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
   .navList {
@@ -135,8 +142,6 @@
     list-style: none;
     width: 100%;
     white-space: nowrap;
-    grid-column: auto;
-    grid-row: auto;
   }
 
   .navList a {
@@ -144,18 +149,15 @@
   }
 
   .copyright {
+    grid-column: 1 / -1;
+    grid-row: 3;
     text-align: center;
     width: 100%;
-    grid-column: auto;
-    grid-row: auto;
-    border-top: 1px solid rgba(0, 0, 0, 0.15);
+    border-top: 1px solid var(--footer-border-light, rgba(0, 0, 0, 0.15));
     padding-top: 15px;
     margin-top: 5px;
   }
 }
-
-
-
 
 /*==========================================================*/
 
@@ -180,6 +182,7 @@
     grid-column: 2;
     grid-row: 1;
     justify-self: center;
+    margin-top: 0;
   }
 
   .navList {

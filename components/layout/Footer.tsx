@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import styles from './Footer.module.css';
+import Link from "next/link";
+import Image from "next/image";
+import styles from "./Footer.module.css";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -10,37 +10,59 @@ export default function Footer() {
       <div className={styles.container}>
         {/* Логотип */}
         <Link href="/" className={styles.logoLink}>
-          <Image 
-            src="/images/eco-mark.svg" 
-            alt="Eco mark" 
-            width={20} 
-            height={20} 
+          <Image
+            src="/images/eco-mark.svg"
+            alt="Eco mark"
+            width={20}
+            height={20}
             className={styles.logoIcon}
           />
           <span className={styles.logoText}>
-            Природні<br />мандри
+            Природні
+            <br />
+            мандри
           </span>
         </Link>
 
         {/* Список соціальних мереж */}
         <ul className={styles.socialList}>
           <li>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+            >
               FB
             </a>
           </li>
           <li>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
               IG
             </a>
           </li>
           <li>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Twitter"
+            >
               X
             </a>
           </li>
           <li>
-            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+            <a
+              href="https://youtube.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="YouTube"
+            >
               YT
             </a>
           </li>
