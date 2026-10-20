@@ -7,12 +7,11 @@ export default function Hero() {
       <div className={styles.imageWrapper}>
         <Image
           className={styles.image}
-          src="https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1200&q=85"
+          src="/images/mountains-hero.jpg"
           alt="Дика природа та ліс серед гір"
-          width={1200}
-          height={800}
+          width={1288}
+          height={1160}
           priority
-          unoptimized
           sizes="(max-width: 767px) 100vw, (max-width: 1439px) 50vw, 600px"
         />
       </div>
