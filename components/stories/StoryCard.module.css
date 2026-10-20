@@ -129,8 +129,8 @@
   color: #ffffff;
 }
 
-.viewButton:focus-visible,
-.saveButton:focus-visible {
+.viewButton:focus,
+.saveButton:focus {
   outline: 2px solid #254c24;
   outline-offset: 2px;
 }

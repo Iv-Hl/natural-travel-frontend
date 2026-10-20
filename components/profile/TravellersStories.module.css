@@ -15,14 +15,57 @@
   min-width: 0;
 }
 
+.loadMoreButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  max-width: 335px;
+  height: 48px;
+  margin: 40px auto 0;
+  padding: 6px 12px;
+
+  border: 1px solid #4a9849;
+  border-radius: 6px;
+  background-color: #4a9849;
+
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+
+  cursor: pointer;
+  transition:
+    background-color 250ms ease-in-out,
+    color 250ms ease-in-out;
+}
+
+.loadMoreButton:hover:not(:disabled) {
+  background-color: #def2de;
+  color: #1b391b;
+}
+
+.loadMoreButton:active:not(:disabled) {
+  background-color: #254c24;
+  color: #ffffff;
+}
+
+.loadMoreButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 @media screen and (min-width: 768px) {
-  .list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .loadMoreButton {
+    width: 133px;
   }
 }
 
 @media screen and (min-width: 1440px) {
-  .list {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .loadMoreButton {
+    width: 160px;
   }
 }

@@ -13,65 +13,6 @@ interface StoriesResponse {
 }
 
 const LIMIT = 6;
-const USE_MOCK_DATA = false;
-
-const mockStories: Story[] = [
-  {
-    _id: "1",
-    title: "Подорож Карпатамиffffffffffffffffff",
-    img: "/images/test-1.jpg",
-    date: "2026-09-10",
-    ownerId: "test-user",
-    authorName: "Анастасія Олійник",
-    savesCount: 5,
-  },
-  {
-    _id: "2",
-    title: "Вихідні у Львові",
-    img: "/images/test-2.jpg",
-    date: "2026-09-12",
-    ownerId: "test-user",
-    authorName: "Анастасія Олійник",
-    savesCount: 3,
-  },
-  {
-    _id: "3",
-    title:
-      "Мандрівка до Одесиииииииииииииииииииииииииииииииииииииbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-    img: "/images/test-3.jpg",
-    date: "2026-09-15",
-    ownerId: "test-user",
-    authorName: "Анастасія Олійник",
-    savesCount: 5,
-  },
-  {
-    _id: "4",
-    title: "Озеро Синевир",
-    img: "/images/test-4.jpg",
-    date: "2026-09-18",
-    ownerId: "test-user",
-    authorName: "Анастасія Олійник",
-    savesCount: 2,
-  },
-  {
-    _id: "5",
-    title: "Замки України",
-    img: "/images/test-5.jpg",
-    date: "2026-09-20",
-    ownerId: "test-user",
-    authorName: "Анастасія Олійник",
-    savesCount: 4,
-  },
-  {
-    _id: "6",
-    title: "Гори та природа",
-    img: "/images/test-6.jpg",
-    date: "2026-09-22",
-    ownerId: "test-user",
-    authorName: "Анастасія Олійник",
-    savesCount: 10,
-  },
-];
 
 export default function TravellersStories() {
   const [stories, setStories] = useState<Story[]>([]);
@@ -79,12 +20,17 @@ export default function TravellersStories() {
   const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [savedStoryIds, setSavedStoryIds] = useState<string[]>([]);
 
   const firstNewStoryRef = useRef<HTMLLIElement | null>(null);
   const shouldScrollRef = useRef(false);
   const previousCountRef = useRef(0);
+  const storiesCountRef = useRef(0);
+  const loadMoreControllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    storiesCountRef.current = stories.length;
+  }, [stories]);
 
   const fetchStories = useCallback(
     async (pageNumber: number, signal: AbortSignal) => {
@@ -106,18 +52,24 @@ export default function TravellersStories() {
 
         const data: StoriesResponse = await response.json();
 
-        setStories((prev) => {
-          previousCountRef.current = pageNumber === 1 ? 0 : prev.length;
+        if (signal.aborted) return;
 
-          return pageNumber === 1 ? data.stories : [...prev, ...data.stories];
-        });
+        if (pageNumber === 1) {
+          previousCountRef.current = 0;
+          shouldScrollRef.current = false;
+          storiesCountRef.current = data.stories.length;
+
+          setStories(data.stories);
+        } else {
+          previousCountRef.current = storiesCountRef.current;
+          shouldScrollRef.current = data.stories.length > 0;
+          storiesCountRef.current += data.stories.length;
+
+          setStories((prev) => [...prev, ...data.stories]);
+        }
 
         setTotalPages(data.totalPages);
         setPage(pageNumber);
-
-        if (pageNumber > 1) {
-          shouldScrollRef.current = true;
-        }
       } catch (err) {
         if (signal.aborted) return;
 
@@ -134,18 +86,14 @@ export default function TravellersStories() {
   );
 
   useEffect(() => {
-    if (USE_MOCK_DATA) {
-      setStories(mockStories);
-      setTotalPages(1);
-      setIsLoading(false);
-      return;
-    }
-
     const controller = new AbortController();
 
     void fetchStories(1, controller.signal);
 
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+      loadMoreControllerRef.current?.abort();
+    };
   }, [fetchStories]);
 
   useEffect(() => {
@@ -163,6 +111,7 @@ export default function TravellersStories() {
     if (isLoading || page >= totalPages) return;
 
     const controller = new AbortController();
+    loadMoreControllerRef.current = controller;
 
     void fetchStories(page + 1, controller.signal);
   };
@@ -206,7 +155,12 @@ export default function TravellersStories() {
       )}
 
       {page < totalPages && (
-        <button type="button" onClick={handleLoadMore} disabled={isLoading}>
+        <button
+          type="button"
+          onClick={handleLoadMore}
+          disabled={isLoading}
+          className={styles.loadMoreButton}
+        >
           {isLoading ? "Завантаження..." : "Показати ще"}
         </button>
       )}
