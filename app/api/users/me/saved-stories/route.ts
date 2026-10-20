@@ -7,9 +7,7 @@ export async function GET(request: Request) {
 
   const targetUrl = new URL("/api/users/me/saved-stories", backendUrl);
 
-  requestUrl.searchParams.forEach((value, key) => {
-    targetUrl.searchParams.set(key, value);
-  });
+  targetUrl.search = requestUrl.search;
 
   const headers = new Headers({
     Accept: "application/json",
@@ -28,7 +26,15 @@ export async function GET(request: Request) {
       cache: "no-store",
     });
 
-    return new Response(await upstream.text(), {
+    if ([204, 205, 304].includes(upstream.status)) {
+      return new Response(null, {
+        status: upstream.status,
+      });
+    }
+
+    const body = await upstream.text();
+
+    return new Response(body, {
       status: upstream.status,
       headers: {
         "Content-Type":
