@@ -1,10 +1,10 @@
 .tabs {
   display: flex;
-  width: 422px;
-  max-width: 100%;
+  box-sizing: border-box;
+  width: 100%;
   height: 48px;
   padding: 4px;
-  border: 1px solid transparent;
+  border: none;
   border-radius: 10px;
   background-color: var(--color-surface-muted);
 }
@@ -14,40 +14,27 @@
   flex: 1;
   align-items: center;
   justify-content: center;
-  min-width: 0;
+
   height: 100%;
-  padding: 0 8px;
+
   border: 1px solid transparent;
   border-radius: 6px;
 
-  font-family: var(--font-main);
-  font-size: 20px;
+  font-family: var(--font-family);
+  font-size: 16px;
   font-weight: 500;
   line-height: 1.5;
   text-align: center;
   text-decoration: none;
   white-space: nowrap;
 
-  color: var(--color-main-text);
+  color: var(--color-scheme-2-text);
   background-color: transparent;
 
   transition:
-    background-color 150ms ease,
-    border-color 150ms ease;
-}
-
-.tab:hover {
-  background-color: var(--color-primary-hover-bg);
-}
-
-.tab:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
-.active {
-  border-color: var(--color-border);
-  background-color: var(--color-page-bg);
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
 }
 
 .tab:hover:not(.active) {
@@ -61,13 +48,36 @@
   outline-offset: 2px;
 }
 
-@media (max-width: 375px) {
+.active {
+  border-color: var(--color-border);
+  background-color: var(--color-page-bg);
+}
+
+
+@media (min-width: 375px) {
+  .tab {
+    font-size: 16px;
+  }
+}
+
+
+@media (min-width: 768px) {
   .tabs {
-    width: 100%;
+    width: 422px;
   }
 
   .tab {
-    padding-inline: 4px;
-    font-size: 14px;
+    padding: 8px 30px;
   }
+}
+
+@media (min-width:1440px){
+    .tabs {
+        width: 422px;
+    }
+    
+    .tab {
+        padding: 4px 12px;
+        font-size: 20px;
+    }
 }

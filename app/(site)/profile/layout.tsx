@@ -30,7 +30,7 @@ export default function ProfileLayout({
   // Перед завершенням роботи потрібно відновити захист маршруту.
 
   return (
-    <main className="container">
+    <main>
       <h1>Профіль мандрівника</h1>
 
       <ProfileTabs />

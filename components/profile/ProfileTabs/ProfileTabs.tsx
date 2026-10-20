@@ -12,7 +12,7 @@ export default function ProfileTabs() {
   const isOwnActive = pathname === routes.ownStories;
 
   return (
-    <nav className={styles.tabs} aria-label="Історії мандрівника">
+    <nav className={styles.tabs}>
       <Link
         href={routes.profile}
         className={`${styles.tab} ${isSavedActive ? styles.active : ""}`}
