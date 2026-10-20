@@ -26,44 +26,98 @@ interface TravellerResponse {
   message?: string;
 }
 
-async function getTraveller(
-  travellerId: string,
-): Promise<TravellerResponse | null> {
+type TravellerResult =
+  | { status: "success"; data: TravellerResponse }
+  | { status: "not-found"; message: string }
+  | { status: "error"; message: string };
+
+const NOT_FOUND_MESSAGE = "Не вдалося знайти цього мандрівника";
+const ERROR_MESSAGE =
+  "Не вдалося завантажити профіль мандрівника. Спробуйте пізніше.";
+
+async function getTraveller(travellerId: string): Promise<TravellerResult> {
   try {
-    const backendUrl = process.env.BACKEND_API_URL ?? "http://localhost:3000";
+    const backendUrl = (
+      process.env.BACKEND_API_URL ?? "http://localhost:3000"
+    ).replace(/\/+$/, "");
+
+    const apiUrl = backendUrl.endsWith("/api")
+      ? backendUrl
+      : `${backendUrl}/api`;
 
     const response = await fetch(
-      `${backendUrl.replace(/\/+$/, "")}/api/users/${encodeURIComponent(travellerId)}`,
+      `${apiUrl}/users/${encodeURIComponent(travellerId)}`,
       {
         cache: "no-store",
       },
     );
 
-    if (!response.ok) {
-      return null;
+    let responseData: Partial<TravellerResponse> = {};
+
+    try {
+      responseData = await response.json();
+    } catch {}
+
+    const backendMessage =
+      typeof responseData.message === "string" && responseData.message.trim()
+        ? responseData.message
+        : null;
+
+    if (response.status === 404) {
+      return {
+        status: "not-found",
+        message: backendMessage ?? NOT_FOUND_MESSAGE,
+      };
     }
 
-    return (await response.json()) as TravellerResponse;
+    if (!response.ok) {
+      return {
+        status: "error",
+        message: backendMessage ?? ERROR_MESSAGE,
+      };
+    }
+
+    if (!responseData.user) {
+      return {
+        status: "error",
+        message: ERROR_MESSAGE,
+      };
+    }
+
+    const data = responseData as TravellerResponse;
+
+    return {
+      status: "success",
+      data: {
+        ...data,
+        stories: Array.isArray(data.stories) ? data.stories : [],
+      },
+    };
   } catch {
-    return null;
+    return {
+      status: "error",
+      message: ERROR_MESSAGE,
+    };
   }
 }
 
 export default async function TravellerPage({ params }: TravellerPageProps) {
   const { travellerId } = await params;
-  const data = await getTraveller(travellerId);
+  const result = await getTraveller(travellerId);
 
-  if (!data?.user) {
+  if (result.status !== "success") {
     return (
       <div className={styles.page}>
         <MessageNoStories
-          text="Не вдалося знайти цього мандрівника"
+          text={result.message}
           buttonText="Назад до історій"
           linkTo={routes.stories}
         />
       </div>
     );
   }
+
+  const { data } = result;
 
   return (
     <div className={styles.page}>
