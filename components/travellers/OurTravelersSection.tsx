@@ -132,7 +132,7 @@ export const OurTravelersSection = () => {
               >
                 <span className={css.iconWrapper}>
                   <svg width="20" height="20" aria-hidden="true">
-                    <use href="/icons/symbol-defs.svg#icon-arrow_back" />
+                    <use href="../icons/symbol-defs.svg#icon-arrow_back" />
                   </svg>
                 </span>
               </button>
@@ -145,7 +145,7 @@ export const OurTravelersSection = () => {
               >
                 <span className={css.iconWrapper}>
                   <svg width="20" height="20" aria-hidden="true">
-                    <use href="/icons/symbol-defs.svg#icon-arrow_forward" />
+                    <use href="../icons/symbol-defs.svg#icon-arrow_forward" />
                   </svg>
                 </span>
               </button>
