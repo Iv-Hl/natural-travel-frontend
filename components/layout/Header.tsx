@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { routes } from "@/constants/routes";
+import { logoutUser } from "@/lib/api/logout";
 import styles from "./Layout.module.css";
 
 export default function Header() {
@@ -15,6 +18,20 @@ export default function Header() {
         <Link href={routes.newStory}>Створити історію</Link>
         <Link href={routes.login}>Увійти</Link>
         <Link href={routes.register}>Зареєструватися</Link>
+
+        <button
+          type="button"
+          onClick={async () => {
+            try {
+              await logoutUser();
+              alert("Вихід успішний!");
+            } catch (error) {
+              alert(error instanceof Error ? error.message : "Помилка виходу");
+            }
+          }}
+        >
+          Вийти
+        </button>
       </nav>
     </header>
   );
