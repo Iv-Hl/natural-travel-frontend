@@ -10,7 +10,7 @@ import "swiper/css";
 import { StoryCard } from "../StoryCard/StoryCard";
 import styles from "./PopularStories.module.css";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 interface AuthorObj {
   name?: string;
@@ -36,7 +36,6 @@ interface StoriesResponse {
   message?: string;
 }
 
-// Допоміжна функція для визначення імені автора
 const getAuthorName = (story: Story): string => {
   const authorObj =
     (typeof story.ownerId === "object" && story.ownerId) ||
