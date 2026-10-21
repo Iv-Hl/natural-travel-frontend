@@ -1,0 +1,22 @@
+.overlay {
+    position: fixed;
+    top: 72px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    width: 100%;
+    
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background-color: var(--color-page-bg);
+}
+
+.modal {
+    width: 100%;
+    min-height: 100%;
+    outline: none;
+    padding: 24px 20px;
+   
+}
+
