@@ -65,7 +65,7 @@
     border: 1px solid var(--color-primary-button-bg, #4a9849);
     border-radius: 6px;
 
-    font-family: inherit;
+    font-family: "Montserrat", sans-serif;
     font-size: 16px;
     font-weight: 500;
     line-height: 1.5;
