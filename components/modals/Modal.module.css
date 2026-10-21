@@ -1,6 +1,6 @@
 .overlay {
     position: fixed;
-    top: 96px;
+    top: 72px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -20,9 +20,3 @@
    
 }
 
-@media (min-width: 1440px) {
-
-    .overlay,.modal {
-        display: none;
-    }
-}

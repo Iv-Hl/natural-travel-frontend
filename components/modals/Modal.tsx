@@ -119,6 +119,10 @@ export default function Modal({ children, onClose, ariaLabel }: ModalProps) {
     };
   }, []);
 
+  if (typeof document === "undefined") {
+    return null;
+  }
+
   return createPortal(
     <div
       className={styles.overlay}

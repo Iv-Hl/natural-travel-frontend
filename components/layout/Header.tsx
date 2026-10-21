@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { routes } from "@/constants/routes";
 import styles from "./Layout.module.css";
@@ -11,6 +11,26 @@ import ThemeToggle from "../themeswitcher/ThemeSwitcher";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+ useEffect(() => {
+  const mediaQuery = window.matchMedia("(min-width: 1366px)");
+
+  function handleResize(event: MediaQueryListEvent) {
+    if (event.matches) {
+      setIsMenuOpen(false);
+    }
+  }
+
+  if (mediaQuery.matches) {
+    setIsMenuOpen(false);
+  }
+
+  mediaQuery.addEventListener("change", handleResize);
+
+  return function cleanup() {
+    mediaQuery.removeEventListener("change", handleResize);
+  };
+}, []);
+  
   const toggleMenu = () => { setIsMenuOpen((prev) => !prev) };
   const closeMenu = () => { setIsMenuOpen(false) };
   
