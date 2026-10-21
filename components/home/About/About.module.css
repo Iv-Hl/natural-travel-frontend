@@ -9,25 +9,30 @@
     gap: 32px;
 }
 
+.aboutContent {
+    width: 100%;
+}
 
 .aboutTitle {
     max-width: 644px;
     margin-top: 40px;
     margin-bottom: 24px;
-
+    color: #1B391B;
     font-weight: 700;
 }
 
 .aboutDescription {
     font-size: 16px;
+
 }
 
 .aboutList {
     display: flex;
     flex-direction: column;
     gap: 24px;
-
     margin-top: 40px;
+    padding-left: 0;
+    margin-left: 0;
 }
 
 .aboutItem {
@@ -44,6 +49,7 @@
 
 .aboutText {
     font-size: 16px;
+    color: #1B391B;
 }
 
 .aboutImg {
@@ -56,13 +62,28 @@
     border-radius: 12px;
 }
 
+.image {
+    display: block;
 
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center;
+}
 
 @media screen and (min-width: 768px) {
     .about {
         padding-block: 64px;
     }
-
+    
+    .aboutTitle{
+        font-family: var(--font-family);
+        font-size: 44px;
+        line-height: 120%;
+        letter-spacing: -0.01em;
+        color: var(--color-scheme-2-text);
+    }
     .aboutList {
         flex-direction: row;
     }
@@ -76,7 +97,9 @@
         aspect-ratio: 704 / 410;
     }
 
-  
+    .image {
+        object-position: center;
+    }
 }
 
 @media screen and (min-width: 1440px) {
@@ -90,17 +113,34 @@
         gap: 24px;
     }
 
+    .aboutContent {
+        width: 100%;
+        max-width: 50%;
+    }
+
     .aboutTitle {
         margin-top: 40px;
+        font-family: var(--font-family);
+        font-size: 52px;
+        line-height: 120%;
+        letter-spacing: -0.01em;
+        color: var(--color-scheme-2-text);
+       
     }
 
     .aboutList {
         margin-top: 32px;
         padding-block: 8px;
+        color: #1B391B;
     }
 
     .aboutDescription {
         font-size: 20px;
+        font-family: var(--font-family);
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 150%;
+        color: var(--color-scheme-2-text);
     }
 
     .aboutItemTitle {
@@ -109,6 +149,15 @@
 
     .aboutText {
         font-size: 18px;
+        
     }
 
+    .aboutImg {
+        width: 644px;
+        min-width: 644px;
+        aspect-ratio: auto;
+        min-height: 580px;
+    }
+
+     
 }

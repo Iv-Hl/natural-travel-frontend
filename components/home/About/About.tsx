@@ -1,14 +1,15 @@
-// import Image from 'next/image';
+import Image from 'next/image';
 import styles from './About.module.css';
+
 
 export function About() {
   return (
     <section className={styles.about}>
         <div className={styles.aboutWrapper}>
           <div className={styles.aboutContent}>
-            <h1 className={styles.aboutTitle}>
+            <h2 className={styles.aboutTitle}>
               Мандруй екологічно та відкривай нові горизонти
-            </h1>
+            </h2>
 
             <p className={styles.aboutDescription}>
               Наш проєкт створений для тих, хто хоче досліджувати Україну
@@ -19,9 +20,9 @@ export function About() {
 
             <ul className={styles.aboutList}>
               <li className={styles.aboutItem}>
-                <h2 className={styles.aboutItemTitle}>
+                <h3 className={styles.aboutItemTitle}>
                   Еко-маршрути по Україні
-                </h2>
+                </h3>
 
                 <p className={styles.aboutText}>
                   Від Карпат до Чорного моря — добірка локацій, де можна
@@ -30,9 +31,9 @@ export function About() {
               </li>
 
               <li className={styles.aboutItem}>
-                <h2 className={styles.aboutItemTitle}>
+                <h3 className={styles.aboutItemTitle}>
                   Практичні екологічні поради
-                </h2>
+                </h3>
 
                 <p className={styles.aboutText}>
                   Дізнайся, як зменшити свій екологічний слід під час мандрів
@@ -43,7 +44,19 @@ export function About() {
           </div>
 
           <div className={styles.aboutImg}>
-            {/* <Image/> */}
+             <Image
+              src="/images/travel-eco.jpg"
+              alt="Мандруй екологічно"
+              className={styles.image}
+              width={644}
+              height={686}
+              sizes="
+                (max-width: 767px) calc(100vw - 40px),
+                (max-width: 1439px) 704px,
+                644px
+              "
+              quality={70}
+            />
           </div>
         </div>
     </section>
