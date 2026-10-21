@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { routes } from "@/constants/routes";
 import styles from "./join.module.css";
 
 type JoinProps = {
@@ -14,13 +13,15 @@ export default function Join({ isAuthenticated }: JoinProps) {
           <h2 id="join-title" className={styles.title}>
             Приєднуйся до спільноти свідомих мандрівників
           </h2>
+
           <p className={styles.description}>
             Стань частиною ком’юніті, де подорожі стають не лише пригодою, а й
             внеском у збереження природи. Тут ти знайдеш однодумців, поради для
             сталих мандрів та натхнення для нових маршрутів Україною.
           </p>
+
           <Link
-            href={isAuthenticated ? routes.profile : routes.register}
+            href={isAuthenticated ? "/auth/profile" : "/auth/register"}
             className={styles.link}
           >
             {isAuthenticated ? "Збережені статті" : "Зареєструватися"}
