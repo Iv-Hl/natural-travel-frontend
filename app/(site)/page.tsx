@@ -1,5 +1,11 @@
 import Hero from "@/components/home/Hero";
+import Join from "@/components/home/join/join";
 
 export default function HomePage() {
-  return <Hero />;
+  return (
+    <>
+      <Hero />
+      <Join isAuthenticated={false} />
+    </>
+  );
 }

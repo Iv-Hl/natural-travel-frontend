@@ -11,92 +11,92 @@ import ThemeToggle from "../themeswitcher/ThemeSwitcher";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
- useEffect(() => {
-  const mediaQuery = window.matchMedia("(min-width: 1366px)");
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1366px)");
 
-  function handleResize(event: MediaQueryListEvent) {
-    if (event.matches) {
+    function handleResize(event: MediaQueryListEvent) {
+      if (event.matches) {
+        setIsMenuOpen(false);
+      }
+    }
+
+    if (mediaQuery.matches) {
       setIsMenuOpen(false);
     }
-  }
 
-  if (mediaQuery.matches) {
-    setIsMenuOpen(false);
-  }
+    mediaQuery.addEventListener("change", handleResize);
 
-  mediaQuery.addEventListener("change", handleResize);
+    return () => {
+      mediaQuery.removeEventListener("change", handleResize);
+    };
+  }, []);
 
-  return function cleanup() {
-    mediaQuery.removeEventListener("change", handleResize);
-  };
-}, []);
-  
-  const toggleMenu = () => { setIsMenuOpen((prev) => !prev) };
-  const closeMenu = () => { setIsMenuOpen(false) };
-  
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  const closeMenu = () => setIsMenuOpen(false);
+
   return (
     <header className={styles.header}>
       <Link href={routes.home} className={styles.logo}>
-       <span className={styles.logoIcon} aria-hidden="true" />
-          <span>Природні мандри</span>
+        <span className={styles.logoIcon} aria-hidden="true" />
+        <span>Природні мандри</span>
       </Link>
+
       <div className={styles.actions}>
-       <nav
+        <nav
           aria-label="Основна навігація"
-          className={styles.navigation}>
+          className={styles.navigation}
+        >
           <Link href={routes.home}>Головна</Link>
           <Link href={routes.stories}>Статті</Link>
           <Link href={routes.travellers}>Еко-Мандрівники</Link>
         </nav>
-       
+
         <div className={styles.authLinks}>
-              <Link href={routes.login} className={styles.loginLink}>
-                Вхід
-              </Link>
-              <Link href={routes.register} className={styles.registerLink}>
-                Реєстрація
-              </Link>
-      </div>
-      <div className={styles.blockButtons}>
-      <ThemeToggle/>
-      <button className={styles.menuButton}
+          <Link href={routes.login} className={styles.loginLink}>
+            Вхід
+          </Link>
+          <Link href={routes.register} className={styles.registerLink}>
+            Реєстрація
+          </Link>
+        </div>
+
+        <div className={styles.blockButtons}>
+          <ThemeToggle />
+
+          <button
+            className={styles.menuButton}
+            type="button"
             aria-label={isMenuOpen ? "Закрити меню" : "Відкрити меню"}
-        type="button"
-        aria-expanded={isMenuOpen}
-        aria-controls="mobile-navigation"
-        onClick={toggleMenu}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-navigation"
+            onClick={toggleMenu}
           >
-            
             {isMenuOpen ? (
               <svg
                 className={styles.menuIcon}
                 aria-hidden="true"
                 focusable="false"
               >
-<use href="/icons/symbol-defs.svg#icon-close"/>
+                <use href="/icons/symbol-defs.svg#icon-close" />
               </svg>
-              
-        ):(   
-        <svg className={styles.menuIcon}
-          aria-hidden="true"
-          focusable="false">
-          <use href="/icons/symbol-defs.svg#icon-burger-menu" />
-          </svg>)
-}
-      </button>
+            ) : (
+              <svg
+                className={styles.menuIcon}
+                aria-hidden="true"
+                focusable="false"
+              >
+                <use href="/icons/symbol-defs.svg#icon-burger-menu" />
+              </svg>
+            )}
+          </button>
         </div>
-         
+      </div>
 
-     </div>
-        
-       
-  {isMenuOpen && (
-        <Modal onClose={closeMenu}
-        ariaLabel="Мобільна навігація">
+      {isMenuOpen && (
+        <Modal onClose={closeMenu} ariaLabel="Мобільна навігація">
           <MobileMenu onClose={closeMenu} />
         </Modal>
-  )}   
-          
+      )}
     </header>
   );
 }
