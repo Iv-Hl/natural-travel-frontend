@@ -100,7 +100,7 @@ export const StoryCard = ({
           alt={title || "Історія мандрівки"}
           fill
           priority
-          sizes="(max-width: 767px) 100vw, (max-width: 1199px) 50vw, 33vw"
+          sizes="(max-width: 767px) 100vw, (max-width: 1439px) 50vw, 33vw"
           className={styles.image}
         />
       </div>

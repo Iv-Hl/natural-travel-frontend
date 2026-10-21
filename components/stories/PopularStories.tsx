@@ -10,8 +10,6 @@ import "swiper/css";
 import { StoryCard } from "../StoryCard/StoryCard";
 import styles from "./PopularStories.module.css";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
 interface AuthorObj {
   name?: string;
   firstName?: string;
@@ -32,7 +30,9 @@ interface Story {
 }
 
 interface StoriesResponse {
-  data?: { stories?: Story[] };
+  data?: {
+    stories?: Story[];
+  };
   message?: string;
 }
 
@@ -45,10 +45,13 @@ const getAuthorName = (story: Story): string => {
   if (authorObj) {
     const fullName =
       `${authorObj.firstName || ""} ${authorObj.lastName || ""}`.trim();
+
     return authorObj.name || fullName || "Автор";
   }
 
-  if (typeof story.author === "string") return story.author;
+  if (typeof story.author === "string") {
+    return story.author;
+  }
 
   return "Автор";
 };
@@ -75,12 +78,9 @@ export const PopularStories = () => {
         setLoading(true);
         setError("");
 
-        const res = await fetch(
-          `${API_URL}/api/stories?type=popular&limit=10`,
-          {
-            signal: controller.signal,
-          },
-        );
+        const res = await fetch("/api/stories?type=popular&limit=10", {
+          signal: controller.signal,
+        });
 
         const result: StoriesResponse = await res.json();
 
@@ -92,16 +92,22 @@ export const PopularStories = () => {
 
         setPopularStories(result.data?.stories ?? []);
       } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") return;
+        if (err instanceof Error && err.name === "AbortError") {
+          return;
+        }
+
         setError(
           err instanceof Error ? err.message : "Сталася невідома помилка",
         );
       } finally {
-        if (!controller.signal.aborted) setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchPopularStories();
+
     return () => controller.abort();
   }, []);
 
@@ -123,12 +129,15 @@ export const PopularStories = () => {
     );
   }
 
-  if (popularStories.length === 0) return null;
+  if (popularStories.length === 0) {
+    return null;
+  }
 
   return (
     <section className={styles.section}>
       <div className={styles.headerContainer}>
         <h2 className={styles.sectionTitle}>Популярні статті</h2>
+
         <Link href="/stories" className={styles.allStoriesButton}>
           Всі статті
         </Link>
@@ -148,14 +157,21 @@ export const PopularStories = () => {
           slidesPerView={1}
           watchOverflow
           breakpoints={{
-            768: { slidesPerView: 2 },
-            1440: { slidesPerView: 3 },
+            768: {
+              slidesPerView: 2,
+            },
+            1440: {
+              slidesPerView: 3,
+            },
           }}
           className={styles.swiperContainer}
         >
           {popularStories.map((story) => {
             const storyId = String(story._id || story.id || "");
-            if (!storyId) return null;
+
+            if (!storyId) {
+              return null;
+            }
 
             return (
               <SwiperSlide key={storyId} className={styles.slideItem}>
@@ -175,7 +191,9 @@ export const PopularStories = () => {
         <div className={styles.navButtonsContainer}>
           <button
             type="button"
-            className={`${styles.navButton} ${isBeginning ? styles.disabled : ""}`}
+            className={`${styles.navButton} ${
+              isBeginning ? styles.disabled : ""
+            }`}
             disabled={isBeginning}
             aria-label="Попередня стаття"
             onClick={() => swiperRef.current?.slidePrev()}
@@ -194,6 +212,7 @@ export const PopularStories = () => {
           </button>
         </div>
       </div>
+
       <Link href="/stories" className={styles.endStoriesButton}>
         Всі статті
       </Link>

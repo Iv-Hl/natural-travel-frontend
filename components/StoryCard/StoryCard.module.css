@@ -108,7 +108,7 @@
   justify-content: center;
   border: 1px solid #c7dcc8;
   border-radius: 10px;
-  background: #dfefdf;
+  background: rgba(0, 0, 0, 0.05);
   color: #203f24;
   cursor: pointer;
   transition:
@@ -147,15 +147,17 @@
   cursor: wait;
   opacity: 0.7;
 }
-
 .viewButton:focus-visible,
-.saveButton:focus-visible {
-  outline: 2px solid #438f49;
-  outline-offset: 3px;
-}
+.saveButton:focus-visible,
 .viewButton:hover,
 .saveButton:hover {
-  background: #4a9849;
+  border-color: #438f49;
+  background: #438f49;
+  color: #fff;
+}
+.viewButton:active,
+.saveButton:active {
+  background: #254c24;
   color: #ffffff;
   border-color: #4a9849;
 }
@@ -193,7 +195,7 @@
   }
 
   .title {
-    font-size: clamp(22px, 2vw, 30px);
+    font-size: 18px;
   }
 
   .viewButton,
