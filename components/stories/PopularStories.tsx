@@ -7,7 +7,7 @@ import type { Swiper as SwiperType } from "swiper";
 
 import "swiper/css";
 
-import { StoryCard } from "../StoriesCard/StoryCard";
+import { StoryCard } from "../StoryCard/StoryCard";
 import styles from "./PopularStories.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
