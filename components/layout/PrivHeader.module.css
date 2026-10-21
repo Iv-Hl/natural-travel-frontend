@@ -1,0 +1,185 @@
+
+.header {
+ display: flex;
+ flex-direction: row;
+ justify-content: space-between;
+ align-items: center;
+ padding-block: 1rem;
+ background-color: var(--color-page-bg);
+ border-bottom: 1px solid var(--color-border);
+ width: 100%;
+ padding-inline: 20px;
+}
+
+.logo {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ font-weight: 500;
+ font-size: 17px;
+ line-height: 100%;
+ letter-spacing: -0.01em;
+ width: 124px;
+ height: 36px;
+ gap: 6px;
+ text-decoration: none;
+ color: inherit;
+}
+
+.logoIcon {
+ width: 24px;
+ height: 24px;
+ flex: 0 0 24px;
+ background-color: var(--color-brand);
+ -webkit-mask: url("/images/eco-mark.svg") center / contain no-repeat;
+ mask: url("/images/eco-mark.svg") center / contain no-repeat;
+}
+
+.navigation,
+.desktopActions,
+.tabletActions {
+ display: none;
+}
+
+
+.menuButton {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ width: 32px;
+ height: 32px;
+ border: 1px solid var(--color-border);
+ border-radius: var(--radius-sm);
+ background-color: rgba(0, 0, 0, 0.05);
+ padding: 4px;
+ cursor: pointer;
+}
+
+
+.mobileMenuButton {
+ display: flex;
+}
+
+.menuIcon {
+ width: 24px;
+ height: 24px;
+ flex-shrink: 0;
+ fill: currentColor;
+}
+
+/* --- Планшетна версія (768px – 1439px) --- */
+@media (min-width: 768px) {
+ .header {
+   justify-content: space-between;
+ }
+
+  .mobileMenuButton {
+   display: none;
+ }
+
+  .tabletActions {
+   display: flex;
+   align-items: center;
+   gap: 16px;
+ }
+
+ .tabletPublishBtn {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 6px 16px;
+   background-color: var(--color-primary-button-bg);
+   color: var(--color-primary-text);
+   border-radius: var(--radius-sm);
+   font-weight: 500;
+   text-decoration: none;
+   height: 36px;
+ }
+}
+
+/* --- Десктопна версія (>= 1440px) --- */
+@media (min-width: 1440px) {
+ .header {
+   padding-inline: 64px;
+ }
+
+ .tabletActions {
+   display: none;
+ }
+
+ .navigation {
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   gap: 32px;
+   font-size: 18px;
+   line-height: 150%;
+ }
+
+ .navigation a {
+   text-decoration: none;
+   color: inherit;
+ }
+
+ .desktopActions {
+   display: flex;
+   align-items: center;
+   gap: 24px;
+ }
+
+ .publishBtn {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 8px 20px;
+   background-color: var(--color-primary-button-bg);
+   color: var(--color-primary-text);
+   border-radius: var(--radius-sm);
+   font-weight: 500;
+   text-decoration: none;
+   height: 40px;
+ }
+
+ .userProfile {
+   display: flex;
+   align-items: center;
+   gap: 12px;
+ }
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e2e8f0; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarIcon {
+  width: 20px;
+  height: 20px;
+  fill: #64748b; 
+}
+
+ .userName {
+   font-weight: 500;
+ }
+
+.logoutBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 12px;
+  border-left: 1px solid var(--color-border, #cbd5e1);
+  margin-left: 8px;
+}
+.logoutIcon {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+ }
