@@ -1,0 +1,40 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.storiesSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sectionTitle {
+  width: 335px;
+  max-width: 100%;
+  min-height: 34px;
+  margin: 0;
+  font-family: var(--font-main);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-main-text);
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding: 32px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .page {
+    padding: 32px 64px;
+  }
+}
