@@ -1,8 +1,8 @@
 .footer {
-  background-color: var(--footer-bg, #def2de);
-  color: var(--footer-text, #1b3b2b);
+  background-color: var(--color-block-bg);
+  color: var(--color-main-text);
   padding: 30px 0 20px;
-  border-top: 1px solid var(--footer-border, rgba(0, 0, 0, 0.08));
+  border-top: 1px solid var(--color-border);
   width: 100%;
 }
 
@@ -29,7 +29,7 @@
   font-weight: 600;
   font-size: 0.85rem;
   line-height: 1.1;
-  color: var(--footer-text, #1b3b2b);
+  color: var(--color-main-text);
   text-align: left;
 }
 
@@ -49,13 +49,13 @@
 
 .navList a {
   text-decoration: none;
-  color: var(--footer-link, #2f3e46);
+  color: var(--color-main-text);
   font-size: 0.95rem;
   transition: color 0.2s;
 }
 
 .navList a:hover {
-  color: var(--footer-link-hover, #2d6a4f);
+  color: var(--color-brand);
 }
 
 .socialList {
@@ -74,18 +74,24 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: var(--footer-social-bg, rgba(0, 0, 0, 0.05));
-  color: var(--footer-text, #1b3b2b);
+  background-color: var(--color-border);
+  color: var(--color-main-text);
   text-decoration: none;
   font-size: 0.75rem;
   font-weight: bold;
 }
 
+.socialIcon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
 .copyright {
   text-align: center;
   font-size: 0.8rem;
-  color: var(--footer-muted, #55695e);
-  border-top: 1px solid var(--footer-border-light, rgba(0, 0, 0, 0.15));
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border);
   padding-top: 15px;
   margin-top: 5px;
   width: 100%;
@@ -153,7 +159,7 @@
     grid-row: 3;
     text-align: center;
     width: 100%;
-    border-top: 1px solid var(--footer-border-light, rgba(0, 0, 0, 0.15));
+    border-top: 1px solid var(--color-border);
     padding-top: 15px;
     margin-top: 5px;
   }

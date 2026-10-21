@@ -33,7 +33,9 @@ export default function Footer() {
               rel="noopener noreferrer"
               aria-label="Facebook"
             >
-              FB
+              <svg className={styles.socialIcon} aria-hidden="true">
+                <use href="/icons/symbol-defs.svg#icon-facebook" />
+              </svg>
             </a>
           </li>
           <li>
@@ -43,7 +45,9 @@ export default function Footer() {
               rel="noopener noreferrer"
               aria-label="Instagram"
             >
-              IG
+              <svg className={styles.socialIcon} aria-hidden="true">
+                <use href="/icons/symbol-defs.svg#icon-Instagram" />
+              </svg>
             </a>
           </li>
           <li>
@@ -53,7 +57,9 @@ export default function Footer() {
               rel="noopener noreferrer"
               aria-label="Twitter"
             >
-              X
+              <svg className={styles.socialIcon} aria-hidden="true">
+                <use href="/icons/symbol-defs.svg#icon-Xtwitter" />
+              </svg>
             </a>
           </li>
           <li>
@@ -63,7 +69,9 @@ export default function Footer() {
               rel="noopener noreferrer"
               aria-label="YouTube"
             >
-              YT
+              <svg className={styles.socialIcon} aria-hidden="true">
+                <use href="/icons/symbol-defs.svg#icon-Youtube" />
+              </svg>
             </a>
           </li>
         </ul>
