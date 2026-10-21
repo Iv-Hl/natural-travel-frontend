@@ -10,6 +10,8 @@ import ThemeToggle from "../themeswitcher/ThemeSwitcher";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => { setIsMenuOpen((prev) => !prev) };
   const closeMenu = () => { setIsMenuOpen(false) };
   
   return (
@@ -18,8 +20,8 @@ export default function Header() {
        <span className={styles.logoIcon} aria-hidden="true" />
           <span>Природні мандри</span>
       </Link>
-      <ThemeToggle/>
-        <nav
+      <div className={styles.actions}>
+       <nav
           aria-label="Основна навігація"
           className={styles.navigation}>
           <Link href={routes.home}>Головна</Link>
@@ -34,22 +36,43 @@ export default function Header() {
               <Link href={routes.register} className={styles.registerLink}>
                 Реєстрація
               </Link>
-        </div>
-      
+      </div>
+      <div className={styles.blockButtons}>
+      <ThemeToggle/>
       <button className={styles.menuButton}
-        aria-label="Відкрити меню"
+            aria-label={isMenuOpen ? "Закрити меню" : "Відкрити меню"}
         type="button"
         aria-expanded={isMenuOpen}
         aria-controls="mobile-navigation"
-        onClick={() => setIsMenuOpen(true)}
-      >
+        onClick={toggleMenu}
+          >
+            
+            {isMenuOpen ? (
+              <svg
+                className={styles.menuIcon}
+                aria-hidden="true"
+                focusable="false"
+              >
+<use href="/icons/symbol-defs.svg#icon-close"/>
+              </svg>
+              
+        ):(   
         <svg className={styles.menuIcon}
-          aria-hidden="true">
-          <use href="/icons/sprite.svg#burger" />
-        </svg>
+          aria-hidden="true"
+          focusable="false">
+          <use href="/icons/symbol-defs.svg#icon-burger-menu" />
+          </svg>)
+}
       </button>
+        </div>
+         
+
+     </div>
+        
+       
   {isMenuOpen && (
-        <Modal onClose={closeMenu}>
+        <Modal onClose={closeMenu}
+        ariaLabel="Мобільна навігація">
           <MobileMenu onClose={closeMenu} />
         </Modal>
   )}   

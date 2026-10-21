@@ -1,16 +1,28 @@
 .overlay {
     position: fixed;
-    inset: 0;
+    top: 96px;
+    left: 0;
+    right: 0;
+    bottom: 0;
     z-index: 1000;
     width: 100%;
-    height: 100dvh;
+    
     overflow-y: auto;
+    overscroll-behavior: contain;
     background-color: var(--color-page-bg);
 }
 
 .modal {
     width: 100%;
     min-height: 100%;
-    padding: 16px 20px;
+    outline: none;
+    padding: 24px 20px;
    
+}
+
+@media (min-width: 1440px) {
+
+    .overlay,.modal {
+        display: none;
+    }
 }

@@ -1,11 +1,18 @@
+.shell {
+  margin-inline: auto;
+  padding-block: 1rem;
+}
+
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 1001;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-inline: auto;
-  padding-block: 1rem;
-  
+  height: 72px;
+ 
 }
 
 .logo {
@@ -19,7 +26,7 @@
   width: 124px;
   height: 36px;
   gap: 6px;
-  margin-right: 120px;
+ 
   
 }
 
@@ -30,13 +37,23 @@
   background-color: var(--color-brand);
   -webkit-mask: url("/images/eco-mark.svg") center / contain no-repeat;
   mask: url("/images/eco-mark.svg") center / contain no-repeat;
+  
 }
-
+.actions {
+  display: flex;
+  gap: 32px;
+}
  .navigation{
   display: none;
  }
 .authLinks {
   display: none;
+}
+.blockButtons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .menuButton {
@@ -52,7 +69,7 @@
   width: 24px;
   height: 24px;
   flex-shrink: 0;
-  fill: currentColor;
+  fill: var(--color-main-text)
 }
 @media (min-width: 768px) {
 
@@ -60,8 +77,8 @@
   gap: 16px;
 }
 
-.logo {
-  margin-right: 284px;
+.actions{
+  gap: 16px;
 }
 .authLinks {
     display: flex;
@@ -115,10 +132,10 @@
     gap: 32px;
     font-size: 18px;
     line-height: 150%;
-    margin-right: 16px;
+    
   }
 
- 
+
 
   
 
@@ -141,13 +158,12 @@
     
   }
 
+
   .menuButton {
     display: none;
   }
 
-  .logo {
-    margin-right: 496px;
-  }
+ 
 
 }
 
