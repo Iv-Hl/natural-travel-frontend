@@ -2,45 +2,64 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 
 import "swiper/css";
 
-import { StoryCard } from "../storiesCard/StoryCard";
+import { StoryCard } from "../StoriesCard/StoryCard";
 import styles from "./PopularStories.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+interface AuthorObj {
+  name?: string;
+  firstName?: string;
+  lastName?: string;
+}
 
 interface Story {
   _id?: string;
   id?: string;
   title: string;
   category?: string;
-  image?: string;
-  author?: {
-    name?: string;
-  };
+  img?: string;
+  rate?: number;
   savesCount?: number;
+  ownerId?: AuthorObj | string | null;
+  owner?: AuthorObj | string | null;
+  author?: AuthorObj | string | null;
 }
 
 interface StoriesResponse {
-  data?: {
-    stories?: Story[];
-  };
+  data?: { stories?: Story[] };
   message?: string;
 }
 
-export const PopularStories = () => {
-  const router = useRouter();
+// Допоміжна функція для визначення імені автора
+const getAuthorName = (story: Story): string => {
+  const authorObj =
+    (typeof story.ownerId === "object" && story.ownerId) ||
+    (typeof story.owner === "object" && story.owner) ||
+    (typeof story.author === "object" && story.author);
 
+  if (authorObj) {
+    const fullName =
+      `${authorObj.firstName || ""} ${authorObj.lastName || ""}`.trim();
+    return authorObj.name || fullName || "Автор";
+  }
+
+  if (typeof story.author === "string") return story.author;
+
+  return "Автор";
+};
+
+export const PopularStories = () => {
   const [popularStories, setPopularStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState("");
 
   const swiperRef = useRef<SwiperType | null>(null);
-
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
 
@@ -54,51 +73,65 @@ export const PopularStories = () => {
 
     const fetchPopularStories = async () => {
       try {
+        setLoading(true);
+        setError("");
+
         const res = await fetch(
           `${API_URL}/api/stories?type=popular&limit=10`,
-          { signal: controller.signal },
+          {
+            signal: controller.signal,
+          },
         );
 
-        const data: StoriesResponse = await res.json();
+        const result: StoriesResponse = await res.json();
 
         if (!res.ok) {
           throw new Error(
-            data.message || "Не вдалося завантажити популярні статті",
+            result.message || "Не вдалося завантажити популярні статті",
           );
         }
 
-        setPopularStories(data.data?.stories ?? []);
+        setPopularStories(result.data?.stories ?? []);
       } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") {
-          return;
-        }
-
+        if (err instanceof Error && err.name === "AbortError") return;
         setError(
           err instanceof Error ? err.message : "Сталася невідома помилка",
         );
       } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false);
-        }
+        if (!controller.signal.aborted) setLoading(false);
       }
     };
 
     fetchPopularStories();
-
     return () => controller.abort();
   }, []);
 
-  if (loading || error || popularStories.length === 0) {
-    return null;
+  if (loading) {
+    return (
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Популярні статті</h2>
+        <p>Завантаження статей...</p>
+      </section>
+    );
   }
+
+  if (error) {
+    return (
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Популярні статті</h2>
+        <p role="alert">{error}</p>
+      </section>
+    );
+  }
+
+  if (popularStories.length === 0) return null;
 
   return (
     <section className={styles.section}>
       <div className={styles.headerContainer}>
         <h2 className={styles.sectionTitle}>Популярні статті</h2>
-
         <Link href="/stories" className={styles.allStoriesButton}>
-          Всі Статті
+          Всі статті
         </Link>
       </div>
 
@@ -112,17 +145,12 @@ export const PopularStories = () => {
           onResize={updateNavigation}
           onBreakpoint={updateNavigation}
           onSlidesUpdated={updateNavigation}
-          spaceBetween={24}
+          spaceBetween={16}
           slidesPerView={1}
-          slidesPerGroup={1}
           watchOverflow
           breakpoints={{
-            768: {
-              slidesPerView: 2,
-            },
-            1440: {
-              slidesPerView: 3,
-            },
+            768: { slidesPerView: 2 },
+            1440: { slidesPerView: 3 },
           }}
           className={styles.swiperContainer}
         >
@@ -136,14 +164,9 @@ export const PopularStories = () => {
                   storyId={storyId}
                   title={story.title}
                   category={story.category}
-                  image={story.image}
-                  author={
-                    typeof story.author === "object"
-                      ? story.author?.name
-                      : "Мандрівник"
-                  }
-                  rate={story.savesCount || 0}
-                  onClick={() => router.push(`/stories/${storyId}`)}
+                  image={story.img}
+                  author={getAuthorName(story)}
+                  rate={story.rate ?? story.savesCount ?? 0}
                 />
               </SwiperSlide>
             );
@@ -153,9 +176,7 @@ export const PopularStories = () => {
         <div className={styles.navButtonsContainer}>
           <button
             type="button"
-            className={`${styles.navButton} ${
-              isBeginning ? styles.disabled : ""
-            }`}
+            className={`${styles.navButton} ${isBeginning ? styles.disabled : ""}`}
             disabled={isBeginning}
             aria-label="Попередня стаття"
             onClick={() => swiperRef.current?.slidePrev()}
@@ -174,6 +195,9 @@ export const PopularStories = () => {
           </button>
         </div>
       </div>
+      <Link href="/stories" className={styles.endStoriesButton}>
+        Всі статті
+      </Link>
     </section>
   );
 };

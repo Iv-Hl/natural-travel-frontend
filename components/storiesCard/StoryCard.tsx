@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import styles from "./StoryCard.module.css";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 interface StoryCardProps {
   storyId: string;
@@ -24,7 +24,6 @@ interface StoryCardProps {
 export const StoryCard = ({
   storyId,
   title,
-  category,
   image,
   author,
   readTime,
@@ -77,9 +76,7 @@ export const StoryCard = ({
         try {
           const data = await response.json();
           message = data.message || message;
-        } catch {
-          // Сервер міг повернути порожню відповідь.
-        }
+        } catch {}
 
         throw new Error(message);
       }
@@ -96,17 +93,16 @@ export const StoryCard = ({
   };
 
   return (
-    <article className={styles.card} onClick={handleViewStory}>
+    <article className={styles.card}>
       <div className={styles.imageContainer}>
         <Image
           src={image || "/default-story.jpg"}
           alt={title || "Історія мандрівки"}
           fill
+          priority
           sizes="(max-width: 767px) 100vw, (max-width: 1199px) 50vw, 33vw"
           className={styles.image}
         />
-
-        {category && <span className={styles.categoryBadge}>{category}</span>}
       </div>
 
       <div className={styles.content}>
@@ -116,8 +112,8 @@ export const StoryCard = ({
           <span className={styles.separator}>·</span>
 
           <span className={styles.rate} aria-label={`${rate} збережень`}>
-            <BookmarkIcon />
             {rate}
+            <BookmarkIcon />
           </span>
         </div>
 
@@ -135,7 +131,6 @@ export const StoryCard = ({
             }}
           >
             Переглянути статтю
-            <ExternalLinkIcon />
           </button>
 
           <button
@@ -182,26 +177,6 @@ function BookmarkIcon({ filled = false }: { filled?: boolean }) {
       aria-hidden="true"
     >
       <path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-4-6 4V4.75Z" />
-    </svg>
-  );
-}
-
-function ExternalLinkIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M14 4h6v6" />
-      <path d="M20 4 11 13" />
-      <path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5" />
     </svg>
   );
 }

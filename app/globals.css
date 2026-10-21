@@ -1,18 +1,68 @@
 :root {
+  color-scheme: light;
+
   --font-main: var(--font-montserrat, "Montserrat", sans-serif);
 
-  --color-page-bg: #eef8ee; /* Фон сторінки */
-  --color-main-text: #1b391b; /* Основний текст */
-  --color-primary-button-bg: #4a9849; /* Фон головної кнопки */
-  --color-brand: #5dbe5c; /* Фірмовий акцент */
-  --color-block-bg: #def2de; /* Світло-зелений фон блоків */
-  --color-white: #ffffff; /* Білий */
-  --color-border: rgb(0 0 0 / 15%); /* Колір рамок */
-  --color-error: #b00101; /* Помилки */
+  /* Фон і текст */
+  --color-page-bg: #eef8ee;
+  --color-main-text: #000;
+  --color-text-muted: #4c4c4c;
 
+  /* Поверхні та рамки */
+  --color-surface: #ffffff;
+  --color-surface-muted: #def2de;
+  --color-block-bg: #def2de;
+  --color-border: rgb(27 57 27 / 15%);
+
+  /* Акценти та кнопки */
+  --color-brand: #5dbe5c;
+  --color-primary-button-bg: #4a9849;
+  --color-primary-text: #ffffff;
+  --color-primary-hover-bg: #def2de;
+  --color-primary-hover-text: #1b391b;
+  --color-primary-active-bg: #254c24;
+
+  /* Поля та стани */
+  --color-input-placeholder: rgb(0 0 0 / 60%);
+  --color-focus: #8dd18c;
+  --color-error: #b00101;
+  --color-error-surface: #fff0f0;
+  --color-white: #ffffff;
+
+  /* Радіуси */
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 24px;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Фон і текст */
+  --color-page-bg: #1f301f;
+  --color-main-text: #e8f0e7;
+  --color-text-muted: #b3beb1;
+
+  /* Поверхні та рамки */
+  --color-surface: #202820;
+  --color-surface-muted: #29372a;
+  --color-block-bg: #29372a;
+  --color-border: rgb(232 240 231 / 16%);
+
+  /* Акценти та кнопки */
+  --color-brand: #79d477;
+  --color-primary-button-bg: #5dbe5c;
+  --color-primary-text: #102010;
+  --color-primary-hover-bg: #72ca70;
+  --color-primary-hover-text: #102010;
+  --color-primary-active-bg: #4a9849;
+
+  /* Поля та стани */
+  --color-input-placeholder: rgb(232 240 231 / 55%);
+  --color-focus: #79d477;
+  --color-error: #ff8585;
+  --color-error-surface: #3a2222;
+  --color-white: #ffffff;
 }
 
 *,
@@ -21,9 +71,15 @@
   box-sizing: border-box;
 }
 
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
 body {
   min-width: 320px;
-  margin: 0;
+  min-height: 100vh;
+  margin: 0 auto;
   font-family: var(--font-main);
   font-size: 16px;
   font-weight: 400;
@@ -44,8 +100,13 @@ p {
 
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
+  color: inherit;
+}
+
+button {
   color: inherit;
 }
 
@@ -58,27 +119,38 @@ a {
   cursor: pointer;
 }
 
-.container {
-  width: 100%;
-  max-width: 1440px;
-  margin-inline: auto;
-  padding-inline: 20px;
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
-@media (min-width: 768px) {
+::selection {
+  color: var(--color-main-text);
+  background-color: var(--color-focus);
+}
+/* Styles for Mobile devices */
+.container {
+  width: 100%;
+  min-width: 320px;
+  max-width: 375px;
+  margin: 0 auto;
+  padding-inline: 20px;
+}
+/* Styles for Tablet devices */
+@media only screen and (min-width: 768px) {
   .container {
-    max-width: 1344px;
+    max-width: 768px;
     padding-inline: 32px;
   }
 }
-
-@media (min-width: 1440px) {
-  body {
-    font-size: 18px;
-  }
-
+/* Styles for Desktop devices */
+@media only screen and (min-width: 1366px) {
   .container {
     max-width: 1440px;
+
     padding-inline: 64px;
+  }
+  body {
+    font-size: 18px;
   }
 }

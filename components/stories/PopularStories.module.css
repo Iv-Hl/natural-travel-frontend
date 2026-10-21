@@ -1,6 +1,6 @@
 .section {
   width: 100%;
-  padding: 48px 0;
+  padding: 32px 0;
   overflow: hidden;
 }
 
@@ -8,45 +8,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 32px;
+  gap: 12px;
+  margin-bottom: 24px;
 }
 
 .sectionTitle {
   margin: 0;
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 700;
   line-height: 1.2;
   color: #222222;
 }
 
 .allStoriesButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  padding: 12px 24px;
-  border: 1px solid #222222;
-  border-radius: 8px;
-  background-color: transparent;
-  color: #222222;
-  font-size: 16px;
-  font-weight: 500;
-  text-decoration: none;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-}
-
-.allStoriesButton:hover {
-  background-color: #222222;
-  color: #ffffff;
+  display: inline-block;
+  display: none;
 }
 
 .sliderWrapper {
   position: relative;
   width: 100%;
-  padding-bottom: 64px;
+  padding-bottom: 56px;
 }
 
 .swiperContainer {
@@ -69,17 +51,18 @@
 }
 
 .navButton {
+  border: 1px solid #00000026;
+  border-radius: 8px;
+  padding: 12px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 1px solid #222222;
-  border-radius: 50%;
-  background-color: #ffffff;
+  border-radius: 8px;
+  background-color: #def2de;
   color: #222222;
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1;
   cursor: pointer;
   transition:
@@ -89,30 +72,62 @@
 }
 
 .navButton:hover:not(:disabled) {
-  background-color: #222222;
+  background-color: #4a9849;
   color: #ffffff;
 }
 
-.navButton:focus-visible,
-.allStoriesButton:focus-visible {
-  outline: 2px solid #2563eb;
+.navButton:focus-visible {
   outline-offset: 3px;
 }
 
-.navButton:disabled,
-.disabled {
+.navButton:disabled {
   opacity: 0.35;
   cursor: not-allowed;
 }
+.endStoriesButton {
+  display: flex;
+  width: 335px;
+  height: 48px;
+  padding: 6px 12px;
+  margin-top: 40px;
+  gap: 8px;
+  opacity: 1;
+  border-radius: 6px;
+  border-width: 1px;
+  border: 1px solid #4a9849;
+  background-color: #4a9849;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.endStoriesButton:hover,
+.endStoriesButton:focus-visible {
+  background-color: #def2de;
+  border: 1px solid #4a9849;
+  color: #1b391b;
+}
+.endStoriesButton:active {
+  border: 1px solid #4a9849;
+  background-color: #4a9849;
+  color: #ffffff;
+}
 
-@media (max-width: 767px) {
-  .section {
-    padding: 32px 0;
+@media (min-width: 768px) {
+  .headerContainer {
+    gap: 16px;
   }
 
-  .headerContainer {
-    margin-bottom: 24px;
-    gap: 12px;
+  .endStoriesButton {
+    display: inline-block;
+    display: none;
   }
 
   .sectionTitle {
@@ -120,28 +135,63 @@
   }
 
   .allStoriesButton {
-    padding: 9px 14px;
-    font-size: 14px;
+    display: flex;
+    width: 101px;
+    height: 48px;
+    gap: 8px;
+    opacity: 1;
+    border-radius: 6px;
+    border: 1px solid #4a9849;
+    background-color: #4a9849;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
   }
-
-  .sliderWrapper {
-    padding-bottom: 56px;
+  .allStoriesButton:hover,
+  .allStoriesButton:focus-visible {
+    background-color: #def2de;
+    border: 1px solid #4a9849;
+    color: #1b391b;
   }
-
-  .navButton {
-    width: 40px;
-    height: 40px;
-    font-size: 22px;
+  .allStoriesButton:active {
+    border: 1px solid #4a9849;
+    background-color: #4a9849;
+    color: #ffffff;
   }
 }
 
-@media (max-width: 380px) {
+@media (min-width: 1440px) {
+  .section {
+    padding: 48px 0;
+  }
+
+  .headerContainer {
+    margin-bottom: 32px;
+  }
+
   .sectionTitle {
-    font-size: 20px;
+    font-size: 32px;
   }
 
   .allStoriesButton {
-    padding: 8px 10px;
-    font-size: 12px;
+    width: 120px;
+  }
+
+  .sliderWrapper {
+    padding-bottom: 64px;
+  }
+
+  .navButton {
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
   }
 }
