@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import StoryCard, { type Story } from "../stories/StoryCard";
 import styles from "./TravellersStories.module.css";
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
 
 interface StoriesResponse {
   stories: Story[];
@@ -38,10 +39,9 @@ export default function TravellersStories() {
       setError(null);
 
       try {
-        const response = await fetch(
+        const response = await fetchWithAuth(
           `/api/users/me/stories?page=${pageNumber}&limit=${LIMIT}`,
           {
-            credentials: "include",
             signal,
           },
         );

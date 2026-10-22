@@ -8,7 +8,7 @@ export default function HomePage() {
     <>
       <Hero />
       <About />
-      <Join isAuthenticated={false} />
+      <Join />
       <OurTravelersSection />
     </>
   );
