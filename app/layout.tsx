@@ -4,7 +4,6 @@ import "./globals.css";
 import { Montserrat } from "next/font/google";
 import QueryProvider from "@/components/providers/QueryProvider";
 
-
 const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],
   weight: ["300", "400", "500", "600", "700", "800"],
@@ -28,7 +27,6 @@ export default function RootLayout({
   return (
     <html lang="uk" className={montserrat.variable}>
       <body>
-        
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
