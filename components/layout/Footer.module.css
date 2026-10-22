@@ -1,0 +1,210 @@
+.footer {
+  background-color: var(--color-block-bg);
+  color: var(--color-main-text);
+  padding: 30px 0 20px;
+  border-top: 1px solid var(--color-border);
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.logoLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.logoText {
+  font-weight: 600;
+  font-size: 0.85rem;
+  line-height: 1.1;
+  color: var(--color-main-text);
+  text-align: left;
+}
+
+/*==========================================================*/
+
+/* Мобільна версія: меню у стовпчик і по центру */
+.navList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.navList a {
+  text-decoration: none;
+  color: var(--color-main-text);
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+.navList a:hover {
+  color: var(--color-brand);
+}
+
+.socialList {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.socialList a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--color-border);
+  color: var(--color-main-text);
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.socialIcon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.copyright {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border);
+  padding-top: 15px;
+  margin-top: 5px;
+  width: 100%;
+}
+
+/*==========================================================*/
+
+/* Планшетна версія (від 768px до 1439px) */
+@media (min-width: 768px) and (max-width: 1439px) {
+  .container {
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .logoLink {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    align-self: center;
+  }
+
+  .logoText {
+    text-align: left;
+  }
+
+  .socialList {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    margin-top: 0;
+  }
+
+  .container nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .navList {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    margin: 10px 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+    white-space: nowrap;
+  }
+
+  .navList a {
+    white-space: nowrap;
+  }
+
+  .copyright {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    text-align: center;
+    width: 100%;
+    border-top: 1px solid var(--color-border);
+    padding-top: 15px;
+    margin-top: 5px;
+  }
+}
+
+/*==========================================================*/
+
+/* Десктопна версія (від 1440px і більше) */
+@media (min-width: 1440px) {
+  .container {
+    padding: 0 64px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .logoLink {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+  }
+
+  .socialList {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+    margin-top: 0;
+  }
+
+  .navList {
+    grid-column: 3;
+    grid-row: 1;
+    flex-direction: row;
+    gap: 32px;
+    width: auto;
+    justify-self: end;
+    justify-content: flex-end;
+    margin: 0;
+  }
+
+  .copyright {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    text-align: center;
+  }
+}
