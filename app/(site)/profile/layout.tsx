@@ -1,13 +1,13 @@
 import { blockPrivateRoute } from "@/lib/auth/blockPrivateRoute";
 
-export default function ProfileLayout({
+export default async function ProfileLayout({
   children,
   stories,
 }: {
   children: React.ReactNode;
   stories: React.ReactNode;
 }) {
-  blockPrivateRoute();
+  await blockPrivateRoute();
 
   return (
     <>

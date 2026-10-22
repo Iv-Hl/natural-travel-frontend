@@ -33,7 +33,8 @@ export async function POST(request: Request) {
       .map((part) => part.trim())
       .filter((part) =>
         part.startsWith("sessionId=") ||
-        part.startsWith("accessToken="),
+        part.startsWith("accessToken=") ||
+        part.startsWith("refreshToken="),
       )
       .join("; ");
 

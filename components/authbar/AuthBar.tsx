@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { routes } from "@/constants/routes";
 import styles from "./AuthBar.module.css";
+import { useAuth } from "@/components/providers/AuthProvider";
 
 
 type MobileMenuProps = {
@@ -8,6 +11,8 @@ type MobileMenuProps = {
 }
 export default function MobileMenu({ onClose }: MobileMenuProps)
 {
+    const { user, logout } = useAuth();
+
     return (
         <div className={styles.menu}>
        
@@ -32,6 +37,21 @@ export default function MobileMenu({ onClose }: MobileMenuProps)
             </Link>
         </nav>
         <div className={styles.authLinks}>
+            {user ? (
+              <>
+                <Link href={routes.profile} className={styles.login} onClick={onClose}>
+                  Мій профіль
+                </Link>
+                <button
+                  type="button"
+                  className={styles.register}
+                  onClick={() => void logout().then(onClose).catch(() => undefined)}
+                >
+                  Вийти
+                </button>
+              </>
+            ) : (
+              <>
                 <Link href={routes.login} className={styles.login}
                 onClick={onClose}>
                 Вхід
@@ -40,6 +60,8 @@ export default function MobileMenu({ onClose }: MobileMenuProps)
                 onClick={onClose}>
                 Реєстрація
             </Link>
+              </>
+            )}
         </div>
     </div>
 );}

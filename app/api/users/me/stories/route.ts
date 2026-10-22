@@ -1,37 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_URL = process.env.BACKEND_API_URL;
+export const runtime = "nodejs";
 
 export async function GET(request: NextRequest) {
-  if (!API_URL) {
-    return NextResponse.json(
-      { message: "BACKEND_API_URL is not configured" },
-      { status: 500 },
-    );
-  }
-
-  const { searchParams } = request.nextUrl;
+  const backendUrl = process.env.BACKEND_API_URL ?? "http://localhost:3000";
+  const targetUrl = new URL("/api/users/me/stories", backendUrl);
+  targetUrl.search = request.nextUrl.search;
+  const cookie = request.headers.get("cookie");
 
   try {
-    const response = await fetch(
-      `${API_URL}/users/me/stories?${searchParams.toString()}`,
-      {
-        headers: {
-          cookie: request.headers.get("cookie") ?? "",
-        },
-        cache: "no-store",
-      },
-    );
+    const response = await fetch(targetUrl, {
+      headers: cookie ? { Cookie: cookie } : {},
+      cache: "no-store",
+      redirect: "manual",
+      signal: AbortSignal.timeout(15_000),
+    });
 
-    const data = await response.json();
-
-    return NextResponse.json(data, {
+    return new Response(await response.text(), {
       status: response.status,
+      headers: {
+        "Content-Type":
+          response.headers.get("content-type") ?? "application/json",
+        "Cache-Control": "no-store",
+      },
     });
   } catch {
     return NextResponse.json(
       { message: "Не вдалося підключитися до бекенду" },
-      { status: 502 },
+      { status: 502, headers: { "Cache-Control": "no-store" } },
     );
   }
 }
