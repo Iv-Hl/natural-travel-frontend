@@ -1,0 +1,269 @@
+/* ===== Секція ===== */
+.travelSection {
+    padding: 64px 0;
+}
+
+.contentWrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "title"
+        "slider"
+        "link";
+    gap: 24px;
+}
+
+.title {
+    grid-area: title;
+    margin: 0;
+    /* без margin-bottom, інакше кнопка не вирівнюється по центру заголовка */
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--color-scheme-1-text);
+}
+
+.linkAll {
+    grid-area: link;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 48px;
+    padding: 6px 12px;
+    border: 1px solid var(--color-mantis-dark);
+    border-radius: 6px;
+    background-color: #4a9849;
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--color-white);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.linkAll:hover,
+.linkAll:focus-visible {
+    background-color: #3d8240;
+}
+
+/* ===== Слайдер ===== */
+.sliderContainer {
+    grid-area: slider;
+    min-width: 0;
+}
+
+/* Мобільна: 3 ряди = 3 × 317 + 2 × 24 */
+.swiper {
+    width: 100%;
+    height: 999px;
+}
+
+/* ===== Картка ===== */
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* ширину задає слайд */
+    height: 100%;
+    /* висоту задає слайд */
+    padding: 24px;
+    border-radius: 12px;
+    background-color: #def2de;
+    box-sizing: border-box;
+}
+
+.avatarWrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.avatar {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.name {
+    margin: 0;
+    font-family: var(--font-family);
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.3;
+    color: var(--color-scheme-2-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.articles {
+    margin: 0 0 16px;
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--color-scheme-2-text);
+}
+
+.profileLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: auto;
+    width: 100%;
+    height: 48px;
+    padding: 6px 12px;
+    border: 1px solid var(--color-scheme-2-border);
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.05);
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--color-scheme-1-text);
+    text-decoration: none;
+    cursor: pointer;
+    appearance: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.profileLink:hover,
+.profileLink:focus-visible {
+    background-color: #4a9849;
+    border-color: #4a9849;
+    color: #ffffff;
+    border: 1px solid var(--color-scheme-1-text);
+    border-radius: 6px;
+}
+
+.profileLink:active {
+    background-color: #254c24;
+    border-color: #254c24;
+    color: #ffffff;
+    border: 1px solid var(--color-scheme-1-text);
+    border-radius: 6px;
+}
+
+.profileLink:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* ===== Кнопки навігації ===== */
+.controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+.navBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    background-color: rgba(222, 214, 190, 0.7);
+    color: var(--color-scheme-1-text);
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.navBtn:focus,
+.navBtn:hover {
+    border: 1px solid var(--color-scheme-1-text);
+    border-radius: 6px;
+    padding: 6px 12px;
+    background-color: #4A9849;
+}
+
+.navBtn:active{
+    background-color: #254C24;
+    border: 1px solid var(--color-scheme-1-text);
+    border-radius: 6px;
+}
+
+
+.navBtn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.iconWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.iconWrapper svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ===== Планшет: 2 × 2 ===== */
+@media (min-width: 768px) {
+    .contentWrapper {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "title  link"
+            "slider slider";
+        align-items: center;
+        gap: 48px 0;
+    }
+
+    .title {
+        font-size: 44px;
+    }
+
+    .linkAll {
+        width: auto;
+        min-width: 166px;
+    }
+
+    /* 2 ряди = 2 × 317 + 24 */
+    .swiper {
+        height: 658px;
+    }
+}
+
+/* ===== Десктоп: 4 в ряд ===== */
+@media (min-width: 1366px) {
+    .travelSection {
+        max-width: 1440px;
+        padding: 72px 0;
+    }
+
+    .title {
+        font-size: 52px;
+    }
+
+    .linkAll {
+        min-width: 202px;
+        font-size: 20px;
+    }
+
+    /* 1 ряд: висоту задає картка */
+    .swiper {
+        height: 335px;
+    }
+
+    .name {
+        font-size: 18px;
+    }
+
+    .articles {
+        font-size: 14px;
+    }
+
+    .profileLink {
+        font-size: 14px;
+    }
+}
