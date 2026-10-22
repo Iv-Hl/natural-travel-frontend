@@ -3,7 +3,8 @@ import "modern-normalize/modern-normalize.css";
 import "./globals.css";
 import { Montserrat } from "next/font/google";
 import QueryProvider from "@/components/providers/QueryProvider";
-
+import AuthProvider from "@/components/providers/AuthProvider";
+import { cookies } from "next/headers";
 
 const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],
@@ -20,16 +21,23 @@ export const metadata: Metadata = {
   description: "Історії подорожей Україною та спільнота мандрівників.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const hasSessionCookie =
+    cookieStore.has("sessionId") && cookieStore.has("refreshToken");
+
   return (
     <html lang="uk" className={montserrat.variable}>
       <body>
-        
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <AuthProvider hasSessionCookie={hasSessionCookie}>
+            {children}
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );
