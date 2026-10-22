@@ -7,9 +7,11 @@ import styles from "./Layout.module.css";
 import Modal from "@/components/modals/Modal";
 import MobileMenu from "@/components/authbar/AuthBar";
 import ThemeToggle from "../themeswitcher/ThemeSwitcher";
+import { useAuth } from "@/components/providers/AuthProvider";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, isLoading, logout } = useAuth();
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 1366px)");
@@ -51,14 +53,33 @@ export default function Header() {
           <Link href={routes.travellers}>Еко-Мандрівники</Link>
         </nav>
 
-        <div className={styles.authLinks}>
-          <Link href={routes.login} className={styles.loginLink}>
-            Вхід
-          </Link>
-          <Link href={routes.register} className={styles.registerLink}>
-            Реєстрація
-          </Link>
-        </div>
+        {!isLoading && (
+          <div className={styles.authLinks}>
+            {user ? (
+              <>
+                <Link href={routes.profile} className={styles.loginLink}>
+                  Профіль
+                </Link>
+                <button
+                  type="button"
+                  className={styles.registerLink}
+                  onClick={() => void logout().catch(() => undefined)}
+                >
+                  Вийти
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href={routes.login} className={styles.loginLink}>
+                  Вхід
+                </Link>
+                <Link href={routes.register} className={styles.registerLink}>
+                  Реєстрація
+                </Link>
+              </>
+            )}
+          </div>
+        )}
 
         <div className={styles.blockButtons}>
           <ThemeToggle />

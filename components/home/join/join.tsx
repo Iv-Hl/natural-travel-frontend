@@ -1,12 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { routes } from "@/constants/routes";
 import styles from "./join.module.css";
+import { useAuth } from "@/components/providers/AuthProvider";
 
-type JoinProps = {
-  isAuthenticated: boolean;
-};
-
-export default function Join({ isAuthenticated }: JoinProps) {
+export default function Join() {
+  const { user } = useAuth();
+  const isAuthenticated = Boolean(user);
   return (
     <section id="join" className={styles.section} aria-labelledby="join-title">
       <div className={styles.banner}>

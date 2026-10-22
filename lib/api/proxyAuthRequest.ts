@@ -37,6 +37,13 @@ export async function proxyAuthRequest(
       upstream.headers as Headers & { getSetCookie?: () => string[] }
     ).getSetCookie;
 
+    if (upstream.headers.has("set-cookie") && !getSetCookie) {
+      return NextResponse.json(
+        { message: "Не вдалося зберегти сесію авторизації" },
+        { status: 502 },
+      );
+    }
+
     for (const cookie of getSetCookie?.call(upstream.headers) ?? []) {
       headers.append("Set-Cookie", cookie);
     }
