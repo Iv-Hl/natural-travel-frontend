@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
-        pathname: "/YOUR_CLOUD_NAME/image/upload/**",
+        pathname: "/tu8zwwhw/image/upload/**",
       },
       {
         protocol: "https",

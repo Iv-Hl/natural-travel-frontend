@@ -2,12 +2,15 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 
 import "swiper/css";
 
-import { StoryCard } from "../StoryCard/StoryCard";
+import ErrorWhileSavingModal from "../ErrorWhileSavingModal/ErrorWhileSavingModal";
+import StoryCard from "../StoryCard/StoryCard";
+import type { Story } from "../StoryCard/StoryCard";
 import styles from "./PopularStories.module.css";
 
 interface AuthorObj {
@@ -16,11 +19,10 @@ interface AuthorObj {
   lastName?: string;
 }
 
-interface Story {
+interface ApiStory {
   _id?: string;
   id?: string;
   title: string;
-  category?: string;
   img?: string;
   rate?: number;
   savesCount?: number;
@@ -31,12 +33,16 @@ interface Story {
 
 interface StoriesResponse {
   data?: {
-    stories?: Story[];
+    stories?: ApiStory[];
   };
   message?: string;
 }
 
-const getAuthorName = (story: Story): string => {
+interface PopularStoriesProps {
+  isAuthenticated?: boolean;
+}
+
+const getAuthorName = (story: ApiStory): string => {
   const authorObj =
     (typeof story.ownerId === "object" && story.ownerId) ||
     (typeof story.owner === "object" && story.owner) ||
@@ -56,10 +62,18 @@ const getAuthorName = (story: Story): string => {
   return "Автор";
 };
 
-export const PopularStories = () => {
-  const [popularStories, setPopularStories] = useState<Story[]>([]);
+export const PopularStories = ({
+  isAuthenticated = false,
+}: PopularStoriesProps) => {
+  const router = useRouter();
+
+  const [stories, setStories] = useState<Story[]>([]);
+  const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [savingIds, setSavingIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   const swiperRef = useRef<SwiperType | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
@@ -73,24 +87,40 @@ export const PopularStories = () => {
   useEffect(() => {
     const controller = new AbortController();
 
-    const fetchPopularStories = async () => {
+    const fetchStories = async () => {
       try {
         setLoading(true);
         setError("");
 
-        const res = await fetch("/api/stories?type=popular&limit=10", {
+        const response = await fetch("/api/stories?type=popular&limit=10", {
           signal: controller.signal,
         });
 
-        const result: StoriesResponse = await res.json();
+        const result: StoriesResponse = await response.json();
 
-        if (!res.ok) {
+        if (!response.ok) {
           throw new Error(
             result.message || "Не вдалося завантажити популярні статті",
           );
         }
 
-        setPopularStories(result.data?.stories ?? []);
+        const items = result.data?.stories ?? [];
+
+        const normalized: Story[] = items
+          .filter((item) => Boolean(item._id || item.id))
+          .map((item) => ({
+            _id: String(item._id || item.id),
+            title: item.title,
+            img: item.img || "/default-story.jpg",
+            date: "",
+            ownerId: typeof item.ownerId === "string" ? item.ownerId : "",
+            authorName: getAuthorName(item),
+            savesCount: item.savesCount ?? item.rate ?? 0,
+          }));
+
+        if (!controller.signal.aborted) {
+          setStories(normalized);
+        }
       } catch (err) {
         if (err instanceof Error && err.name === "AbortError") {
           return;
@@ -106,10 +136,54 @@ export const PopularStories = () => {
       }
     };
 
-    fetchPopularStories();
+    fetchStories();
 
     return () => controller.abort();
   }, []);
+
+  const handleSave = async (storyId: string) => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (savingIds.includes(storyId)) {
+      return;
+    }
+
+    setSaveError("");
+    setSavingIds((current) => [...current, storyId]);
+
+    const wasSaved = savedIds.includes(storyId);
+
+    try {
+      const response = await fetch(`/api/users/me/saved-stories/${storyId}`, {
+        method: wasSaved ? "DELETE" : "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Не вдалося змінити збережену статтю.");
+      }
+
+      setSavedIds((current) =>
+        wasSaved
+          ? current.filter((id) => id !== storyId)
+          : [...current, storyId],
+      );
+    } catch (err) {
+      setSaveError(
+        err instanceof Error
+          ? err.message
+          : "Сталася помилка під час збереження статті.",
+      );
+    } finally {
+      setSavingIds((current) => current.filter((id) => id !== storyId));
+    }
+  };
 
   if (loading) {
     return (
@@ -125,11 +199,14 @@ export const PopularStories = () => {
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Популярні статті</h2>
         <p role="alert">{error}</p>
+        <button type="button" onClick={() => router.refresh()}>
+          Спробувати ще раз
+        </button>
       </section>
     );
   }
 
-  if (popularStories.length === 0) {
+  if (stories.length === 0) {
     return null;
   }
 
@@ -142,6 +219,12 @@ export const PopularStories = () => {
           Всі статті
         </Link>
       </div>
+
+      {saveError && (
+        <p role="alert" aria-live="polite">
+          {saveError}
+        </p>
+      )}
 
       <div className={styles.sliderWrapper}>
         <Swiper
@@ -166,26 +249,16 @@ export const PopularStories = () => {
           }}
           className={styles.swiperContainer}
         >
-          {popularStories.map((story) => {
-            const storyId = String(story._id || story.id || "");
-
-            if (!storyId) {
-              return null;
-            }
-
-            return (
-              <SwiperSlide key={storyId} className={styles.slideItem}>
-                <StoryCard
-                  storyId={storyId}
-                  title={story.title}
-                  category={story.category}
-                  image={story.img}
-                  author={getAuthorName(story)}
-                  rate={story.rate ?? story.savesCount ?? 0}
-                />
-              </SwiperSlide>
-            );
-          })}
+          {stories.map((story) => (
+            <SwiperSlide key={story._id} className={styles.slideItem}>
+              <StoryCard
+                story={story}
+                isSaved={savedIds.includes(story._id)}
+                isSaving={savingIds.includes(story._id)}
+                onSave={handleSave}
+              />
+            </SwiperSlide>
+          ))}
         </Swiper>
 
         <div className={styles.navButtonsContainer}>
@@ -195,20 +268,11 @@ export const PopularStories = () => {
               isBeginning ? styles.disabled : ""
             }`}
             disabled={isBeginning}
-            aria-label="Попередня стаття"
+            aria-label="Попередні статті"
             onClick={() => swiperRef.current?.slidePrev()}
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M7.09502 12.8518L12.5968 18.3533C12.7668 18.5236 12.8527 18.7236 12.8545 18.9533C12.8565 19.1829 12.7726 19.3836 12.6028 19.5553C12.4328 19.7274 12.2322 19.8125 12.001 19.8105C11.7699 19.8085 11.5686 19.7226 11.3973 19.5528L4.44727 12.6028C4.35627 12.5108 4.29011 12.4151 4.24877 12.3158C4.20727 12.2163 4.18652 12.1108 4.18652 11.9993C4.18652 11.8878 4.20727 11.7825 4.24877 11.6835C4.29011 11.5844 4.35627 11.4889 4.44727 11.3973L11.4033 4.44127C11.5791 4.27144 11.7805 4.18652 12.0075 4.18652C12.2344 4.18652 12.4328 4.27144 12.6028 4.44127C12.7726 4.61527 12.8575 4.81602 12.8575 5.04352C12.8575 5.27119 12.7726 5.47027 12.6028 5.64077L7.09502 11.1483H19.2978C19.5419 11.1483 19.7459 11.2291 19.9098 11.3908C20.0736 11.5524 20.1555 11.7555 20.1555 12C20.1555 12.2445 20.0736 12.4476 19.9098 12.6093C19.7459 12.7709 19.5419 12.8518 19.2978 12.8518H7.09502Z"
-                fill="#1B391B"
-              />
+            <svg width="24" height="24" aria-hidden="true">
+              <use href="/icons/symbol-defs.svg#icon-arrow_back" />
             </svg>
           </button>
 
@@ -216,20 +280,11 @@ export const PopularStories = () => {
             type="button"
             className={`${styles.navButton} ${isEnd ? styles.disabled : ""}`}
             disabled={isEnd}
-            aria-label="Наступна стаття"
+            aria-label="Наступні статті"
             onClick={() => swiperRef.current?.slideNext()}
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M16.9051 12.8517H4.70234C4.45767 12.8517 4.25459 12.7709 4.09309 12.6092C3.93142 12.4476 3.85059 12.2445 3.85059 12C3.85059 11.7555 3.93142 11.5524 4.09309 11.3907C4.25459 11.2291 4.45767 11.1482 4.70234 11.1482H16.9051L11.4033 5.64674C11.2333 5.47674 11.1473 5.27649 11.1451 5.04599C11.1428 4.81532 11.2267 4.61457 11.3968 4.44374C11.5672 4.27224 11.7679 4.18749 11.9991 4.18949C12.2303 4.19149 12.4315 4.2774 12.6028 4.44724L19.5528 11.3972C19.6438 11.4892 19.71 11.5849 19.7513 11.6842C19.7928 11.7837 19.8136 11.8892 19.8136 12.0007C19.8136 12.1122 19.7928 12.2175 19.7513 12.3165C19.71 12.4157 19.6438 12.5111 19.5528 12.6027L12.5968 19.5527C12.421 19.7266 12.2196 19.8135 11.9926 19.8135C11.7658 19.8135 11.5673 19.7261 11.3973 19.5512C11.2275 19.3811 11.1426 19.1823 11.1426 18.955C11.1426 18.7278 11.2275 18.5292 11.3973 18.3592L16.9051 12.8517Z"
-                fill="#1B391B"
-              />
+            <svg width="24" height="24" aria-hidden="true">
+              <use href="/icons/symbol-defs.svg#icon-arrow_forward" />
             </svg>
           </button>
         </div>
@@ -238,6 +293,10 @@ export const PopularStories = () => {
       <Link href="/stories" className={styles.endStoriesButton}>
         Всі статті
       </Link>
+
+      {showAuthModal && (
+        <ErrorWhileSavingModal onClose={() => setShowAuthModal(false)} />
+      )}
     </section>
   );
 };
