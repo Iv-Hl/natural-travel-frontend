@@ -33,15 +33,11 @@ export default async function RootLayout({
   return (
     <html lang="uk" className={montserrat.variable}>
       <body>
-<<<<<<< HEAD
-        <QueryProvider>{children}</QueryProvider>
-=======
         <QueryProvider>
           <AuthProvider hasSessionCookie={hasSessionCookie}>
             {children}
           </AuthProvider>
         </QueryProvider>
->>>>>>> origin/main
       </body>
     </html>
   );
