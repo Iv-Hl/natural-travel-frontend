@@ -71,13 +71,17 @@
   }
 }
 
-@media (min-width:1440px){
-    .tabs {
-        width: 422px;
-    }
-    
-    .tab {
-        padding: 4px 12px;
-        font-size: 20px;
-    }
+@media (min-width: 1440px) {
+  .tabs {
+    width: 422px;
+  }
+
+  .tab {
+    padding: 4px 12px;
+    font-size: 18px;
+  }
+
+  .tab.active {
+    font-size: 21px;
+  }
 }
