@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import StoryCard, { type Story } from "../stories/StoryCard";
+import StoryCard, { type Story } from "../PopularStories/StoryCard";
 import styles from "./TravellersStories.module.css";
 
 interface StoriesResponse {
