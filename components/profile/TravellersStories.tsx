@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import StoryCard, { type Story } from "../stories/StoryCard";
 import styles from "./TravellersStories.module.css";
 import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
+import MessageNoStories from "../shared/MessageNoStories";
 
 interface StoriesResponse {
   stories: Story[];
@@ -177,7 +178,11 @@ export default function TravellersStories() {
       {isLoading && <p>Завантаження...</p>}
 
       {!isLoading && !error && stories.length === 0 && (
-        <p>У вас поки немає історій.</p>
+        <MessageNoStories
+          text="Ви ще нічого не публікували, поділіться своєю першою історією!"
+          buttonText="Опублікувати історію"
+          linkTo="/stories/new"
+        />
       )}
 
       {!error && page < totalPages && (
