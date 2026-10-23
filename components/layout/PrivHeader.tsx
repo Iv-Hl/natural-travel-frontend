@@ -6,9 +6,11 @@ import { routes } from "@/constants/routes";
 import styles from "./PrivHeader.module.css";
 import Modal from "@/components/modals/Modal";
 import MobileMenu from "@/components/authbar/PrivAuthBar"; 
+import { useAuth } from "@/components/providers/AuthProvider";
 
 export default function PrivHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 1366px)");
@@ -33,6 +35,8 @@ export default function PrivHeader() {
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
+
+  const userName = user?.name || "Імʼя";
 
   return (
     <header className={styles.header}>
@@ -59,20 +63,21 @@ export default function PrivHeader() {
        
         <div className={styles.userProfile}>
           <div className={styles.avatar}>
-
-{/* =======================================================================================================      */}
-            {/* <svg className={styles.avatarIcon} aria-hidden="true" focusable="false">
-              <use href="/icons/symbol-defs.svg#icon-Avatar-Image" />
-             </svg> */}
-
-             <svg className={styles.avatarIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>
-             </svg>
-{/* =======================================================================================================      */}
-
+            {user?.avatarUrl ? (
+              <img src={user.avatarUrl} alt={userName} className={styles.avatarImg} />
+            ) : (
+              <svg className={styles.avatarIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>
+              </svg>
+            )}
           </div>
-          <span className={styles.userName}>Імʼя</span>
-          <button className={styles.logoutBtn} aria-label="Вийти" type="button">
+          <span className={styles.userName}>{userName}</span>
+          <button 
+            className={styles.logoutBtn} 
+            aria-label="Вийти" 
+            type="button"
+            onClick={logout}
+          >
             <svg className={styles.logoutIcon} aria-hidden="true" focusable="false">
               <use href="/icons/symbol-defs.svg#icon-logout" />
             </svg>
