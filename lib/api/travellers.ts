@@ -46,3 +46,30 @@ export const getTravellerById = async (
 
   return response.data;
 };
+// Додаэмо для публічного тревел пейдж
+export interface GetTravellerStoriesResponse {
+  user: Traveller;
+  stories: import("@/components/stories/StoryCard").Story[];
+  pagination: {
+    page: number;
+    perPage: number;
+    totalItems: number;
+    totalPages: number;
+    hasNextPage: boolean;
+  };
+}
+
+export const getTravellerStories = async (
+  userId: string,
+  page = 1,
+  perPage = 6,
+): Promise<GetTravellerStoriesResponse> => {
+  const response = await axios.get<GetTravellerStoriesResponse>(
+    `/api/users/${encodeURIComponent(userId)}`,
+    {
+      params: { page, perPage },
+    },
+  );
+
+  return response.data;
+};

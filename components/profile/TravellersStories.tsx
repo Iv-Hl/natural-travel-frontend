@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import StoryCard, { type Story } from "../stories/StoryCard";
 import styles from "./TravellersStories.module.css";
 import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
+import { getTravellerStories } from "@/lib/api/travellers";
 import MessageNoStories from "../shared/MessageNoStories";
 
 interface StoriesResponse {
@@ -14,9 +15,15 @@ interface StoriesResponse {
   totalPages: number;
 }
 
+interface TravellersStoriesProps {
+  travellerId?: string;
+}
+
 const LIMIT = 6;
 
-export default function TravellersStories() {
+export default function TravellersStories({
+  travellerId,
+}: TravellersStoriesProps) {
   const [stories, setStories] = useState<Story[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -40,36 +47,51 @@ export default function TravellersStories() {
       setError(null);
 
       try {
-        const response = await fetchWithAuth(
-          `/api/users/me/stories?page=${pageNumber}&limit=${LIMIT}`,
-          {
-            signal,
-          },
-        );
+        let storiesData: Story[];
+        let pagesCount: number;
 
-        if (!response.ok) {
-          throw new Error("Не вдалося завантажити історії");
+        if (travellerId) {
+          const data = await getTravellerStories(
+            travellerId,
+            pageNumber,
+            LIMIT,
+          );
+
+          storiesData = data.stories;
+          pagesCount = data.pagination.totalPages;
+        } else {
+          const response = await fetchWithAuth(
+            `/api/users/me/stories?page=${pageNumber}&limit=${LIMIT}`,
+            { signal },
+          );
+
+          if (!response.ok) {
+            throw new Error("Не вдалося завантажити історії");
+          }
+
+          const data: StoriesResponse = await response.json();
+
+          storiesData = data.stories;
+          pagesCount = data.totalPages;
         }
-
-        const data: StoriesResponse = await response.json();
 
         if (signal.aborted) return;
 
         if (pageNumber === 1) {
           previousCountRef.current = 0;
           shouldScrollRef.current = false;
-          storiesCountRef.current = data.stories.length;
+          storiesCountRef.current = storiesData.length;
 
-          setStories(data.stories);
+          setStories(storiesData);
         } else {
           previousCountRef.current = storiesCountRef.current;
-          shouldScrollRef.current = data.stories.length > 0;
-          storiesCountRef.current += data.stories.length;
+          shouldScrollRef.current = storiesData.length > 0;
+          storiesCountRef.current += storiesData.length;
 
-          setStories((prev) => [...prev, ...data.stories]);
+          setStories((prev) => [...prev, ...storiesData]);
         }
 
-        setTotalPages(data.totalPages);
+        setTotalPages(pagesCount);
         setPage(pageNumber);
       } catch (err) {
         if (signal.aborted) return;
@@ -83,7 +105,7 @@ export default function TravellersStories() {
         }
       }
     },
-    [],
+    [travellerId],
   );
 
   useEffect(() => {
@@ -179,9 +201,13 @@ export default function TravellersStories() {
 
       {!isLoading && !error && stories.length === 0 && (
         <MessageNoStories
-          text="Ви ще нічого не публікували, поділіться своєю першою історією!"
-          buttonText="Опублікувати історію"
-          linkTo="/stories/new"
+          text={
+            travellerId
+              ? "Цей мандрівник ще не опублікував жодної історії."
+              : "Ви ще нічого не публікували, поділіться своєю першою історією!"
+          }
+          buttonText={travellerId ? "Назад до історій" : "Опублікувати історію"}
+          linkTo={travellerId ? "/stories" : "/stories/new"}
         />
       )}
 
