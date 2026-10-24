@@ -8,6 +8,7 @@ import styles from "@/components/auth/AuthForm.module.css";
 import { routes } from "@/constants/routes";
 import { submitAuthForm } from "@/lib/api/auth";
 import { registerSchema } from "@/lib/validation/auth";
+import { useAuth } from "@/components/providers/AuthProvider";
 
 type RegisterValues = {
   name: string;
@@ -19,10 +20,12 @@ const initialValues: RegisterValues = { name: "", email: "", password: "" };
 
 export default function Register() {
   const router = useRouter();
+  const { refreshAuth } = useAuth();
   const registerMutation = useMutation({
     mutationFn: (values: RegisterValues) =>
       submitAuthForm("/api/auth/register", values),
-    onSuccess: () => {
+    onSuccess: async () => {
+      await refreshAuth();
       router.replace(routes.home);
       router.refresh();
     },

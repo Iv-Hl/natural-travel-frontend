@@ -1,38 +1,123 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { routes } from "@/constants/routes";
-import { logoutUser } from "@/lib/api/logout";
 import styles from "./Layout.module.css";
+import Modal from "@/components/modals/Modal";
+import MobileMenu from "@/components/authbar/AuthBar";
+import ThemeToggle from "../themeswitcher/ThemeSwitcher";
+import { useAuth } from "@/components/providers/AuthProvider";
 
 export default function Header() {
-  return (
-    <header>
-      <Link href={routes.home}>Природні мандри</Link>
-      <nav aria-label="Основна навігація" className={styles.navigation}>
-        <Link href={routes.home}>Головна</Link>
-        <Link href={routes.stories}>Історії</Link>
-        <Link href={routes.travellers}>Мандрівники</Link>
-        <Link href={routes.profile}>Збережені історії</Link>
-        <Link href={routes.ownStories}>Мої історії</Link>
-        <Link href={routes.newStory}>Створити історію</Link>
-        <Link href={routes.login}>Увійти</Link>
-        <Link href={routes.register}>Зареєструватися</Link>
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, isLoading, logout } = useAuth();
 
-        <button
-          type="button"
-          onClick={async () => {
-            try {
-              await logoutUser();
-              alert("Вихід успішний!");
-            } catch (error) {
-              alert(error instanceof Error ? error.message : "Помилка виходу");
-            }
-          }}
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1366px)");
+
+    function handleResize(event: MediaQueryListEvent) {
+      if (event.matches) {
+        setIsMenuOpen(false);
+      }
+    }
+
+    if (mediaQuery.matches) {
+      setIsMenuOpen(false);
+    }
+
+    mediaQuery.addEventListener("change", handleResize);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleResize);
+    };
+  }, []);
+
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  const closeMenu = () => setIsMenuOpen(false);
+
+  return (
+    <header className={styles.header}>
+      <Link href={routes.home} className={styles.logo}>
+        <span className={styles.logoIcon} aria-hidden="true" />
+        <span>Природні мандри</span>
+      </Link>
+
+      <div className={styles.actions}>
+        <nav
+          aria-label="Основна навігація"
+          className={styles.navigation}
         >
-          Вийти
-        </button>
-      </nav>
+          <Link href={routes.home}>Головна</Link>
+          <Link href={routes.stories}>Статті</Link>
+          <Link href={routes.travellers}>Еко-Мандрівники</Link>
+        </nav>
+
+        {!isLoading && (
+          <div className={styles.authLinks}>
+            {user ? (
+              <>
+                <Link href={routes.profile} className={styles.loginLink}>
+                  Профіль
+                </Link>
+                <button
+                  type="button"
+                  className={styles.registerLink}
+                  onClick={() => void logout().catch(() => undefined)}
+                >
+                  Вийти
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href={routes.login} className={styles.loginLink}>
+                  Вхід
+                </Link>
+                <Link href={routes.register} className={styles.registerLink}>
+                  Реєстрація
+                </Link>
+              </>
+            )}
+          </div>
+        )}
+
+        <div className={styles.blockButtons}>
+          <ThemeToggle />
+
+          <button
+            className={styles.menuButton}
+            type="button"
+            aria-label={isMenuOpen ? "Закрити меню" : "Відкрити меню"}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-navigation"
+            onClick={toggleMenu}
+          >
+            {isMenuOpen ? (
+              <svg
+                className={styles.menuIcon}
+                aria-hidden="true"
+                focusable="false"
+              >
+                <use href="/icons/symbol-defs.svg#icon-close" />
+              </svg>
+            ) : (
+              <svg
+                className={styles.menuIcon}
+                aria-hidden="true"
+                focusable="false"
+              >
+                <use href="/icons/symbol-defs.svg#icon-burger-menu" />
+              </svg>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {isMenuOpen && (
+        <Modal onClose={closeMenu} ariaLabel="Мобільна навігація">
+          <MobileMenu onClose={closeMenu} />
+        </Modal>
+      )}
     </header>
   );
 }
