@@ -24,11 +24,13 @@ export default function ErrorWhileSavingModal({
 
     const previousFocus = document.activeElement;
     const bodyStyle = document.body.style;
-    const previousOverflow = ["overflow-x", "overflow-y"].map((property) => ({
-      property,
-      value: bodyStyle.getPropertyValue(property),
-      priority: bodyStyle.getPropertyPriority(property),
-    }));
+    const previousOverflow = ["overflow", "overflow-x", "overflow-y"].map(
+      (property) => ({
+        property,
+        value: bodyStyle.getPropertyValue(property),
+        priority: bodyStyle.getPropertyPriority(property),
+      }),
+    );
 
     dialog.showModal();
     bodyStyle.setProperty("overflow", "hidden", "important");
@@ -36,8 +38,13 @@ export default function ErrorWhileSavingModal({
 
     return () => {
       dialog.close();
+      for (const { property } of previousOverflow) {
+        bodyStyle.removeProperty(property);
+      }
       for (const { property, value, priority } of previousOverflow) {
-        bodyStyle.setProperty(property, value, priority);
+        if (value) {
+          bodyStyle.setProperty(property, value, priority);
+        }
       }
       if (previousFocus instanceof HTMLElement) {
         previousFocus.focus({ preventScroll: true });
