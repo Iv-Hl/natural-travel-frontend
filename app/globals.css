@@ -2,7 +2,7 @@
   color-scheme: light;
 
   --font-family: var(--font-montserrat, "Montserrat", sans-serif);
-  --font-main: var(--font-family)
+  --font-main: var(--font-family);
 
   /* нейтральні кольори. */
   --color-neutral-darkest: #000;
