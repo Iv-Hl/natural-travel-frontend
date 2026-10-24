@@ -5,10 +5,8 @@ import Join from "@/components/home/join/join";
 export default function HomePage() {
   return (
     <>
-      <h1>Природні мандри</h1>
       <Hero />
-      <PopularStories></PopularStories>
-      <Hero />
+      <PopularStories />
       <Join isAuthenticated={false} />
     </>
   );

@@ -8,9 +8,10 @@ import type { Swiper as SwiperType } from "swiper";
 
 import "swiper/css";
 
-import ErrorWhileSavingModal from "../ErrorWhileSavingModal/ErrorWhileSavingModal";
+// import ErrorWhileSavingModal from "../ErrorWhileSavingModal/ErrorWhileSavingModal";
 import StoryCard from "../StoryCard/StoryCard";
 import type { Story } from "../StoryCard/StoryCard";
+import PopularStoriesLoader from "./PopularStoriesLoader/PopularStoriesLoader";
 import styles from "./PopularStories.module.css";
 
 interface AuthorObj {
@@ -186,14 +187,8 @@ export const PopularStories = ({
   };
 
   if (loading) {
-    return (
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Популярні статті</h2>
-        <p>Завантаження статей...</p>
-      </section>
-    );
+    return <PopularStoriesLoader />;
   }
-
   if (error) {
     return (
       <section className={styles.section}>
@@ -236,9 +231,9 @@ export const PopularStories = ({
           onResize={updateNavigation}
           onBreakpoint={updateNavigation}
           onSlidesUpdated={updateNavigation}
-          spaceBetween={16}
+          spaceBetween={24}
           slidesPerView={1}
-          watchOverflow
+          watchOverflow={true}
           breakpoints={{
             768: {
               slidesPerView: 2,
@@ -294,9 +289,9 @@ export const PopularStories = ({
         Всі статті
       </Link>
 
-      {showAuthModal && (
+      {/* {showAuthModal && (
         <ErrorWhileSavingModal onClose={() => setShowAuthModal(false)} />
-      )}
+      )} */}
     </section>
   );
 };

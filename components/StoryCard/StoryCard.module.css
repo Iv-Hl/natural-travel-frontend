@@ -9,11 +9,6 @@
   border-radius: 12px;
   background-color: #def2de;
   color: #1b391b;
-  transition: box-shadow 0.2s ease;
-}
-
-.card:hover {
-  box-shadow: 0 8px 24px rgb(32 63 36 / 10%);
 }
 
 .imageWrapper {
@@ -34,7 +29,7 @@
 }
 
 .card:hover .image {
-  transform: scale(1.02);
+  transform: scale(1.1);
 }
 
 .cardContent {
@@ -47,6 +42,7 @@
   min-width: 0;
   padding: 16px;
   box-sizing: border-box;
+  transition: transform 0.3s ease;
 }
 
 .author {
@@ -89,7 +85,7 @@
 .cardActions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   width: 100%;
   min-width: 0;
   margin-top: auto;
@@ -209,16 +205,15 @@
 
   .cardContent {
     gap: 16px;
-    padding: 20px;
   }
 
   .author {
     gap: 12px;
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .title {
-    font-size: 22px;
+    font-size: 18px;
   }
 
   .viewButton {
@@ -226,7 +221,7 @@
   }
 }
 
-@media (min-width: 1312px) {
+@media (min-width: 1440px) {
   .card {
     width: 421px;
     height: 633px;
@@ -234,7 +229,7 @@
 
   .cardContent {
     gap: 16px;
-    padding: 24px 20px 20px;
+    padding: 16px;
   }
 
   .author {
@@ -247,7 +242,7 @@
   }
 
   .viewButton {
-    font-size: 18px;
+    font-size: 20px;
   }
 
   .cardActions {

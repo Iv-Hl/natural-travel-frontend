@@ -1,8 +1,9 @@
 .section {
   width: 100%;
   padding: 64px 0;
+  background-color: #eef8ee;
+  color: #1b391b;
   overflow: hidden;
-  box-sizing: border-box;
 }
 
 .headerContainer {
@@ -10,15 +11,16 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 40px;
 }
 
 .sectionTitle {
   margin: 0;
+  color: #1b391b;
   font-size: 28px;
   font-weight: 700;
   line-height: 1.2;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.1px;
   color: #222222;
 }
 
@@ -27,9 +29,9 @@
 }
 
 .sliderWrapper {
-  position: relative;
   width: 100%;
-  padding-bottom: 56px;
+  min-width: 0;
+  visibility: visible;
 }
 
 .swiperContainer {
@@ -38,17 +40,17 @@
 }
 
 .slideItem {
+  width: 100%;
   height: auto;
   min-width: 0;
-  box-sizing: border-box;
+  display: flex;
+  align-items: stretch;
 }
 
 .navButtonsContainer {
-  position: absolute;
-  right: 0;
-  bottom: 0;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 12px;
 }
 
@@ -56,14 +58,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
   width: 48px;
   height: 48px;
-  padding: 12px;
+  padding: 12;
+  margin-top: 40px;
   border: 1px solid #00000026;
   border-radius: 8px;
   background-color: #def2de;
-  color: #222222;
+  color: #1b391b;
   cursor: pointer;
   transition:
     background-color 0.2s ease,
@@ -71,26 +73,26 @@
     opacity 0.2s ease;
 }
 
-.navButton svg {
-  width: 24px;
-  height: 24px;
-  fill: currentColor;
-}
-
-.navButton:hover:not(:disabled) {
+.navButton:hover,
+.navButton:focus-visible {
   background-color: #4a9849;
   color: #ffffff;
 }
-
-.navButton:focus-visible {
-  outline: 2px solid #4a9849;
-  outline-offset: 3px;
+.navButton:active {
+  border-color: #254c24;
+  background-color: #254c24;
+  color: #ffffff;
 }
-
 .navButton:disabled,
 .navButton.disabled {
   opacity: 0.35;
   cursor: not-allowed;
+}
+
+.navButton svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
 }
 
 .endStoriesButton {
@@ -117,8 +119,7 @@
     color 0.2s ease;
 }
 
-.endStoriesButton:hover,
-.endStoriesButton:focus-visible {
+.endStoriesButton:hover {
   background-color: #def2de;
   color: #1b391b;
 }
@@ -131,64 +132,6 @@
 .endStoriesButton:active {
   background-color: #4a9849;
   color: #ffffff;
-}
-
-/* Модальне вікно авторизації */
-
-.modalOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background-color: rgb(0 0 0 / 50%);
-}
-
-.authModal {
-  position: relative;
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 420px;
-  padding: 32px 24px;
-  border-radius: 16px;
-  background-color: #ffffff;
-  color: #222222;
-  box-shadow: 0 8px 32px rgb(0 0 0 / 15%);
-}
-
-.authModal h2 {
-  margin: 0 24px 16px 0;
-  font-size: 24px;
-  line-height: 1.3;
-}
-
-.authModal p {
-  margin: 0 0 24px;
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-.modalClose {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  color: #222222;
-  font-size: 28px;
-  cursor: pointer;
-}
-
-.modalClose:hover {
-  background-color: #def2de;
 }
 
 .viewButton {
@@ -217,64 +160,73 @@
   background-color: #def2de;
   color: #1b391b;
 }
+.loadingGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  width: 100%;
+  margin-top: 24px;
+}
 
-/* Планшет */
-
-@media screen and (min-width: 768px) {
-  .headerContainer {
-    gap: 16px;
+.tabletCard,
+.desktopCard {
+  display: none;
+}
+@media (min-width: 768px) {
+  .section {
+    padding: 64px 0;
   }
 
   .sectionTitle {
-    font-size: 32px;
+    font-size: 44px;
   }
 
+  .endStoriesButton {
+    display: none;
+  }
   .allStoriesButton {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    width: 101px;
     min-height: 48px;
     padding: 6px 12px;
     border: 1px solid #4a9849;
     border-radius: 6px;
     background-color: #4a9849;
-    color: #ffffff;
+    color: #fff;
     font-size: 16px;
-    font-weight: 500;
-    text-align: center;
     text-decoration: none;
-    transition:
-      background-color 0.2s ease,
-      color 0.2s ease;
+    transition: background-color 0.2s ease;
   }
 
-  .allStoriesButton:hover,
-  .allStoriesButton:focus-visible {
+  .allStoriesButton:hover {
     background-color: #def2de;
     color: #1b391b;
   }
 
   .allStoriesButton:focus-visible {
     outline: 2px solid #4a9849;
-    outline-offset: 3px;
+  }
+  .allStoriesButton:active {
+    background-color: #4a9849;
+    border: 1px solid #4a9849;
+  }
+  .loadingGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .endStoriesButton {
-    display: none;
+  .tabletCard {
+    display: flex;
   }
 }
 
-/* Десктоп */
-
-@media screen and (min-width: 1312px) {
+@media (min-width: 1440px) {
   .section {
+    width: 100%;
+    max-width: 1440px;
     padding: 72px 0;
-  }
-
-  .headerContainer {
-    margin-bottom: 32px;
+    margin: 0 auto;
+    box-sizing: border-box;
   }
 
   .sectionTitle {
@@ -284,14 +236,13 @@
   .allStoriesButton {
     width: 120px;
   }
+  @media (min-width: 1440px) {
+    .loadingGrid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 
-  .sliderWrapper {
-    padding-bottom: 64px;
-  }
-
-  .navButton {
-    width: 44px;
-    height: 44px;
-    padding: 10px;
+    .desktopCard {
+      display: flex;
+    }
   }
 }
