@@ -1,0 +1,256 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 517px;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: #def2de;
+  color: #1b391b;
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 24px rgb(32 63 36 / 10%);
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: #dce9dc;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.02);
+}
+
+.cardContent {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  color: #1b391b;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.saves {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 25px;
+  white-space: nowrap;
+}
+
+.title {
+  display: -webkit-box;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: #1b391b;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.cardActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  margin-top: auto;
+}
+
+.viewButton {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 48px;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #1b391b;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.saveButton {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 6px;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #1b391b;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.saveButton img {
+  display: block;
+  transition: filter 0.25s ease;
+}
+
+.viewButton:hover,
+.saveButton:hover,
+.viewButton:focus-visible,
+.saveButton:focus-visible {
+  border-color: #4a9849;
+  background-color: #4a9849;
+  color: #ffffff;
+}
+
+.viewButton:focus-visible,
+.saveButton:focus-visible {
+  outline: 2px solid #4a9849;
+  outline-offset: 3px;
+}
+
+.viewButton:active,
+.saveButton:active {
+  border-color: #254c24;
+  background-color: #254c24;
+  color: #ffffff;
+}
+
+.saveButton:hover img,
+.saveButton:active img,
+.saveButton:focus-visible img,
+.saveButton.saved img {
+  filter: brightness(0) invert(1);
+}
+
+.saveButton.saved {
+  border-color: #254c24;
+  background-color: #254c24;
+  color: #ffffff;
+}
+
+.saveButton:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.loader {
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  border: 2px solid #b5cbb5;
+  border-top-color: #254c24;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (min-width: 768px) {
+  .card {
+    width: 340px;
+    height: 522px;
+  }
+
+  .cardContent {
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .author {
+    gap: 12px;
+    font-size: 14px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .viewButton {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1312px) {
+  .card {
+    width: 421px;
+    height: 633px;
+  }
+
+  .cardContent {
+    gap: 16px;
+    padding: 24px 20px 20px;
+  }
+
+  .author {
+    gap: 16px;
+    font-size: 16px;
+  }
+
+  .title {
+    font-size: 26px;
+  }
+
+  .viewButton {
+    font-size: 18px;
+  }
+
+  .cardActions {
+    gap: 16px;
+  }
+}
