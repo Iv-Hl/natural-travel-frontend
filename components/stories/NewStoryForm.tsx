@@ -214,7 +214,7 @@ export default function NewStoryForm() {
                   ))}
                 </Field>
                 <ErrorMessage
-                  name="title"
+                  name="category"
                   component="p"
                   className={styles.error}
                 />
@@ -231,7 +231,7 @@ export default function NewStoryForm() {
                   placeholder="Ваша історія тут"
                 />
                 <ErrorMessage
-                  name="title"
+                  name="article"
                   component="p"
                   className={styles.error}
                 />
