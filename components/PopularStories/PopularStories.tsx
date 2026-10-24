@@ -9,8 +9,8 @@ import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 
 // import ErrorWhileSavingModal from "../ErrorWhileSavingModal/ErrorWhileSavingModal";
-import StoryCard from "../StoryCard/StoryCard";
-import type { Story } from "../StoryCard/StoryCard";
+import StoryCard from "../stories/StoryCard";
+import type { Story } from "../stories/StoryCard";
 import PopularStoriesLoader from "./PopularStoriesLoader/PopularStoriesLoader";
 import styles from "./PopularStories.module.css";
 
