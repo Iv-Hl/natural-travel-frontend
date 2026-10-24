@@ -1,4 +1,5 @@
 import { blockPrivateRoute } from "@/lib/auth/blockPrivateRoute";
+import ProfileTabs from "@/components/profile/ProfileTabs/ProfileTabs";
 
 export default async function ProfileLayout({
   children,
@@ -11,6 +12,10 @@ export default async function ProfileLayout({
 
   return (
     <>
+      <h1>Профіль мандрівника</h1>
+
+      <ProfileTabs />
+
       {children}
       {stories}
     </>
