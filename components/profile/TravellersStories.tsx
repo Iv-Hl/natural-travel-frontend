@@ -13,9 +13,23 @@ interface StoriesResponse {
   totalPages: number;
 }
 
+interface EmptyStateProps {
+  text: string;
+  buttonText?: string;
+  linkTo?: string;
+}
+
+interface TravellersStoriesProps {
+  source: {
+    type: "saved" | "own";
+  };
+  emptyState?: EmptyStateProps;
+  limit?: number;
+}
+
 const LIMIT = 6;
 
-export default function TravellersStories() {
+export default function TravellersStories( { source, emptyState, limit }: TravellersStoriesProps) {
   const [stories, setStories] = useState<Story[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -39,8 +53,9 @@ export default function TravellersStories() {
       setError(null);
 
       try {
+        const urlPath = source.type === "saved" ? "saved-stories" : "stories"; 
         const response = await fetchWithAuth(
-          `/api/users/me/stories?page=${pageNumber}&limit=${LIMIT}`,
+          `/api/users/me/${urlPath}?page=${pageNumber}&limit=${LIMIT}`,
           {
             signal,
           },
@@ -176,9 +191,25 @@ export default function TravellersStories() {
 
       {isLoading && <p>Завантаження...</p>}
 
-      {!isLoading && !error && stories.length === 0 && (
+      {/* {!isLoading && !error && stories.length === 0 && (
         <p>У вас поки немає історій.</p>
-      )}
+      )} */}
+      {!isLoading && !error && stories.length === 0 && (
+  <div className={styles.emptyState}>
+    {/* Выводим текст, переданный из page.tsx */}
+    <p className={styles.emptyText}>
+      {emptyState?.text || "У вас поки немає історій."}
+    </p>
+    
+    {/* Если на этой вкладке нужна ссылка (например, "До історій"), выводим её кнопкой */}
+    {emptyState?.buttonText && emptyState?.linkTo && (
+      <a href={emptyState.linkTo} className={styles.actionButton}>
+        {emptyState.buttonText}
+      </a>
+    )}
+  </div>
+)}
+
 
       {!error && page < totalPages && (
         <button
