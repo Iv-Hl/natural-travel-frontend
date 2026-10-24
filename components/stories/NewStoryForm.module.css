@@ -259,6 +259,7 @@
   display: inline-flex;
   max-width: 100%;
   align-items: center;
+  justify-content: center;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 6px;
   padding: 4px 10px;
@@ -308,9 +309,8 @@
 
 .input {
   min-height: 40px;
-  padding: 10px 12px;
+  padding: 8px;
 }
-
 .textarea {
   min-height: 180px;
   padding: 12px;
@@ -419,7 +419,28 @@
 
 /* Desktop: 1440px і більше */
 @media (min-width: 1440px) {
-  .section {
-    padding-top: 32px;
+  .title {
+    font-size: 56px;
+    padding: 48px 0;
+  }
+  .uploadButton {
+    font-size: 20px;
+    width: 215px;
+    height: 38px;
+  }
+  .input,
+  .textarea {
+    font-size: 18px;
+  }
+  .saveButton {
+    order: 1;
+    width: 203px;
+    font-size: 20px;
+  }
+
+  .cancelButton {
+    order: 2;
+    width: 203px;
+    font-size: 20px;
   }
 }
