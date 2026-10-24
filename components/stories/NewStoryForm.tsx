@@ -132,6 +132,7 @@ export default function NewStoryForm() {
                     alt="Плейсхолдер зображення"
                     width={335}
                     height={223}
+
                     className={styles.placeholder}
                   />
                 )}
