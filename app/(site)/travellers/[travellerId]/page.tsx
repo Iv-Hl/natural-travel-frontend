@@ -1,6 +1,8 @@
 import MessageNoStories from "@/components/shared/MessageNoStories";
 import { routes } from "@/constants/routes";
 import styles from "./page.module.css";
+import TravellerInfo from "@/components/profile/TravellerInfo/TravellerInfo";
+import TravellersStories from "@/components/profile/TravellersStories";
 
 interface TravellerPageProps {
   params: Promise<{
@@ -121,16 +123,12 @@ export default async function TravellerPage({ params }: TravellerPageProps) {
 
   return (
     <div className={styles.page}>
-      <section className={styles.storiesSection}>
-        <h2 className={styles.sectionTitle}>Історії Мандрівника</h2>
+      <TravellerInfo userId={travellerId} />
 
-        {data.stories.length === 0 && (
-          <MessageNoStories
-            text="Цей користувач ще не публікував історій"
-            buttonText="Назад до історій"
-            linkTo={routes.stories}
-          />
-        )}
+      <section className={styles.storiesSection}>
+        <h2 className={styles.sectionTitle}>Статті Мандрівника</h2>
+
+        <TravellersStories travellerId={travellerId} />
       </section>
     </div>
   );
