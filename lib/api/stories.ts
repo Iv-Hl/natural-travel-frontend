@@ -11,6 +11,8 @@ export async function createStory(formData: FormData) {
   });
 
   const data = await response.json().catch(() => null);
+  console.log("Create story status:", response.status);
+  console.log("Create story response:", data);
 
   if (!response.ok) {
     throw new Error(data?.message ?? "Не вдалося створити історію");

@@ -66,3 +66,31 @@ import { getCategories } from "@/lib/api/categories";
    Крок 1. Додай посилання на поле фото
    Крок 2 .Підключи посилання до input
    Крок 3. Онови кнопку «Відмінити»
+
+.imagePreview {
+position: relative;
+display: flex;
+/* width: 100%; _/
+aspect-ratio: 1.1;
+align-items: center;
+justify-content: center;
+overflow: hidden;
+border-radius: var(--radius-sm);
+background: var(--color-surface-muted);
+border-radius: 12px;
+/_ width: 335px;
+height: 223px; */
+margin-bottom: 20px;
+object-fit: cover;
+}
+
+.placeholder {
+display: block;
+width: 100%;
+height: auto;
+object-fit: contain;
+}
+
+.previewImage {
+object-fit: cover;
+}

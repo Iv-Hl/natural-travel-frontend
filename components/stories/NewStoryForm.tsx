@@ -67,7 +67,7 @@ export default function NewStoryForm() {
   }, []);
 
   return (
-    <section className={styles.section}>
+    <section className={styles.container}>
       <h1 className={styles.title}>Створити нову історію</h1>
 
       <Formik
@@ -115,7 +115,7 @@ export default function NewStoryForm() {
         {({ values, resetForm, isSubmitting }) => (
           <Form className={styles.form}>
             <div className={styles.imageField}>
-              <span className={styles.label}>Обкладинка статті</span>
+              <span className={styles.labelArticle}>Обкладинка статті</span>
 
               <div className={styles.imagePreview}>
                 {imagePreview ? (
@@ -127,16 +127,13 @@ export default function NewStoryForm() {
                     className={styles.previewImage}
                   />
                 ) : (
-                  <span className={styles.placeholder} aria-hidden="true">
-                    <svg viewBox="0 0 80 64" fill="none">
-                      <rect width="80" height="64" rx="9" fill="#BDBDBD" />
-                      <circle cx="28" cy="21" r="7" fill="#E1E1E1" />
-                      <path
-                        d="M14 48L31 29L42 41L52 29L68 48C69 50 67 53 64 53H17C14 53 12 50 14 48Z"
-                        fill="#E1E1E1"
-                      />
-                    </svg>
-                  </span>
+                  <Image
+                    src="/images/placeholder-image.png"
+                    alt="Плейсхолдер зображення"
+                    width={335}
+                    height={223}
+                    className={styles.placeholder}
+                  />
                 )}
               </div>
 
@@ -181,63 +178,63 @@ export default function NewStoryForm() {
               )}
             </div>
 
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="title">
-                Заголовок
-              </label>
-              <Field
-                id="title"
-                name="title"
-                className={styles.input}
-                placeholder="Введіть заголовок історії"
-              />
-              <ErrorMessage
-                name="title"
-                component="p"
-                className={styles.error}
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="category">
-                Категорія
-              </label>
-              <Field
-                as="select"
-                id="category"
-                name="category"
-                className={styles.input}
-              >
-                <option value="">Категорія</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.category}
-                  </option>
-                ))}
-              </Field>
-              <ErrorMessage
-                name="title"
-                component="p"
-                className={styles.error}
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="article">
-                Текст історії
-              </label>
-              <Field
-                as="textarea"
-                id="article"
-                name="article"
-                className={styles.textarea}
-                placeholder="Ваша історія тут"
-              />
-              <ErrorMessage
-                name="title"
-                component="p"
-                className={styles.error}
-              />
+            <div className={styles.fieldsContainer}>
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="title">
+                  Заголовок
+                </label>
+                <Field
+                  id="title"
+                  name="title"
+                  className={styles.input}
+                  placeholder="Введіть заголовок історії"
+                />
+                <ErrorMessage
+                  name="title"
+                  component="p"
+                  className={styles.error}
+                />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="category">
+                  Категорія
+                </label>
+                <Field
+                  as="select"
+                  id="category"
+                  name="category"
+                  className={styles.input}
+                >
+                  <option value="">Категорія</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.category}
+                    </option>
+                  ))}
+                </Field>
+                <ErrorMessage
+                  name="title"
+                  component="p"
+                  className={styles.error}
+                />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="article">
+                  Текст історії
+                </label>
+                <Field
+                  as="textarea"
+                  id="article"
+                  name="article"
+                  className={styles.textarea}
+                  placeholder="Ваша історія тут"
+                />
+                <ErrorMessage
+                  name="title"
+                  component="p"
+                  className={styles.error}
+                />
+              </div>
             </div>
             {submitError && (
               <p className={styles.error} role="alert">
@@ -246,6 +243,21 @@ export default function NewStoryForm() {
             )}
 
             <div className={styles.actions}>
+              <button
+                type="button"
+                className={styles.cancelButton}
+                onClick={() => {
+                  resetForm();
+                  setImageFile(null);
+                  setImagePreview("");
+                  setImageError("");
+                  if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                  } //   очищаємо значення input type="file" через реф
+                }}
+              >
+                Відмінити
+              </button>
               <button
                 type="submit"
                 className={styles.saveButton}
@@ -261,22 +273,6 @@ export default function NewStoryForm() {
                 }
               >
                 {isSubmitting ? "Збереження..." : "Зберегти"}
-              </button>
-
-              <button
-                type="button"
-                className={styles.cancelButton}
-                onClick={() => {
-                  resetForm();
-                  setImageFile(null);
-                  setImagePreview("");
-                  setImageError("");
-                  if (fileInputRef.current) {
-                    fileInputRef.current.value = "";
-                  } //   очищаємо значення input type="file" через реф
-                }}
-              >
-                Відмінити
               </button>
             </div>
           </Form>
