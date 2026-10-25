@@ -1,0 +1,201 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 20px;
+  border: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: transparent;
+  outline: none;
+}
+
+.overlay[open] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.overlay::backdrop {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.dialog {
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
+  min-width: 0;
+  margin-block: auto;
+  max-width: 335px;
+  padding: 64px 16px 16px;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-scheme-2-background);
+  color: var(--color-scheme-1-text);
+  font-family: var(--font-family);
+  text-align: center;
+  overflow-wrap: anywhere;
+  min-height: 382px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.closeButton svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.closeButton:hover {
+  background-color: var(--color-surface-muted);
+}
+
+.closeButton:active {
+  background-color: var(--color-primary-active-bg);
+  color: var(--color-primary-text);
+}
+
+.content {
+  width: 100%;
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.description {
+  margin: 16px 0 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  margin: 32px auto 0;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 8px;
+  border: 1px solid;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+
+.secondary {
+  border-color: var(--color-scheme-2-border);
+  background-color: var(--opacity-neutral-darkest-5, rgba(0, 0, 0, 0.05));
+  color: var(--color-scheme-2-text);
+}
+
+.primary {
+  border-color: var(--color-mantis-dark);
+  background-color: var(--color-mantis-dark);
+  color: var(--color-white);
+}
+
+.button:hover:not(:disabled) {
+  border-color: var(--color-primary-hover-bg);
+  background-color: var(--color-primary-hover-bg);
+  color: var(--color-primary-hover-text);
+}
+
+.closeButton:focus-visible,
+.button:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.button:active:not(:disabled) {
+  border-color: var(--color-primary-active-bg);
+  background-color: var(--color-primary-active-bg);
+  color: var(--color-primary-text);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (min-width: 768px) {
+  .overlay {
+    padding: 32px;
+  }
+
+  .dialog {
+    max-width: 704px;
+    padding: 64px;
+    min-height: 310px;
+  }
+
+  .title {
+    font-size: 32px;
+  }
+
+  .actions {
+    flex-direction: row;
+    max-width: 430px;
+  }
+
+  .button {
+    flex: 1;
+  }
+}
+
+@media (min-width: 1440px) {
+  .dialog {
+    max-width: 768px;
+    min-height: 400px;
+  }
+
+  .title {
+    font-size: 48px;
+    letter-spacing: -0.01em;
+  }
+
+  .button {
+    font-size: 20px;
+  }
+}
