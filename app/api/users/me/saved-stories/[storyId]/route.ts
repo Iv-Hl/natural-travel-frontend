@@ -11,6 +11,13 @@ async function proxySavedStory(
   storyId: string,
   method: "POST" | "DELETE",
 ) {
+  if (request.headers.get("origin") !== new URL(request.url).origin) {
+    return NextResponse.json(
+      { message: "Forbidden" },
+      { status: 403, headers: { "Cache-Control": "no-store" } },
+    );
+  }
+
   const backendUrl = process.env.BACKEND_API_URL ?? "http://localhost:3000";
 
   const targetUrl = new URL(
@@ -18,16 +25,30 @@ async function proxySavedStory(
     backendUrl,
   );
 
-  const cookie = request.headers.get("cookie");
+  const cookies = (request.headers.get("cookie") ?? "")
+    .split(";")
+    .map((part) => part.trim())
+    .filter(
+      (part) =>
+        part.startsWith("sessionId=") || part.startsWith("accessToken="),
+    )
+    .join("; ");
 
   try {
     const response = await fetch(targetUrl, {
       method,
-      headers: cookie ? { Cookie: cookie } : {},
+      headers: cookies ? { Cookie: cookies } : {},
       cache: "no-store",
       redirect: "manual",
       signal: AbortSignal.timeout(15000),
     });
+
+    if ([204, 205, 304].includes(response.status)) {
+      return new Response(null, {
+        status: response.status,
+        headers: { "Cache-Control": "no-store" },
+      });
+    }
 
     return new Response(await response.text(), {
       status: response.status,
