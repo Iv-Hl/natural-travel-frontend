@@ -1,35 +1,72 @@
 :root {
   color-scheme: light;
 
-  --font-main: var(--font-montserrat, "Montserrat", sans-serif);
+  --font-family: var(--font-montserrat, "Montserrat", sans-serif);
+  --font-main: var(--font-family);
 
-  /* Фон і текст */
-  --color-page-bg: #eef8ee;
-  --color-main-text: #000;
-  --color-text-muted: #4c4c4c;
+  /* нейтральні кольори. */
+  --color-neutral-darkest: #000;
+  --color-neutral-darker: #191919;
+  --color-neutral-dark: #4c4c4c;
+  --color-neutral: #7f7f7f;
+  --color-neutral-light: #b2b2b2;
+  --color-neutral-lighter: #d8d8d8;
+  --color-neutral-lightest: #f2f2f2;
+  --color-white: #fff;
 
-  /* Поверхні та рамки */
-  --color-surface: #ffffff;
-  --color-surface-muted: #def2de;
-  --color-block-bg: #def2de;
+  /* зелена палітра Mantis та колір помилки. */
+  --color-mantis-lightest: #eef8ee;
+  --color-mantis-lighter: #def2de;
+  --color-mantis-light: #8dd18c;
+  --color-mantis: #5dbe5c;
+  --color-mantis-dark: #4a9849;
+  --color-mantis-darker: #254c24;
+  --color-mantis-darkest: #1b391b;
+  --color-red: #b00101;
+
+  /* кольорові схеми світлої теми. */
+  --color-scheme-1-background: var(--color-white);
+  --color-scheme-1-border: var(--opacity-neutral-darkest-15);
+  --color-scheme-1-text: var(--color-neutral-darkest);
+  --color-scheme-1-foreground: var(--color-neutral-lightest);
+  --color-scheme-1-accent: var(--color-mantis);
+
+  --color-scheme-2-text: var(--color-mantis-darkest);
+  --color-scheme-2-background: var(--color-mantis-lightest);
+  --color-scheme-2-border: var(--opacity-neutral-darkest-15);
+  --color-scheme-2-accent: var(--color-mantis);
+  --color-scheme-2-foreground: var(--color-mantis-lighter);
+
+  /* Фон і текст. */
+  --color-page-bg: var(--color-scheme-2-background);
+  --color-main-text: var(--color-scheme-1-text);
+  --color-text-muted: var(--color-neutral-dark);
+
+  /* Поверхні та рамки. */
+  --color-surface: var(--color-scheme-1-background);
+  --color-surface-muted: var(--color-scheme-2-foreground);
+  --color-block-bg: var(--color-scheme-2-foreground);
   --color-border: rgb(27 57 27 / 15%);
 
-  /* Акценти та кнопки */
-  --color-brand: #5dbe5c;
-  --color-primary-button-bg: #4a9849;
-  --color-primary-text: #ffffff;
-  --color-primary-hover-bg: #def2de;
-  --color-primary-hover-text: #1b391b;
-  --color-primary-active-bg: #254c24;
+  /* Кнопки та акценти. */
+  --color-brand: var(--color-mantis);
+  --color-primary-button-bg: var(--color-mantis-dark);
+  --color-primary-text: var(--color-white);
+  --color-primary-hover-bg: var(--color-mantis-lighter);
+  --color-primary-hover-text: var(--color-mantis-darkest);
+  --color-primary-active-bg: var(--color-mantis-darker);
 
-  /* Поля та стани */
-  --color-input-placeholder: rgb(0 0 0 / 60%);
-  --color-focus: #8dd18c;
-  --color-error: #b00101;
+  /* Стани полів форм. */
+  --color-input-placeholder: var(--opacity-neutral-darkest-60);
+  --color-focus: var(--color-mantis-light);
+  --color-error: var(--color-red);
   --color-error-surface: #fff0f0;
-  --color-white: #ffffff;
 
-  /* Радіуси */
+  /* Прозорість кольорів */
+  --opacity-neutral-darkest-15: rgba(0, 0, 0, 0.15);
+  --opacity-neutral-darkest-60: rgba(0, 0, 0, 0.6);
+
+  /* Радіуси заокруглення. */
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 24px;
@@ -38,18 +75,16 @@
 [data-theme="dark"] {
   color-scheme: dark;
 
-  /* Фон і текст */
+  /* Значення семантичних змінних для темної теми. */
   --color-page-bg: #1f301f;
   --color-main-text: #e8f0e7;
   --color-text-muted: #b3beb1;
 
-  /* Поверхні та рамки */
   --color-surface: #202820;
   --color-surface-muted: #29372a;
   --color-block-bg: #29372a;
   --color-border: rgb(232 240 231 / 16%);
 
-  /* Акценти та кнопки */
   --color-brand: #79d477;
   --color-primary-button-bg: #5dbe5c;
   --color-primary-text: #102010;
@@ -57,12 +92,24 @@
   --color-primary-hover-text: #102010;
   --color-primary-active-bg: #4a9849;
 
-  /* Поля та стани */
   --color-input-placeholder: rgb(232 240 231 / 55%);
   --color-focus: #79d477;
   --color-error: #ff8585;
   --color-error-surface: #3a2222;
   --color-white: #ffffff;
+
+
+  --color-scheme-1-background: var(--color-surface);
+  --color-scheme-1-border: var(--color-border);
+  --color-scheme-1-text: var(--color-main-text);
+  --color-scheme-1-foreground: var(--color-surface-muted);
+  --color-scheme-1-accent: var(--color-brand);
+
+  --color-scheme-2-background: var(--color-page-bg);
+  --color-scheme-2-border: var(--color-border);
+  --color-scheme-2-text: var(--color-main-text);
+  --color-scheme-2-foreground: var(--color-block-bg);
+  --color-scheme-2-accent: var(--color-brand);
 }
 
 *,
@@ -129,7 +176,8 @@ a {
   color: var(--color-main-text);
   background-color: var(--color-focus);
 }
-/* Styles for Mobile devices */
+
+/* Стилі для мобільних пристроїв */
 .container {
   width: 100%;
   min-width: 320px;
@@ -137,20 +185,22 @@ a {
   margin: 0 auto;
   padding-inline: 20px;
 }
-/* Styles for Tablet devices */
+
+/* Стилі для планшетів */
 @media only screen and (min-width: 768px) {
   .container {
     max-width: 768px;
     padding-inline: 32px;
   }
 }
-/* Styles for Desktop devices */
-@media only screen and (min-width: 1312px) {
+
+/* Стилі для десктопів */
+@media only screen and (min-width: 1440px) {
   .container {
     max-width: 1440px;
-
     padding-inline: 64px;
   }
+
   body {
     font-size: 18px;
   }
