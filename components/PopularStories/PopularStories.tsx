@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
+import { useAuth } from "@/components/providers/AuthProvider";
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
 
 import "swiper/css";
 
@@ -24,7 +25,7 @@ interface ApiStory {
   _id?: string;
   id?: string;
   title: string;
-  img?: string;
+  img: string;
   rate?: number;
   savesCount?: number;
   ownerId?: AuthorObj | string | null;
@@ -37,10 +38,6 @@ interface StoriesResponse {
     stories?: ApiStory[];
   };
   message?: string;
-}
-
-interface PopularStoriesProps {
-  isAuthenticated?: boolean;
 }
 
 const getAuthorName = (story: ApiStory): string => {
@@ -63,18 +60,17 @@ const getAuthorName = (story: ApiStory): string => {
   return "Автор";
 };
 
-export const PopularStories = ({
-  isAuthenticated = false,
-}: PopularStoriesProps) => {
-  const router = useRouter();
+export const PopularStories = () => {
+  const { user, isLoading: isAuthLoading, updateSavedStory } = useAuth();
+  const savedIds = user?.savedArticles ?? [];
 
   const [stories, setStories] = useState<Story[]>([]);
-  const [savedIds, setSavedIds] = useState<string[]>([]);
   const [savingIds, setSavingIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const pendingSavesRef = useRef(new Set<string>());
 
   const swiperRef = useRef<SwiperType | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
@@ -109,22 +105,22 @@ export const PopularStories = ({
         .map((item) => ({
           _id: String(item._id || item.id),
           title: item.title,
-          img: item.img || "/default-story.jpg",
+          img: item.img,
           date: "",
           ownerId: typeof item.ownerId === "string" ? item.ownerId : "",
           authorName: getAuthorName(item),
           savesCount: item.savesCount ?? item.rate ?? 0,
         }));
 
-      setStories(normalized);
+      if (!signal?.aborted) setStories(normalized);
     } catch (err) {
-      if (err instanceof Error && err.name === "AbortError") {
+      if (signal?.aborted || (err instanceof Error && err.name === "AbortError")) {
         return;
       }
 
       setError(err instanceof Error ? err.message : "Сталася невідома помилка");
     } finally {
-      setLoading(false);
+      if (!signal?.aborted) setLoading(false);
     }
   }, []);
 
@@ -135,38 +131,36 @@ export const PopularStories = ({
   }, [fetchStories]);
 
   const handleSave = async (storyId: string) => {
-    if (!isAuthenticated) {
+    if (isAuthLoading) return;
+
+    if (!user) {
       setShowAuthModal(true);
       return;
     }
 
-    if (savingIds.includes(storyId)) {
+    if (pendingSavesRef.current.has(storyId)) {
       return;
     }
 
+    pendingSavesRef.current.add(storyId);
     setSaveError("");
     setSavingIds((current) => [...current, storyId]);
 
     const wasSaved = savedIds.includes(storyId);
 
     try {
-      const response = await fetch(`/api/users/me/saved-stories/${storyId}`, {
-        method: wasSaved ? "DELETE" : "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetchWithAuth(
+        `/api/users/me/saved-stories/${encodeURIComponent(storyId)}`,
+        {
+          method: wasSaved ? "DELETE" : "POST",
         },
-      });
+      );
 
       if (!response.ok) {
         throw new Error("Не вдалося змінити збережену статтю.");
       }
 
-      setSavedIds((current) =>
-        wasSaved
-          ? current.filter((id) => id !== storyId)
-          : [...current, storyId],
-      );
+      updateSavedStory(user._id, storyId, !wasSaved);
     } catch (err) {
       setSaveError(
         err instanceof Error
@@ -174,6 +168,7 @@ export const PopularStories = ({
           : "Сталася помилка під час збереження статті.",
       );
     } finally {
+      pendingSavesRef.current.delete(storyId);
       setSavingIds((current) => current.filter((id) => id !== storyId));
     }
   };
@@ -242,7 +237,7 @@ export const PopularStories = ({
               <StoryCard
                 story={story}
                 isSaved={savedIds.includes(story._id)}
-                isSaving={savingIds.includes(story._id)}
+                isSaving={isAuthLoading || savingIds.includes(story._id)}
                 onSave={handleSave}
               />
             </SwiperSlide>

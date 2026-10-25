@@ -29,7 +29,7 @@ export default function StoryCard({
     <article className={styles.card}>
       <div className={styles.imageWrapper}>
         <Image
-          src={story.img || "/default-story.jpg"}
+          src={story.img}
           alt={story.title}
           width={421}
           height={421}

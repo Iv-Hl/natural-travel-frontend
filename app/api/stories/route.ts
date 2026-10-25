@@ -1,37 +1,32 @@
 import { NextResponse } from "next/server";
 
-const BACKEND_API_URL = process.env.BACKEND_API_URL;
-
 export async function GET(request: Request) {
+  const backendUrl = process.env.BACKEND_API_URL ?? "http://localhost:3000";
+
+  const requestUrl = new URL(request.url);
+  const targetUrl = new URL("/api/stories", backendUrl);
+
+  targetUrl.search = requestUrl.search;
+
   try {
-    if (!BACKEND_API_URL) {
-      return NextResponse.json(
-        { message: "BACKEND_API_URL не налаштовано" },
-        { status: 500 },
-      );
-    }
-
-    const requestUrl = new URL(request.url);
-
-    const backendBaseUrl = BACKEND_API_URL.replace(/\/+$/, "");
-    const backendUrl = `${backendBaseUrl}/api/stories${requestUrl.search}`;
-
-    const response = await fetch(backendUrl, {
-      method: "GET",
+    const upstream = await fetch(targetUrl, {
+      headers: {
+        Accept: "application/json",
+      },
       cache: "no-store",
     });
 
-    const data = await response.json();
-
-    return NextResponse.json(data, {
-      status: response.status,
+    return new Response(await upstream.text(), {
+      status: upstream.status,
+      headers: {
+        "Content-Type":
+          upstream.headers.get("content-type") ?? "application/json",
+      },
     });
-  } catch (error) {
-    console.error("Помилка отримання популярних статей:", error);
-
+  } catch {
     return NextResponse.json(
-      { message: "Не вдалося підключитися до backend" },
-      { status: 500 },
+      { message: "Сервер тимчасово недоступний. Спробуйте пізніше." },
+      { status: 502 },
     );
   }
 }
