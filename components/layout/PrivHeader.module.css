@@ -3,11 +3,14 @@
  flex-direction: row;
  justify-content: space-between;
  align-items: center;
- padding-block: 1rem;
+ height: 72px;
+ position: sticky;
+ top: 0;
+ z-index: 1001;
+ padding-block: 0;
  background-color: var(--color-page-bg);
  border-bottom: 1px solid var(--color-border);
  width: 100%;
- padding-inline: 20px;
 }
 
 .logo {
@@ -98,9 +101,9 @@
 
 /* --- Десктопна версія (>= 1440px) --- */
 @media (min-width: 1440px) {
- .header {
+ /* .header {
    padding-inline: 64px;
- }
+ } */
 
  .tabletActions {
    display: none;

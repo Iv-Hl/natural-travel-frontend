@@ -13,7 +13,7 @@ export default function PrivHeader() {
   const { user, logout } = useAuth();
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(min-width: 1366px)");
+    const mediaQuery = window.matchMedia("(min-width: 1440px)");
 
     function handleResize(event: MediaQueryListEvent) {
       if (event.matches) {
@@ -76,7 +76,7 @@ export default function PrivHeader() {
             className={styles.logoutBtn} 
             aria-label="Вийти" 
             type="button"
-            onClick={logout}
+            onClick={handleLogout}
           >
             <svg className={styles.logoutIcon} aria-hidden="true" focusable="false">
               <use href="/icons/symbol-defs.svg#icon-logout" />
