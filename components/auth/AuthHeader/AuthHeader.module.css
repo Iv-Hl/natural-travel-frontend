@@ -8,6 +8,7 @@
   line-height: 1;
   letter-spacing: -0.01em;
   text-decoration: none;
+  transition: transform 180ms ease;
 }
 
 .logoIcon {
@@ -24,3 +25,7 @@
   outline: 3px solid var(--color-focus);
   outline-offset: 4px;
 }
+
+.logo:hover { transform: scale(1.05); }
+.logo:active { transform: scale(0.98); }
+@media (prefers-reduced-motion: reduce) { .logo { transition: none; } }
