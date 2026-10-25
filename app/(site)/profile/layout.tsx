@@ -12,11 +12,8 @@ export default async function ProfileLayout({
 
   return (
     <>
-      <h1>Профіль мандрівника</h1>
-
-      <ProfileTabs />
-
       {children}
+      <ProfileTabs />
       {stories}
     </>
   );
