@@ -36,6 +36,15 @@ export default function PrivHeader() {
     setIsMenuOpen(false);
   };
 
+  // Безпечний обробник виходу з try/catch (виправляє помилку TypeScript)
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Не вдалося вийти з системи:", error);
+    }
+  };
+
   const userName = user?.name || "Імʼя";
 
   return (
