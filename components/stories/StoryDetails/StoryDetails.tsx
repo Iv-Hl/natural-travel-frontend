@@ -25,10 +25,12 @@ type StoryDetailsProps = {
   story: Story;
 };
 
-function formatDate(value: string) {
+function formatDate(value: string): string {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
 
-  return match ? `${match[3]}.${match[2]}.${match[1]}` : value;
+  if (!match) return value;
+
+  return `${match[3]}.${match[2]}.${match[1]}`;
 }
 
 export default function StoryDetails({ story }: StoryDetailsProps) {
@@ -42,40 +44,47 @@ export default function StoryDetails({ story }: StoryDetailsProps) {
       <header className={styles.header}>
         <div className={styles.info}>
           <Link href={routes.stories} className={styles.backLink}>
-            <Image
-              src="/icons/chevron-left.svg"
-              alt=""
-              width={24}
-              height={24}
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
               aria-hidden="true"
-            />
+              focusable="false"
+            >
+              <path
+                d="m14 6-6 6 6 6"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
             Всі статті
           </Link>
 
           <PageTitle className={styles.title}>{story.title}</PageTitle>
 
-          <div className={styles.details}>
-            <dl className={styles.metadata}>
-              <div className={styles.metadataRow}>
-                <dt>Автор статті</dt>
-                <dd>{story.author?.name || "Невідомий автор"}</dd>
-              </div>
+          <dl className={styles.metadata}>
+            <div className={styles.metadataRow}>
+              <dt>Автор статті</dt>
+              <dd>{story.author?.name || "Невідомий автор"}</dd>
+            </div>
 
-              <div className={styles.metadataRow}>
-                <dt>Опубліковано</dt>
-                <dd>
-                  <time dateTime={story.date}>{formatDate(story.date)}</time>
-                </dd>
-              </div>
-            </dl>
+            <div className={styles.metadataRow}>
+              <dt>Опубліковано</dt>
+              <dd>
+                <time dateTime={story.date}>{formatDate(story.date)}</time>
+              </dd>
+            </div>
 
-            {story.category && (
-              <span className={styles.category}>
-                <span className={styles.visuallyHidden}>Категорія: </span>
-                {story.category.category}
-              </span>
-            )}
-          </div>
+            <div className={styles.metadataRow}>
+              <dt className={styles.visuallyHidden}>Категорія</dt>
+              <dd className={styles.category}>
+                {story.category?.category || "Без категорії"}
+              </dd>
+            </div>
+          </dl>
         </div>
 
         <div className={styles.imageWrapper}>
@@ -85,7 +94,7 @@ export default function StoryDetails({ story }: StoryDetailsProps) {
             fill
             priority
             unoptimized
-            sizes="(min-width: 1366px) 755px, (min-width: 768px) 704px, 100vw"
+            sizes="(min-width: 1440px) 755px, (min-width: 768px) 704px, 335px"
             className={styles.image}
           />
         </div>
