@@ -20,7 +20,8 @@
   border: 1px solid transparent;
   border-radius: 6px;
 
-  font-family: var(--font-family);
+  font-family: var(--font-main);
+  color: var(--color-main-text);
   font-size: 16px;
   font-weight: 500;
   line-height: 1.5;
@@ -28,13 +29,17 @@
   text-decoration: none;
   white-space: nowrap;
 
-  color: var(--color-scheme-2-text);
   background-color: transparent;
 
   transition:
     background-color 200ms ease,
     border-color 200ms ease,
     color 200ms ease;
+}
+
+.tab:not(.active) {
+  color: var(--color-text-muted);
+  font-weight: 400;
 }
 
 .tab:hover:not(.active) {
@@ -51,15 +56,45 @@
 .active {
   border-color: var(--color-border);
   background-color: var(--color-page-bg);
+  font-weight: 500;
 }
 
+.loadingIndicator {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  margin-left: 8px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.loadingIndicatorPending {
+  visibility: visible;
+  opacity: 1;
+  animation: profileTabSpin 0.7s linear infinite;
+}
+
+@keyframes profileTabSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loadingIndicatorPending {
+    animation: none;
+  }
+}
 
 @media (min-width: 375px) {
   .tab {
     font-size: 16px;
   }
 }
-
 
 @media (min-width: 768px) {
   .tabs {
