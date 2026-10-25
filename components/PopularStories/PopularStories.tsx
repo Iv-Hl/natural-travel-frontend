@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 
 import "swiper/css";
 
+import { useAuth } from "@/components/providers/AuthProvider";
 import ErrorWhileSavingModal from "../ErrorWhileSavingModal/ErrorWhileSavingModal";
 import StoryCard from "../stories/StoryCard";
 import type { Story } from "../stories/StoryCard";
@@ -39,10 +39,6 @@ interface StoriesResponse {
   message?: string;
 }
 
-interface PopularStoriesProps {
-  isAuthenticated?: boolean;
-}
-
 const getAuthorName = (story: ApiStory): string => {
   const authorObj =
     (typeof story.ownerId === "object" && story.ownerId) ||
@@ -63,11 +59,11 @@ const getAuthorName = (story: ApiStory): string => {
   return "Автор";
 };
 
-export const PopularStories = ({
-  isAuthenticated = false,
-}: PopularStoriesProps) => {
-  const router = useRouter();
+export const PopularStories = () => {
+  const { user, isLoading: authLoading } = useAuth();
+  const isAuthenticated = Boolean(user);
 
+  const [retryCount, setRetryCount] = useState(0);
   const [stories, setStories] = useState<Story[]>([]);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [savingIds, setSavingIds] = useState<string[]>([]);
@@ -85,56 +81,71 @@ export const PopularStories = ({
     setIsEnd(swiper.isEnd);
   };
 
-  const fetchStories = useCallback(async (signal?: AbortSignal) => {
-    try {
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchStories = async () => {
       setLoading(true);
       setError("");
 
-      const response = await fetch("/api/stories?type=popular&limit=10", {
-        signal,
-      });
+      try {
+        const response = await fetch("/api/stories?type=popular&limit=10", {
+          signal: controller.signal,
+          cache: "no-store",
+        });
 
-      const result: StoriesResponse = await response.json();
+        const result: StoriesResponse = await response.json();
 
-      if (!response.ok) {
-        throw new Error(
-          result.message || "Не вдалося завантажити популярні статті",
-        );
+        if (!response.ok) {
+          throw new Error(
+            result.message || "Не вдалося завантажити популярні статті",
+          );
+        }
+
+        const items = result.data?.stories ?? [];
+
+        const normalized: Story[] = items
+          .filter((item) => Boolean(item._id || item.id))
+          .map((item) => ({
+            _id: String(item._id || item.id),
+            title: item.title,
+            img: item.img || "/default-story.jpg",
+            date: "",
+            ownerId: typeof item.ownerId === "string" ? item.ownerId : "",
+            authorName: getAuthorName(item),
+            savesCount: item.savesCount ?? item.rate ?? 0,
+          }));
+
+        if (!controller.signal.aborted) {
+          setStories(normalized);
+        }
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") {
+          return;
+        }
+
+        if (!controller.signal.aborted) {
+          setError(
+            err instanceof Error ? err.message : "Сталася невідома помилка",
+          );
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
+    };
 
-      const items = result.data?.stories ?? [];
+    void fetchStories();
 
-      const normalized: Story[] = items
-        .filter((item) => Boolean(item._id || item.id))
-        .map((item) => ({
-          _id: String(item._id || item.id),
-          title: item.title,
-          img: item.img || "/default-story.jpg",
-          date: "",
-          ownerId: typeof item.ownerId === "string" ? item.ownerId : "",
-          authorName: getAuthorName(item),
-          savesCount: item.savesCount ?? item.rate ?? 0,
-        }));
-
-      setStories(normalized);
-    } catch (err) {
-      if (err instanceof Error && err.name === "AbortError") {
-        return;
-      }
-
-      setError(err instanceof Error ? err.message : "Сталася невідома помилка");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    fetchStories(controller.signal);
     return () => controller.abort();
-  }, [fetchStories]);
+  }, [retryCount]);
 
   const handleSave = async (storyId: string) => {
+    if (authLoading) {
+      return;
+    }
+
     if (!isAuthenticated) {
       setShowAuthModal(true);
       return;
@@ -186,8 +197,13 @@ export const PopularStories = ({
     return (
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Популярні статті</h2>
+
         <p role="alert">{error}</p>
-        <button type="button" onClick={() => fetchStories()}>
+
+        <button
+          type="button"
+          onClick={() => setRetryCount((count) => count + 1)}
+        >
           Спробувати ще раз
         </button>
       </section>
@@ -226,7 +242,7 @@ export const PopularStories = ({
           onSlidesUpdated={updateNavigation}
           spaceBetween={24}
           slidesPerView={1}
-          watchOverflow={true}
+          watchOverflow
           breakpoints={{
             768: {
               slidesPerView: 2,
