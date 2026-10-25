@@ -171,6 +171,11 @@
   filter: brightness(0) invert(1);
 }
 
+.saveButton:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
 .saveButton[aria-pressed="true"] {
   background-color: var(--color-primary-active-bg);
   border-color: var(--color-primary-active-bg);

@@ -1,30 +1,30 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
-type RouteContext = {
-  params: Promise<{ storyId: string }>;
-};
+type RouteContext = { params: Promise<{ storyId: string }> };
 
-async function proxySavedStory(
-  request: NextRequest,
-  storyId: string,
+async function updateSavedStory(
+  request: Request,
+  context: RouteContext,
   method: "POST" | "DELETE",
 ) {
   if (request.headers.get("origin") !== new URL(request.url).origin) {
     return NextResponse.json(
-      { message: "Forbidden" },
+      { message: "Недозволений запит" },
       { status: 403, headers: { "Cache-Control": "no-store" } },
     );
   }
 
+  const { storyId } = await context.params;
+  if (!storyId || storyId.includes("/")) {
+    return NextResponse.json(
+      { message: "Некоректний ідентифікатор історії" },
+      { status: 400, headers: { "Cache-Control": "no-store" } },
+    );
+  }
+
   const backendUrl = process.env.BACKEND_API_URL ?? "http://localhost:3000";
-
-  const targetUrl = new URL(
-    `/api/users/me/saved-stories/${encodeURIComponent(storyId)}`,
-    backendUrl,
-  );
-
   const cookies = (request.headers.get("cookie") ?? "")
     .split(";")
     .map((part) => part.trim())
@@ -35,26 +35,24 @@ async function proxySavedStory(
     .join("; ");
 
   try {
-    const response = await fetch(targetUrl, {
-      method,
-      headers: cookies ? { Cookie: cookies } : {},
-      cache: "no-store",
-      redirect: "manual",
-      signal: AbortSignal.timeout(15000),
-    });
-
-    if ([204, 205, 304].includes(response.status)) {
-      return new Response(null, {
-        status: response.status,
-        headers: { "Cache-Control": "no-store" },
-      });
-    }
-
-    return new Response(await response.text(), {
-      status: response.status,
+    const upstream = await fetch(
+      new URL(
+        `/api/users/me/saved-stories/${encodeURIComponent(storyId)}`,
+        backendUrl,
+      ),
+      {
+        method,
+        headers: cookies ? { Cookie: cookies } : {},
+        cache: "no-store",
+        redirect: "manual",
+        signal: AbortSignal.timeout(15_000),
+      },
+    );
+    return new Response(await upstream.text(), {
+      status: upstream.status,
       headers: {
         "Content-Type":
-          response.headers.get("content-type") ?? "application/json",
+          upstream.headers.get("content-type") ?? "application/json",
         "Cache-Control": "no-store",
       },
     });
@@ -66,12 +64,9 @@ async function proxySavedStory(
   }
 }
 
-export async function POST(request: NextRequest, context: RouteContext) {
-  const { storyId } = await context.params;
-  return proxySavedStory(request, storyId, "POST");
+export async function POST(request: Request, context: RouteContext) {
+  return updateSavedStory(request, context, "POST");
 }
-
-export async function DELETE(request: NextRequest, context: RouteContext) {
-  const { storyId } = await context.params;
-  return proxySavedStory(request, storyId, "DELETE");
+export async function DELETE(request: Request, context: RouteContext) {
+  return updateSavedStory(request, context, "DELETE");
 }

@@ -24,7 +24,7 @@ interface AuthContextValue {
   user: CurrentUser | null;
   isLoading: boolean;
   refreshAuth: () => Promise<void>;
-  updateSavedStory: (userId: string, storyId: string, isSaved: boolean) => void;
+  updateUser: (user: CurrentUser) => void;
   logout: () => Promise<void>;
 }
 
@@ -55,6 +55,10 @@ export default function AuthProvider({
     } finally {
       setIsLoading(false);
     }
+  }, []);
+
+  const updateUser = useCallback((nextUser: CurrentUser) => {
+    setUser(nextUser);
   }, []);
 
   useEffect(() => {
@@ -96,8 +100,8 @@ export default function AuthProvider({
   );
 
   const value = useMemo(
-    () => ({ user, isLoading, refreshAuth, logout, updateSavedStory }),
-    [user, isLoading, refreshAuth, logout, updateSavedStory],
+    () => ({ user, isLoading, refreshAuth, updateUser, logout }),
+    [user, isLoading, refreshAuth, updateUser, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
