@@ -110,6 +110,8 @@
 }
 
 .profileLink {
+    --profile-hover-bg: #c6e8c6;
+    --profile-hover-text: var(--color-mantis-darkest);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -131,8 +133,13 @@
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.profileLink:hover { background-color: var(--color-primary-hover-bg); border-color: var(--color-primary-hover-bg); color: var(--color-primary-hover-text); }
+.profileLink:hover, .profileLink:focus-visible { background-color: var(--profile-hover-bg); border-color: var(--profile-hover-bg); color: var(--profile-hover-text); }
 .profileLink:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
+
+:global([data-theme="dark"]) .profileLink {
+    --profile-hover-bg: var(--color-primary-hover-bg);
+    --profile-hover-text: var(--color-primary-hover-text);
+}
 
 .profileLink:active { background-color: var(--color-primary-active-bg); border-color: var(--color-primary-active-bg); color: var(--color-primary-active-text); }
 
@@ -242,6 +249,8 @@
     }
 
     .profileLink {
+    --profile-hover-bg: #c6e8c6;
+    --profile-hover-text: var(--color-mantis-darkest);
         font-size: 14px;
     }
 }
