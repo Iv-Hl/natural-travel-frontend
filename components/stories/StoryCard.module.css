@@ -5,8 +5,8 @@
   overflow: hidden;
   border-radius: 12px;
   gap: 0;
-  background-color: #def2de;
-  border: 0px solid rgba(0, 0, 0, 0.15);
+  background-color: var(--color-block-bg);
+  border: 1px solid var(--color-border);
 }
 
 .imageWrapper {
@@ -42,7 +42,7 @@
   font-size: 12px;
   font-weight: 600;
   line-height: 1.5;
-  color: #1b391b;
+  color: var(--color-main-text);
 }
 
 .saves {
@@ -63,7 +63,7 @@
   font-weight: 700;
   font-size: 18px;
   line-height: 1.5;
-  color: #1b391b;
+  color: var(--color-main-text);
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -88,18 +88,18 @@
   flex-direction: row;
   gap: 8px;
 
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 6px 12px;
   flex: 1;
   min-width: 0;
   height: 48px;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--color-control-bg);
   text-decoration: none;
   font-weight: 500;
   font-size: 16px;
   line-height: 1.5;
-  color: #1b391b;
+  color: var(--color-main-text);
   transition:
     background-color 250ms ease-in-out,
     color 250ms ease-in-out;
@@ -112,12 +112,13 @@
   flex-direction: row;
   flex-shrink: 0;
   gap: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 6px;
   width: 48px;
   height: 48px;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--color-control-bg);
+  color: var(--color-main-text);
   transition:
     background-color 250ms ease-in-out,
     color 250ms ease-in-out;
@@ -125,29 +126,32 @@
 
 .viewButton:hover,
 .saveButton:hover {
-  background-color: #4a9849;
-  color: #ffffff;
+  background-color: var(--color-primary-hover-bg);
+  border-color: var(--color-primary-hover-bg);
+  color: var(--color-primary-hover-text);
 }
 
-.viewButton:focus,
-.saveButton:focus {
-  outline: 2px solid #254c24;
+.viewButton:focus-visible,
+.saveButton:focus-visible {
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
 }
 
 .viewButton:active,
 .saveButton:active {
-  background-color: #254c24;
-  color: #ffffff;
+  background-color: var(--color-primary-active-bg);
+  border-color: var(--color-primary-active-bg);
+  color: var(--color-primary-active-text);
 }
 
-.saveButton:hover img,
 .saveButton:active img {
   filter: brightness(0) invert(1);
 }
 
 .saveButton[aria-pressed="true"] {
-  background-color: #254c24;
+  background-color: var(--color-primary-active-bg);
+  border-color: var(--color-primary-active-bg);
+  color: var(--color-primary-active-text);
 }
 
 .saveButton[aria-pressed="true"] img {

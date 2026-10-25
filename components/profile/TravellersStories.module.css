@@ -26,11 +26,11 @@
   margin: 40px auto 0;
   padding: 6px 12px;
 
-  border: 1px solid #4a9849;
+  border: 1px solid var(--color-primary-button-bg);
   border-radius: 6px;
-  background-color: #4a9849;
+  background-color: var(--color-primary-button-bg);
 
-  color: #ffffff;
+  color: var(--color-primary-text);
   font-family: inherit;
   font-size: 20px;
   font-weight: 500;
@@ -38,19 +38,25 @@
   white-space: nowrap;
 
   cursor: pointer;
-  transition:
-    background-color 250ms ease-in-out,
-    color 250ms ease-in-out;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
 
 .loadMoreButton:hover:not(:disabled) {
-  background-color: #def2de;
-  color: #1b391b;
+  border-color: var(--color-primary-hover-bg);
+  background-color: var(--color-primary-hover-bg);
+  color: var(--color-primary-hover-text);
 }
 
 .loadMoreButton:active:not(:disabled) {
-  background-color: #254c24;
-  color: #ffffff;
+  border-color: var(--color-primary-active-bg);
+  background-color: var(--color-primary-active-bg);
+  color: var(--color-primary-active-text);
+}
+
+.loadMoreButton:focus-visible,
+.retryButton:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
 }
 
 .loadMoreButton:disabled {
@@ -61,20 +67,22 @@
 .retryButton {
   margin-top: 16px;
   padding: 10px 20px;
-  border: none;
+  border: 1px solid var(--color-primary-button-bg);
   border-radius: 6px;
-  background-color: #4a9849;
-  color: #ffffff;
+  background-color: var(--color-primary-button-bg);
+  color: var(--color-primary-text);
   font-family: inherit;
   font-size: 16px;
   cursor: pointer;
-  transition:
-    background-color 250ms ease-in-out,
-    color 250ms ease-in-out;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
 
-.retryButton:hover:not(:disabled) {
-  background-color: #254c24;
+.retryButton:hover:not(:disabled) { border-color: var(--color-primary-hover-bg); background-color: var(--color-primary-hover-bg); color: var(--color-primary-hover-text); }
+
+.retryButton:active:not(:disabled) {
+  border-color: var(--color-primary-active-bg);
+  background-color: var(--color-primary-active-bg);
+  color: var(--color-primary-active-text);
 }
 
 .retryButton:disabled {
@@ -100,4 +108,9 @@
   .loadMoreButton {
     width: 160px;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loadMoreButton,
+  .retryButton { transition: none; }
 }

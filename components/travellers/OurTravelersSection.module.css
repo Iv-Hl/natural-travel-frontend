@@ -35,7 +35,7 @@
     padding: 6px 12px;
     border: 1px solid var(--color-mantis-dark);
     border-radius: 6px;
-    background-color: #4a9849;
+    background-color: var(--color-primary-button-bg);
     font-family: var(--font-family);
     font-weight: 500;
     font-size: 16px;
@@ -45,10 +45,9 @@
     transition: background-color 0.2s ease;
 }
 
-.linkAll:hover,
-.linkAll:focus-visible {
-    background-color: #3d8240;
-}
+.linkAll:hover { border-color: var(--color-primary-hover-bg); background-color: var(--color-primary-hover-bg); color: var(--color-primary-hover-text); }
+.linkAll:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
+.linkAll:active { border-color: var(--color-primary-active-bg); background-color: var(--color-primary-active-bg); color: var(--color-primary-active-text); }
 
 /* ===== Слайдер ===== */
 .sliderContainer {
@@ -72,7 +71,7 @@
     /* висоту задає слайд */
     padding: 24px;
     border-radius: 12px;
-    background-color: #def2de;
+    background-color: var(--color-block-bg);
     box-sizing: border-box;
 }
 
@@ -120,7 +119,7 @@
     padding: 6px 12px;
     border: 1px solid var(--color-scheme-2-border);
     border-radius: 6px;
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: var(--color-control-bg);
     font-family: var(--font-family);
     font-weight: 500;
     font-size: 16px;
@@ -132,22 +131,10 @@
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.profileLink:hover,
-.profileLink:focus-visible {
-    background-color: #4a9849;
-    border-color: #4a9849;
-    color: #ffffff;
-    border: 1px solid var(--color-scheme-1-text);
-    border-radius: 6px;
-}
+.profileLink:hover { background-color: var(--color-primary-hover-bg); border-color: var(--color-primary-hover-bg); color: var(--color-primary-hover-text); }
+.profileLink:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
 
-.profileLink:active {
-    background-color: #254c24;
-    border-color: #254c24;
-    color: #ffffff;
-    border: 1px solid var(--color-scheme-1-text);
-    border-radius: 6px;
-}
+.profileLink:active { background-color: var(--color-primary-active-bg); border-color: var(--color-primary-active-bg); color: var(--color-primary-active-text); }
 
 .profileLink:disabled {
     cursor: not-allowed;
@@ -169,27 +156,18 @@
     width: 32px;
     height: 32px;
     padding: 0;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--color-border);
     border-radius: 6px;
-    background-color: rgba(222, 214, 190, 0.7);
+    background-color: var(--color-control-bg);
     color: var(--color-scheme-1-text);
     cursor: pointer;
     transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
-.navBtn:focus,
-.navBtn:hover {
-    border: 1px solid var(--color-scheme-1-text);
-    border-radius: 6px;
-    padding: 6px 12px;
-    background-color: #4A9849;
-}
+.navBtn:hover:not(:disabled) { border-color: var(--color-primary-hover-bg); background-color: var(--color-primary-hover-bg); color: var(--color-primary-hover-text); }
+.navBtn:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
 
-.navBtn:active{
-    background-color: #254C24;
-    border: 1px solid var(--color-scheme-1-text);
-    border-radius: 6px;
-}
+.navBtn:active:not(:disabled) { background-color: var(--color-primary-active-bg); border-color: var(--color-primary-active-bg); color: var(--color-primary-active-text); }
 
 
 .navBtn:disabled {
