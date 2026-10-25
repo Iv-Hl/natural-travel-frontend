@@ -9,6 +9,7 @@ export interface Story {
   date: string;
   ownerId: string;
   authorName?: string;
+  rate?: number;
   savesCount?: number;
 }
 
@@ -16,9 +17,15 @@ interface StoryCardProps {
   story: Story;
   isSaved: boolean;
   onSave: (id: string) => void;
+  isSaving?: boolean;
 }
 
-export default function StoryCard({ story, isSaved, onSave }: StoryCardProps) {
+export default function StoryCard({
+  story,
+  isSaved,
+  onSave,
+  isSaving = false,
+}: StoryCardProps) {
   return (
     <article className={styles.card}>
       <div className={styles.imageWrapper}>
@@ -37,7 +44,7 @@ export default function StoryCard({ story, isSaved, onSave }: StoryCardProps) {
           <span>·</span>
 
           <span className={styles.saves}>
-            {story.savesCount ?? 0}
+            {story.rate ?? story.savesCount ?? 0}
 
             <Image src="/icons/bookmark.svg" alt="" width={16} height={16} />
           </span>
@@ -54,8 +61,10 @@ export default function StoryCard({ story, isSaved, onSave }: StoryCardProps) {
             type="button"
             className={styles.saveButton}
             onClick={() => onSave(story._id)}
+            disabled={isSaving}
             aria-label={isSaved ? "Прибрати зі збережених" : "Зберегти історію"}
             aria-pressed={isSaved}
+            aria-busy={isSaving}
           >
             <Image src="/icons/bookmark.svg" alt="" width={24} height={24} />
           </button>
