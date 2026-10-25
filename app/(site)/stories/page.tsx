@@ -22,7 +22,7 @@ function toCardStory(story: ApiStory): StoryCardStory {
     date: story.date,
     ownerId: story.ownerId._id,
     authorName: story.ownerId.name,
-    savesCount: 0,
+    savesCount: story.rate,
   };
 }
 
