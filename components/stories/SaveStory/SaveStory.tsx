@@ -16,7 +16,7 @@ export default function SaveStory({ storyId }: SaveStoryProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSaveToggle = async () => {
-    // 1. Взаимодействие с НЕ авторизованным пользователем по ТЗ
+    // 1. Взаимодействие с НЕ авторизованным пользователем 
     if (!isAuthenticated) {
       alert("Будь ласка, увійдіть в акаунт, щоб зберігати історії!");
       return;
@@ -35,7 +35,8 @@ export default function SaveStory({ storyId }: SaveStoryProps) {
         setIsSaved(true);
       }
     } catch (error) {
-      console.error("Помилка при зміні статусу історії:", error);
+      alert("Помилка при зміні статусу історії:");
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -51,7 +52,7 @@ export default function SaveStory({ storyId }: SaveStoryProps) {
         
        
         <p className={styles.description}>
-          Вона буде доступна у вашому профілі у розділі збережене
+          Вона буде доступна у вашому профілі у розділі збережене.
         </p>
 
         
@@ -70,7 +71,6 @@ export default function SaveStory({ storyId }: SaveStoryProps) {
             </span>
           )}
         </button>
-        
       </div>
     </section>
   );

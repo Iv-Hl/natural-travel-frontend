@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import StoryCard, { type Story } from "../stories/StoryCard";
 import styles from "./TravellersStories.module.css";
 import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
+import MessageNoStories from "../shared/MessageNoStories";
 
 interface StoriesResponse {
   stories: Story[];
@@ -53,7 +54,7 @@ export default function TravellersStories( { source, emptyState, limit }: Travel
       setError(null);
 
       try {
-        const urlPath = source.type === "saved" ? "saved-stories" : "stories"; 
+        const urlPath = source?.type === "saved" ? "saved-stories" : "stories"; 
         const response = await fetchWithAuth(
           `/api/users/me/${urlPath}?page=${pageNumber}&limit=${LIMIT}`,
           {
@@ -189,27 +190,15 @@ export default function TravellersStories( { source, emptyState, limit }: Travel
         ))}
       </ul>
 
-      {isLoading && <p>Завантаження...</p>}
+  
 
       {/* {!isLoading && !error && stories.length === 0 && (
-        <p>У вас поки немає історій.</p>
-      )} */}
-      {!isLoading && !error && stories.length === 0 && (
-  <div className={styles.emptyState}>
-    {/* Выводим текст, переданный из page.tsx */}
-    <p className={styles.emptyText}>
-      {emptyState?.text || "У вас поки немає історій."}
-    </p>
-    
-    {/* Если на этой вкладке нужна ссылка (например, "До історій"), выводим её кнопкой */}
-    {emptyState?.buttonText && emptyState?.linkTo && (
-      <a href={emptyState.linkTo} className={styles.actionButton}>
-        {emptyState.buttonText}
-      </a>
-    )}
-  </div>
-)}
-
+        <MessageNoStories
+          text="Ви ще нічого не публікували, поділіться своєю першою історією!"
+          buttonText="Опублікувати історію"
+          linkTo="/stories/new"
+        />
+      )}
 
       {!error && page < totalPages && (
         <button
@@ -220,7 +209,25 @@ export default function TravellersStories( { source, emptyState, limit }: Travel
         >
           {isLoading ? "Завантаження..." : "Показати ще"}
         </button>
+      )}  */}
+
+      {!isLoading && !error && stories.length === 0 && (
+        <MessageNoStories
+          text={
+            source?.type === "saved"
+              ? "У вас ще немає збережених історій, мершій збережіть вашу першу історію!"
+              : "Ви ще нічого не публікували, поділіться своєю першою історією!"
+          }
+          buttonText={
+            source?.type === "saved" ? "До історій" : "Опублікувати історію"
+          }
+          linkTo={
+            source?.type === "saved" ? "/stories" : "/stories/new"
+          }
+          isLarge={source?.type === "own"}
+        />
       )}
+
     </section>
   );
 }
