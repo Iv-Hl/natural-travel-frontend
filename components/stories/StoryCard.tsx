@@ -18,7 +18,6 @@ interface StoryCardProps {
   isSaved: boolean;
   isSaving?: boolean;
   onSave: (id: string) => void;
-  isSaving?: boolean;
 }
 
 export default function StoryCard({

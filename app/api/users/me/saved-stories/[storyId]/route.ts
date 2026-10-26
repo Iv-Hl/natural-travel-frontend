@@ -48,6 +48,12 @@ async function updateSavedStory(
         signal: AbortSignal.timeout(15_000),
       },
     );
+    if ([204, 205, 304].includes(upstream.status)) {
+      return new Response(null, {
+        status: upstream.status,
+        headers: { "Cache-Control": "no-store" },
+      });
+    }
     return new Response(await upstream.text(), {
       status: upstream.status,
       headers: {

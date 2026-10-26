@@ -25,6 +25,11 @@ interface AuthContextValue {
   isLoading: boolean;
   refreshAuth: () => Promise<void>;
   updateUser: (user: CurrentUser) => void;
+  updateSavedStory: (
+    userId: string,
+    storyId: string,
+    isSaved: boolean,
+  ) => void;
   logout: () => Promise<void>;
 }
 
@@ -100,8 +105,8 @@ export default function AuthProvider({
   );
 
   const value = useMemo(
-    () => ({ user, isLoading, refreshAuth, updateUser, logout }),
-    [user, isLoading, refreshAuth, updateUser, logout],
+    () => ({ user, isLoading, refreshAuth, updateUser, updateSavedStory, logout }),
+    [user, isLoading, refreshAuth, updateUser, updateSavedStory, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

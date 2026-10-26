@@ -108,7 +108,7 @@ export default function TravellersStories({
           const data: StoriesResponse = await response.json();
 
           storiesData = data.stories;
-          pagesCount = data.totalPages;
+          pagesCount = data.totalPages ?? data.pagination?.totalPages ?? 0;
         }
 
         if (signal.aborted) return;
@@ -128,7 +128,7 @@ export default function TravellersStories({
           setStories((prev) => [...prev, ...storiesData]);
         }
 
-        setTotalPages(data.totalPages ?? data.pagination?.totalPages ?? 0);
+        setTotalPages(pagesCount);
         setPage(pageNumber);
       } catch (err) {
         if (signal.aborted) return;
