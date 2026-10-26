@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 64px 20px;
+  padding: 64px 0px;
 }
 
 .imageWrapper {
@@ -79,12 +79,12 @@
 
 /* Tablet: from 768px */
 
-@media (min-width: 768px) {
+@media screen and (min-width: 768px) {
   .hero {
     flex-direction: column;
     align-items: stretch;
     gap: 24px;
-    padding: 64px 32px;
+    padding: 64px 0px;
   }
 
   .imageWrapper {
@@ -122,13 +122,13 @@
 
 /* Desktop: from 1440px */
 
-@media (min-width: 1440px) {
+@media screen and (min-width: 1440px) {
   .hero {
     flex-direction: row-reverse;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    padding: 64px 40px;
+    padding: 64px 0px;
   }
 
   .content {
