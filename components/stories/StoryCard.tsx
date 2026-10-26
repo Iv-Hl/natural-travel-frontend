@@ -9,6 +9,7 @@ export interface Story {
   date: string;
   ownerId: string;
   authorName?: string;
+  rate?: number;
   savesCount?: number;
 }
 
@@ -76,6 +77,7 @@ export default function StoryCard({
                   : "Зберегти статтю"
             }
             aria-pressed={isSaved}
+            aria-busy={isSaving}
           >
             {isSaving ? (
               <span className={styles.loader} aria-hidden="true" />

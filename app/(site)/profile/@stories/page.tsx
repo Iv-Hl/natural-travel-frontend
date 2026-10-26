@@ -2,7 +2,8 @@ export default function SavedStoriesPage() {
   return (
     <>
       <h1>Збережені історії</h1>
-      <p>Тут будуть збережені історії користувача.</p>
+      <TravellersStories variant="saved" />
     </>
   );
 }
+import TravellersStories from "@/components/profile/TravellersStories";

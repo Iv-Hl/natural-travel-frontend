@@ -17,17 +17,42 @@
   gap: 20px;
 }
 
+.logoIcon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  background-color: var(--color-brand);
+  -webkit-mask: url("/images/eco-mark.svg") center / contain no-repeat;
+  mask: url("/images/eco-mark.svg") center / contain no-repeat;
+}
 .logoLink {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
   text-decoration: none;
+  transition: transform 180ms ease;
+}
+
+.logoLink:hover {
+  transform: scale(1.05);
+}
+
+.logoLink:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.logoLink:active {
+  transform: scale(0.98);
 }
 
 .logoText {
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 1rem;
   line-height: 1.1;
   color: var(--color-main-text);
   text-align: left;
@@ -79,6 +104,7 @@
   text-decoration: none;
   font-size: 0.75rem;
   font-weight: bold;
+  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
 }
 
 .socialIcon {
@@ -206,5 +232,50 @@
     grid-column: 1 / -1;
     grid-row: 2;
     text-align: center;
+  }
+}
+
+.navList a:focus-visible,
+.socialList a:focus-visible,
+.logoLink:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.socialList a:focus-visible {
+  outline: 3px solid var(--color-primary-active-bg);
+  outline-offset: 3px;
+  background-color: var(--color-primary-button-bg);
+  color: var(--color-primary-text);
+  transform: scale(1.08);
+}
+.socialList a:hover {
+  background-color: var(--color-primary-button-bg);
+  color: var(--color-primary-text);
+  transform: scale(1.08);
+}
+.socialList a:active {
+  background-color: var(--color-primary-active-bg);
+  color: var(--color-primary-active-text);
+  transform: scale(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logoLink, .logoText { transition: none; }
+}
+
+:global([data-theme="dark"]) .socialList a:hover,
+:global([data-theme="dark"]) .socialList a:focus-visible {
+  background-color: var(--color-primary-hover-bg);
+  color: var(--color-primary-hover-text);
+}
+
+:global([data-theme="dark"]) .socialList a:focus-visible {
+  outline-color: var(--color-focus);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .socialList a {
+    transition: none;
   }
 }

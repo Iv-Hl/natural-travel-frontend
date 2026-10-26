@@ -3,7 +3,7 @@
   min-height: 767px;
   padding: 64px 0;
   background-color: var(--color-scheme-2-background);
-  color: var(--color-scheme-1-text);
+  color: var(--color-mantis-darkest);
   overflow: hidden;
 }
 
@@ -63,10 +63,10 @@
   height: 48px;
   padding: 12px;
   margin-top: 40px;
-  border: 1px solid var(--color-scheme-2-accent);
+  border: 1px solid var(--color-mantis-dark);
   border-radius: 8px;
-  background-color: var(--color-scheme-2-accent);
-  color: var(--color-scheme-1-text);
+  background-color: var(--color-mantis-dark);
+  color: var(--color-mantis-darkest);
   cursor: pointer;
   transition:
     background-color 0.2s ease,
@@ -76,14 +76,14 @@
 
 .navButton:hover,
 .navButton:focus-visible {
-  background-color: var(--color-scheme-2-foreground);
-  color: var(--color-scheme-2-text);
+  background-color: var(--color-scheme-2-background);
+  color: var(--color-white);
 }
 
 .navButton:active {
-  border-color: var(--color-scheme-2-accent);
-  background-color: var(--color-scheme-2-accent);
-  opacity: 0.8;
+  border-color: var(--color-mantis-darker);
+  background-color: var(--color-mantis-darker);
+  color: var(--color-white);
 }
 
 .navButton:disabled,
@@ -106,11 +106,12 @@
   box-sizing: border-box;
   width: 100%;
   min-height: 48px;
-  padding: 10px 16px;
-  border: 1px solid var(--color-scheme-2-accent);
+  padding: 6px 12px;
+  margin: 40px auto 0;
+  border: 1px solid var(--color-mantis-dark);
   border-radius: 6px;
-  background-color: var(--color-scheme-2-accent);
-  color: var(--color-scheme-2-text);
+  background-color: var(--color-mantis-dark);
+  color: var(--color-white);
   font-size: 16px;
   font-weight: 500;
   text-align: center;
@@ -121,25 +122,47 @@
     color 0.2s ease;
 }
 
-.endStoriesButton {
-  max-width: 335px;
-  margin: 40px auto 0;
-  padding: 6px 12px;
-}
-
-.endStoriesButton:hover,
-.viewButton:hover,
-.endStoriesButton:focus-visible,
-.viewButton:focus-visible {
-  background-color: var(--color-scheme-2-foreground);
-  color: var(--color-scheme-2-text);
+.endStoriesButton:hover {
+  background-color: var(--color-mantis-lighter);
+  color: var(--color-mantis-darkest);
 }
 
 .endStoriesButton:focus-visible {
-  outline: 2px solid var(--color-scheme-2-accent);
+  outline: 2px solid var(--color-mantis-dark);
   outline-offset: 3px;
 }
 
+.endStoriesButton:active {
+  background-color: var(--color-mantis-dark);
+  color: var(--color-white);
+}
+
+.viewButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 16px;
+  border: 1px solid var(--color-mantis-dark);
+  border-radius: 6px;
+  background-color: var(--color-mantis-dark);
+  color: var(--color-white);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.viewButton:hover,
+.viewButton:focus-visible {
+  background-color: var(--color-mantis-lighter);
+  color: var(--color-mantis-darkest);
+}
 .loadingGrid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -172,25 +195,30 @@
     justify-content: center;
     min-height: 48px;
     padding: 6px 12px;
-    border: 1px solid var(--color-scheme-2-accent);
+    border: 1px solid var(--color-mantis-dark);
     border-radius: 6px;
-    background-color: var(--color-scheme-2-accent);
-    color: var(--color-scheme-2-text);
+    background-color: var(--color-mantis-dark);
+    color: var(--color-white);
     font-size: 16px;
     text-decoration: none;
     transition: background-color 0.2s ease;
   }
 
   .allStoriesButton:hover {
-    background-color: var(--color-scheme-2-foreground);
-    color: var(--color-scheme-2-text);
+    background-color: var(--color-mantis-lighter);
+    border: 1px solid var(--color-mantis-dark);
+    color: var(--color-mantis-darkest);
   }
 
   .allStoriesButton:focus-visible {
-    outline: 2px solid var(--color-scheme-2-accent);
-    color: var(--color-scheme-2-text);
+    outline: 2px solid var(--color-mantis-dark);
+    color: var(--color-mantis-darkest);
   }
-
+  .allStoriesButton:active {
+    background-color: var(--color-mantis-dark);
+    border: 1px solid var(--color-mantis-dark);
+    color: var(--color-white);
+  }
   .loadingGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

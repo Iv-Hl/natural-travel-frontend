@@ -7,7 +7,7 @@
   box-sizing: border-box;
   overflow: hidden;
   border-radius: 12px;
-  border: 1px solid var(--color-scheme-1-border);
+  border: 0px solid var(--color-scheme-1-border);
   background-color: var(--color-scheme-2-foreground);
 }
 
@@ -50,7 +50,7 @@
   flex-wrap: wrap;
   gap: 8px;
   margin: 0;
-  color: var(--color-scheme-1-text);
+  color: var(--color-scheme-2-text);
   font-size: 12px;
   font-weight: 600;
   line-height: 1.5;
@@ -82,7 +82,7 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
-  color: var(--color-scheme-1-text);
+  color: var(--color-scheme-2-text);
 }
 
 .cardActions {
@@ -103,9 +103,9 @@
   min-height: 48px;
   box-sizing: border-box;
   padding: 8px 12px;
-  border: 1px solid var(--color-scheme-2-border);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
-  background: var(--opacity-neutral-darkest-5);
+  background: rgb(0 0 0 / 5%);
   color: var(--color-scheme-2-text);
   font-size: 14px;
   font-weight: 500;
@@ -128,20 +128,18 @@
   height: 48px;
   padding: 6px;
   box-sizing: border-box;
-  border: 1px solid var(--color-scheme-1-border);
+  border: 1px solid var(--color-scheme-2-border);
   border-radius: 6px;
-  background: var(--opacity-white-5);
-  color: var(--color-scheme-1-text);
+  background: rgb(0 0 0 / 5%);
+  color: var(--color-mantis-darkest);
   cursor: pointer;
   transition:
     background-color 0.25s ease,
     color 0.25s ease,
     border-color 0.25s ease;
 }
-
-.buttonSvg {
-  fill: var(--color-scheme-1-text);
-  stroke: var(--color-scheme-1-text);
+.saveButton .svg {
+  color: var(--color-scheme-2-text);
 }
 
 .saveButton img {
@@ -149,32 +147,46 @@
   transition: filter 0.25s ease;
 }
 
+[data-theme="dark"] .saveButton img,
+[data-theme="dark"] .saves img {
+  filter: brightness(0) invert(1);
+}
+
 .viewButton:hover,
 .saveButton:hover,
 .viewButton:focus-visible,
 .saveButton:focus-visible {
-  border-color: var(--color-scheme-1-accent);
-  background-color: var(--color-mantis-dark);
-  color: var(--color-scheme-2-text);
+  border-color: var(--color-mantis-dark);
+  background-color: var(--color-mantis-lighter);
+  color: var(--color-mantis-darkest);
+}
+
+.viewButton:focus-visible,
+.saveButton:focus-visible {
+  outline: 2px solid var(--color-mantis-dark);
+  outline-offset: 3px;
+}
+
+.saveButton:hover img,
+.saveButton:focus-visible img {
+  filter: brightness(0);
 }
 
 .viewButton:active,
 .saveButton:active {
-  border-color: var(--color-scheme-1-accent);
-  background-color: var(--color-scheme-1-accent);
+  border-color: var(--color-mantis-darker);
+  background-color: var(--color-mantis-darker);
   color: var(--color-white);
 }
 
-.saveButton:hover img,
 .saveButton:active img,
-.saveButton:focus-visible img,
 .saveButton.saved img {
   filter: brightness(0) invert(1);
 }
 
 .saveButton.saved {
-  border-color: var(--color-scheme-1-accent);
-  background-color: var(--color-scheme-1-accent);
+  border-color: var(--color-mantis-darker);
+  background-color: var(--color-mantis-darker);
   color: var(--color-white);
 }
 
@@ -201,7 +213,7 @@
 
 @media (min-width: 768px) {
   .card {
-    width: 340px;
+    width: 100%;
     height: 522px;
   }
 
@@ -225,7 +237,7 @@
 
 @media (min-width: 1440px) {
   .card {
-    width: 421px;
+    width: 100%;
     height: 633px;
   }
 
