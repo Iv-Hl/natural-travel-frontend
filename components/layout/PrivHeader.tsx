@@ -7,9 +7,12 @@ import styles from "./PrivHeader.module.css";
 import Modal from "@/components/modals/Modal";
 import MobileMenu from "@/components/authbar/PrivAuthBar"; 
 import { useAuth } from "@/components/providers/AuthProvider";
+import ConfirmModal from "@/components/ConfirmModal/ConfirmModal";
+import ThemeSwitcher from "@/components/themeswitcher/ThemeSwitcher";
 
 export default function PrivHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
   const { user, logout } = useAuth();
 
   useEffect(() => {
@@ -36,13 +39,14 @@ export default function PrivHeader() {
     setIsMenuOpen(false);
   };
 
-  // Безпечний обробник виходу з try/catch (виправляє помилку TypeScript)
+  const requestLogout = () => {
+    closeMenu();
+    setIsLogoutConfirmOpen(true);
+  };
+
   const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error("Не вдалося вийти з системи:", error);
-    }
+    await logout();
+    setIsLogoutConfirmOpen(false);
   };
 
   const userName = user?.name || "Імʼя";
@@ -65,42 +69,59 @@ export default function PrivHeader() {
         <Link href={routes.profile}>Мій Профіль</Link>
       </nav>
 
-      <div className={styles.desktopActions}>
-        <Link href={routes.newStory} className={styles.publishBtn}>
-          Опублікувати статтю
-        </Link>
-       
-        <div className={styles.userProfile}>
-          <div className={styles.avatar}>
-            {user?.avatarUrl ? (
-              <img src={user.avatarUrl} alt={userName} className={styles.avatarImg} />
-            ) : (
-              <svg className={styles.avatarIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>
+      <div className={styles.actions}>
+        <ThemeSwitcher />
+
+        <div className={styles.desktopActions}>
+          <Link href={routes.newStory} className={styles.publishBtn}>
+            Опублікувати статтю
+          </Link>
+
+          <div className={styles.userProfile}>
+            <div className={styles.avatar}>
+              {user?.avatarUrl ? (
+                <img src={user.avatarUrl} alt={userName} className={styles.avatarImg} />
+              ) : (
+                <svg className={styles.avatarIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>
+                </svg>
+              )}
+            </div>
+            <span className={styles.userName}>{userName}</span>
+            <button
+              className={styles.logoutBtn}
+              aria-label="Вийти"
+              type="button"
+              onClick={requestLogout}
+            >
+              <svg className={styles.logoutIcon} aria-hidden="true" focusable="false">
+                <use href="/icons/symbol-defs.svg#icon-logout" />
               </svg>
-            )}
+            </button>
           </div>
-          <span className={styles.userName}>{userName}</span>
-          <button 
-            className={styles.logoutBtn} 
-            aria-label="Вийти" 
+        </div>
+
+        <div className={styles.tabletActions}>
+          <Link href={routes.newStory} className={styles.tabletPublishBtn}>
+            Опублікувати статтю
+          </Link>
+
+          <button
+            className={styles.menuButton}
+            aria-label="Відкрити меню"
             type="button"
-            onClick={handleLogout}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => setIsMenuOpen(true)}
           >
-            <svg className={styles.logoutIcon} aria-hidden="true" focusable="false">
-              <use href="/icons/symbol-defs.svg#icon-logout" />
+            <svg className={styles.menuIcon} aria-hidden="true" focusable="false">
+              <use href="/icons/symbol-defs.svg#icon-burger-menu" />
             </svg>
           </button>
-         </div>
-      </div>
+        </div>
 
-      <div className={styles.tabletActions}>
-        <Link href={routes.newStory} className={styles.tabletPublishBtn}>
-          Опублікувати статтю
-        </Link>
-       
         <button
-          className={styles.menuButton}
+          className={`${styles.menuButton} ${styles.mobileMenuButton}`}
           aria-label="Відкрити меню"
           type="button"
           aria-expanded={isMenuOpen}
@@ -113,23 +134,21 @@ export default function PrivHeader() {
         </button>
       </div>
 
-      <button
-        className={`${styles.menuButton} ${styles.mobileMenuButton}`}
-        aria-label="Відкрити меню"
-        type="button"
-        aria-expanded={isMenuOpen}
-        aria-controls="mobile-navigation"
-        onClick={() => setIsMenuOpen(true)}
-      >
-        <svg className={styles.menuIcon} aria-hidden="true" focusable="false">
-          <use href="/icons/symbol-defs.svg#icon-burger-menu" />
-        </svg>
-      </button>
-
       {isMenuOpen && (
         <Modal onClose={closeMenu} ariaLabel="Мобільна навігація">
-          <MobileMenu onClose={closeMenu} />
+          <MobileMenu onClose={closeMenu} onRequestLogout={requestLogout} />
         </Modal>
+      )}
+
+      {isLogoutConfirmOpen && (
+        <ConfirmModal
+          title="Вийти з акаунта?"
+          description="Ви впевнені, що хочете вийти з акаунта?"
+          cancelButtonText="Скасувати"
+          confirmButtonText="Вийти"
+          onCancel={() => setIsLogoutConfirmOpen(false)}
+          onConfirm={handleLogout}
+        />
       )}
     </header>
   );

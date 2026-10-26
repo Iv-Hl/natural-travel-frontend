@@ -79,20 +79,15 @@ import { useAuth } from "@/components/providers/AuthProvider";
 
 type MobileMenuAuthProps = {
     onClose: () => void;
+    onRequestLogout: () => void;
 }
 
-export default function MobileMenuAuth({ onClose }: MobileMenuAuthProps) {
-    const { user, logout } = useAuth();
+export default function MobileMenuAuth({
+    onClose,
+    onRequestLogout,
+}: MobileMenuAuthProps) {
+    const { user } = useAuth();
     const userName = user?.name || "Імʼя";
-
-    const handleLogout = async () => {
-        try {
-            await logout();
-            onClose();
-        } catch (error) {
-            console.error("Не вдалося вийти з системи:", error);
-        }
-    };
 
     return (
         <div className={styles.menu}>
@@ -139,7 +134,7 @@ export default function MobileMenuAuth({ onClose }: MobileMenuAuthProps) {
                         className={styles.logoutBtn} 
                         aria-label="Вийти" 
                         type="button"
-                        onClick={handleLogout}
+                        onClick={onRequestLogout}
                     >
                         <svg className={styles.logoutIcon} aria-hidden="true" focusable="false">
                             <use href="/icons/symbol-defs.svg#icon-logout" />
