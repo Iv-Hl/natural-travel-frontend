@@ -13,7 +13,6 @@
     color: var(--color-scheme-1-text);
 }
 
-
 .list {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -34,7 +33,6 @@
     font-size: 16px;
     color: var(--color-scheme-1-text);
 }
-
 
 .card {
     display: flex;
@@ -87,7 +85,7 @@
     justify-content: center;
     width: 100%;
     height: 48px;
-    padding: 51, 5px 12px;
+    padding: 51.5px 12px;
     border: 1px solid var(--color-scheme-2-border);
     border-radius: 6px;
     background-color: rgba(0, 0, 0, 0.05);
@@ -113,7 +111,6 @@
     border-color: var(--color-scheme-1-text);
     color: #ffffff;
 }
-
 
 .actions {
     display: flex;
@@ -154,6 +151,14 @@
     cursor: not-allowed;
 }
 
+.errorWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+    text-align: center;
+}
 
 @media (min-width: 768px) {
     .title {
@@ -161,8 +166,7 @@
     }
 
     .list {
-        grid-template-columns: repeat(3, 218px);
-        justify-content: center;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .card {
@@ -170,14 +174,13 @@
     }
 }
 
-
-@media (min-width: 1366px) {
+@media (min-width: 1440px) {
     .title {
         font-size: 56px;
     }
 
     .list {
-        grid-template-columns: repeat(4, 310px);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .card {
