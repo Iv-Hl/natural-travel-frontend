@@ -53,7 +53,7 @@ export default function TravellersStories({
 
   return (
     <TravellersStoriesContent
-      key={travellerId ? `public:${travellerId}` : `private:${variant}`}
+      key={travellerId ? `public:${travellerId}:${limit}` : `private:${variant}`}
       travellerId={travellerId}
       variant={variant}
       limit={limit}
@@ -86,8 +86,6 @@ function TravellersStoriesContent({
   const pendingSavesRef = useRef(new Set<string>());
   const failedPageRef = useRef(1);
   const isMountedRef = useRef(false);
-  const saveVersionRef = useRef(0);
-  const savedRatesRef = useRef(new Map<string, { rate: number; version: number }>());
 
   useEffect(() => {
     storiesCountRef.current = stories.length;
@@ -95,7 +93,6 @@ function TravellersStoriesContent({
 
   const fetchStories = useCallback(
     async (pageNumber: number, signal: AbortSignal) => {
-      const saveVersion = saveVersionRef.current;
       setIsLoading(true);
       setError(null);
 
@@ -132,14 +129,6 @@ function TravellersStoriesContent({
 
         if (signal.aborted) return;
 
-        // A save may finish while this GET is still returning its older snapshot.
-        storiesData = storiesData.map((story) => {
-          const update = savedRatesRef.current.get(story._id);
-          return update && update.version > saveVersion
-            ? { ...story, rate: update.rate, savesCount: update.rate }
-            : story;
-        });
-
         if (pageNumber === 1) {
           previousCountRef.current = 0;
           shouldScrollRef.current = false;
@@ -174,13 +163,6 @@ function TravellersStoriesContent({
 
   useEffect(() => {
     isMountedRef.current = true;
-    setStories([]);
-    setPage(1);
-    setTotalPages(0);
-    previousCountRef.current = 0;
-    storiesCountRef.current = 0;
-    shouldScrollRef.current = false;
-    failedPageRef.current = 1;
     const controller = new AbortController();
 
     void fetchStories(1, controller.signal);
@@ -240,15 +222,7 @@ function TravellersStoriesContent({
       void queryClient.invalidateQueries({ queryKey: ["stories"] });
       if (!isMountedRef.current) return;
 
-      if (typeof data.rate === "number") {
-        savedRatesRef.current.set(storyId, {
-          rate: data.rate,
-          version: ++saveVersionRef.current,
-        });
-      }
-
       if (!travellerId && variant === "saved" && !nextIsSaved) {
-        // Refill the page after deletion so pagination cannot skip a story.
         loadMoreControllerRef.current?.abort();
         const controller = new AbortController();
         loadMoreControllerRef.current = controller;
