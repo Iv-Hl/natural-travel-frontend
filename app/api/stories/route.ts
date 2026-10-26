@@ -1,54 +1,31 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-const API_URL = process.env.BACKEND_API_URL;
+export async function GET(request: Request) {
+  const backendUrl = process.env.BACKEND_API_URL ?? "http://localhost:3000";
 
-export async function POST(request: NextRequest) {
-  if (!API_URL) {
-    return NextResponse.json(
-      { message: "BACKEND_API_URL is not configured" },
-      { status: 500 },
-    );
-  }
+  const requestUrl = new URL(request.url);
+  const targetUrl = new URL("/api/stories", backendUrl);
 
-  let formData: FormData;
+  targetUrl.search = requestUrl.search;
 
   try {
-    formData = await request.formData();
-  } catch {
-    return NextResponse.json(
-      { message: "Invalid form data." },
-      { status: 400 },
-    );
-  }
-
-  const baseUrl = API_URL.replace(/\/+$/, "");
-  const storiesUrl = baseUrl.endsWith("/api")
-    ? `${baseUrl}/stories`
-    : `${baseUrl}/api/stories`;
-
-  try {
-    const response = await fetch(storiesUrl, {
-      method: "POST",
+    const upstream = await fetch(targetUrl, {
       headers: {
         Accept: "application/json",
-        cookie: request.headers.get("cookie") ?? "",
       },
-      body: formData,
       cache: "no-store",
     });
 
-    const body = await response.text();
-
-    return new Response(body, {
-      status: response.status,
+    return new Response(await upstream.text(), {
+      status: upstream.status,
       headers: {
         "Content-Type":
-          response.headers.get("content-type") ?? "application/json",
+          upstream.headers.get("content-type") ?? "application/json",
       },
     });
   } catch {
     return NextResponse.json(
-      { message: "Failed to connect to the backend." },
+      { message: "Сервер тимчасово недоступний. Спробуйте пізніше." },
       { status: 502 },
     );
   }

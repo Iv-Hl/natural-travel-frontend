@@ -6,21 +6,24 @@ interface RouteContext {
   }>;
 }
 
-export async function GET(_request: Request, { params }: RouteContext) {
+export async function GET(request: Request, { params }: RouteContext) {
   const { userId } = await params;
   const backendUrl = process.env.BACKEND_API_URL ?? "http://localhost:3000";
 
   try {
-    const response = await fetch(
-      new URL(
-        `/api/users/${encodeURIComponent(userId)}`,
-        backendUrl.replace(/\/+$/, ""),
-      ),
-      {
-        method: "GET",
-        cache: "no-store",
-      },
+    const incomingUrl = new URL(request.url);
+
+    const apiUrl = new URL(
+      `/api/users/${encodeURIComponent(userId)}`,
+      backendUrl.replace(/\/+$/, ""),
     );
+
+    apiUrl.search = incomingUrl.search;
+
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      cache: "no-store",
+    });
 
     const data = await response.text();
 

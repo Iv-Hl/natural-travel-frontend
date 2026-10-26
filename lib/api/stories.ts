@@ -1,22 +1,62 @@
-// FormData дає змогу відправити фото разом із текстовими полями.
+import axios from "axios";
 
-// Не вказуємо Content-Type вручну — браузер сам додасть потрібний multipart/form-data із межею boundary.
+export interface Category {
+  id: string;
+  category: string;
+}
 
-// Якщо сервер поверне помилку, функція викине Error, який ми обробимо у формі.
+export interface Story {
+  _id: string;
+  img: string;
+  title: string;
+  article: string;
+  category: string;
+  rate: number;
+  ownerId: {
+    _id: string;
+    name: string;
+  };
+  date: string;
+}
 
-export async function createStory(formData: FormData) {
-  const response = await fetch("/api/stories", {
-    method: "POST",
-    body: formData,
+export interface StoriesMeta {
+  totalItems: number;
+  itemCount: number;
+  itemsPerPage: number;
+  totalPages: number;
+  currentPage: number;
+}
+
+export interface StoriesResponse {
+  status: string;
+  code: number;
+  data: {
+    stories: Story[];
+    meta: StoriesMeta;
+  };
+}
+
+export async function getCategories(): Promise<Category[]> {
+  const response = await axios.get<Category[]>("/api/categories");
+  return response.data;
+}
+
+export async function getStories({
+  page = 1,
+  limit = 10,
+  category,
+}: {
+  page?: number;
+  limit?: number;
+  category?: string;
+} = {}): Promise<StoriesResponse["data"]> {
+  const response = await axios.get<StoriesResponse>("/api/stories", {
+    params: {
+      page,
+      limit,
+      ...(category ? { category } : {}),
+    },
   });
 
-  const data = await response.json().catch(() => null);
-  console.log("Create story status:", response.status);
-  console.log("Create story response:", data);
-
-  if (!response.ok) {
-    throw new Error(data?.message ?? "Не вдалося створити історію");
-  }
-
-  return data;
+  return response.data.data;
 }

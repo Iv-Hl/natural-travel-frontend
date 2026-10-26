@@ -17,12 +17,19 @@ export interface CurrentUser {
   name: string;
   email: string;
   avatarUrl?: string | null;
+  savedArticles: string[];
 }
 
 interface AuthContextValue {
   user: CurrentUser | null;
   isLoading: boolean;
   refreshAuth: () => Promise<void>;
+  updateUser: (user: CurrentUser) => void;
+  updateSavedStory: (
+    userId: string,
+    storyId: string,
+    isSaved: boolean,
+  ) => void;
   logout: () => Promise<void>;
 }
 
@@ -55,6 +62,10 @@ export default function AuthProvider({
     }
   }, []);
 
+  const updateUser = useCallback((nextUser: CurrentUser) => {
+    setUser(nextUser);
+  }, []);
+
   useEffect(() => {
     if (hasSessionCookie) void refreshAuth();
   }, [hasSessionCookie, refreshAuth]);
@@ -76,9 +87,26 @@ export default function AuthProvider({
     router.refresh();
   }, [router]);
 
+  const updateSavedStory = useCallback(
+    (userId: string, storyId: string, isSaved: boolean) => {
+      setUser((current) => {
+        if (!current || current._id !== userId) return current;
+
+        const savedArticles = current.savedArticles ?? [];
+        return {
+          ...current,
+          savedArticles: isSaved
+            ? [...new Set([...savedArticles, storyId])]
+            : savedArticles.filter((id) => id !== storyId),
+        };
+      });
+    },
+    [],
+  );
+
   const value = useMemo(
-    () => ({ user, isLoading, refreshAuth, logout }),
-    [user, isLoading, refreshAuth, logout],
+    () => ({ user, isLoading, refreshAuth, updateUser, updateSavedStory, logout }),
+    [user, isLoading, refreshAuth, updateUser, updateSavedStory, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

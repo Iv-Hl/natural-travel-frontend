@@ -1,37 +1,26 @@
 import { NextResponse } from "next/server";
 
-const API_URL = process.env.BACKEND_API_URL;
-
 export async function GET() {
-  if (!API_URL) {
-    return NextResponse.json(
-      { message: "BACKEND_API_URL is not configured" },
-      { status: 500 },
-    );
-  }
-
-  const baseUrl = API_URL.replace(/\/+$/, "");
-  const categoriesUrl = baseUrl.endsWith("/api")
-    ? `${baseUrl}/categories`
-    : `${baseUrl}/api/categories`;
+  const backendUrl = process.env.BACKEND_API_URL ?? "http://localhost:3000";
 
   try {
-    const response = await fetch(categoriesUrl, {
+    const upstream = await fetch(new URL("/api/categories", backendUrl), {
+      headers: {
+        Accept: "application/json",
+      },
       cache: "no-store",
     });
 
-    const body = await response.text();
-
-    return new Response(body, {
-      status: response.status,
+    return new Response(await upstream.text(), {
+      status: upstream.status,
       headers: {
         "Content-Type":
-          response.headers.get("content-type") ?? "application/json",
+          upstream.headers.get("content-type") ?? "application/json",
       },
     });
   } catch {
     return NextResponse.json(
-      { message: "Failed to connect to the backend." },
+      { message: "Сервер тимчасово недоступний. Спробуйте пізніше." },
       { status: 502 },
     );
   }
