@@ -5,6 +5,8 @@ import StoryCard, { type Story } from "../stories/StoryCard";
 import styles from "./TravellersStories.module.css";
 import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
 import { getTravellerStories } from "@/lib/api/travellers";
+import { useAuth } from "@/components/providers/AuthProvider";
+import ErrorWhileSavingModal from "../ErrorWhileSavingModal/ErrorWhileSavingModal";
 import MessageNoStories from "../shared/MessageNoStories";
 
 interface StoriesResponse {
@@ -33,6 +35,8 @@ const DESKTOP_BREAKPOINT = 1440;
 export default function TravellersStories({
   travellerId,
 }: TravellersStoriesProps) {
+  const { user, isLoading: isAuthLoading, updateSavedStory } = useAuth();
+  const userId = user?._id;
   const [stories, setStories] = useState<Story[]>([]);
   const [limit, setLimit] = useState(4);
   useEffect(() => {
@@ -59,6 +63,8 @@ export default function TravellersStories({
   const [savedStoryIds, setSavedStoryIds] = useState<string[]>([]);
   const [savingStoryIds, setSavingStoryIds] = useState<string[]>([]);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const currentUserIdRef = useRef(userId);
 
   const firstNewStoryRef = useRef<HTMLLIElement | null>(null);
   const shouldScrollRef = useRef(false);
@@ -151,6 +157,20 @@ export default function TravellersStories({
 
     void fetchStories(1, controller.signal);
 
+    return () => {
+      controller.abort();
+      loadMoreControllerRef.current?.abort();
+    };
+  }, [fetchStories]);
+
+  useEffect(() => {
+    currentUserIdRef.current = userId;
+
+    if (!userId) setSavedStoryIds([]);
+    if (isAuthLoading || !userId) return;
+
+    const controller = new AbortController();
+
     const fetchSavedStoryIds = async () => {
       try {
         const response = await fetchWithAuth(
@@ -189,11 +209,8 @@ export default function TravellersStories({
 
     void fetchSavedStoryIds();
 
-    return () => {
-      controller.abort();
-      loadMoreControllerRef.current?.abort();
-    };
-  }, [fetchStories]);
+    return () => controller.abort();
+  }, [userId, isAuthLoading]);
 
   useEffect(() => {
     if (shouldScrollRef.current && firstNewStoryRef.current) {
@@ -216,6 +233,13 @@ export default function TravellersStories({
   };
 
   const handleSave = async (storyId: string) => {
+    if (isAuthLoading) return;
+
+    if (!userId) {
+      setShowAuthModal(true);
+      return;
+    }
+
     if (savingStoryIds.includes(storyId)) return;
 
     const isSaved = savedStoryIds.includes(storyId);
@@ -233,6 +257,8 @@ export default function TravellersStories({
       if (!response.ok)
         throw new Error(data.message ?? "Не вдалося змінити збережену історію");
 
+      if (currentUserIdRef.current !== userId) return;
+
       if (data.savedArticles) {
         setSavedStoryIds(data.savedArticles.map(String));
       } else {
@@ -240,6 +266,14 @@ export default function TravellersStories({
           isSaved ? prev.filter((id) => id !== storyId) : [...prev, storyId],
         );
       }
+
+      updateSavedStory(
+        userId,
+        storyId,
+        data.savedArticles
+          ? data.savedArticles.map(String).includes(storyId)
+          : !isSaved,
+      );
 
       if (typeof data.rate === "number") {
         setStories((prev) =>
@@ -303,7 +337,7 @@ export default function TravellersStories({
               story={story}
               isSaved={savedStoryIds.includes(story._id)}
               onSave={handleSave}
-              isSaving={savingStoryIds.includes(story._id)}
+              isSaving={isAuthLoading || savingStoryIds.includes(story._id)}
             />
           </li>
         ))}
@@ -332,6 +366,10 @@ export default function TravellersStories({
         >
           {isLoading ? "Завантаження..." : "Показати ще"}
         </button>
+      )}
+
+      {showAuthModal && (
+        <ErrorWhileSavingModal onClose={() => setShowAuthModal(false)} />
       )}
     </section>
   );
