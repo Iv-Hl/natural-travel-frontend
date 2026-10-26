@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useRef, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/components/providers/AuthProvider";
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
+import ErrorWhileSavingModal from "@/components/ErrorWhileSavingModal/ErrorWhileSavingModal";
 import StoryCard, {
   type Story as StoryCardStory,
 } from "@/components/stories/StoryCard";
@@ -9,6 +12,7 @@ import {
   getCategories,
   getStories,
   type Story as ApiStory,
+  type StoriesResponse,
 } from "@/lib/api/stories";
 import styles from "./StoriesPage.module.css";
 
@@ -27,6 +31,12 @@ function toCardStory(story: ApiStory): StoryCardStory {
 }
 
 export default function StoriesPage() {
+  const { user, isLoading: isAuthLoading, updateSavedStory } = useAuth();
+  const queryClient = useQueryClient();
+  const pendingSavesRef = useRef(new Set<string>());
+  const [savingIds, setSavingIds] = useState<string[]>([]);
+  const [saveError, setSaveError] = useState("");
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
 
   const categoriesQuery = useQuery({
@@ -44,8 +54,51 @@ export default function StoriesPage() {
       }),
   });
 
-  const handleSave = (storyId: string) => {
-    console.info("Saving stories is not implemented yet:", storyId);
+  const handleSave = async (storyId: string) => {
+    if (isAuthLoading || pendingSavesRef.current.has(storyId)) return;
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    const wasSaved = user.savedArticles.includes(storyId);
+    pendingSavesRef.current.add(storyId);
+    setSavingIds((current) => [...current, storyId]);
+    setSaveError("");
+    try {
+      const response = await fetchWithAuth(
+        `/api/users/me/saved-stories/${encodeURIComponent(storyId)}`,
+        { method: wasSaved ? "DELETE" : "POST" },
+      );
+      const result: { rate?: number; savedArticles?: string[]; message?: string } =
+        await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(result.message ?? "Не вдалося змінити збережену статтю.");
+      }
+      updateSavedStory(
+        user._id,
+        storyId,
+        result.savedArticles?.includes(storyId) ?? !wasSaved,
+      );
+      const rate = result.rate;
+      if (typeof rate === "number") {
+        queryClient.setQueriesData<StoriesResponse["data"]>(
+          { queryKey: ["stories"] },
+          (current) => current ? {
+            ...current,
+            stories: current.stories.map((story) =>
+              story._id === storyId ? { ...story, rate } : story,
+            ),
+          } : current,
+        );
+      }
+      void queryClient.invalidateQueries({ queryKey: ["stories"] });
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "Не вдалося зберегти статтю.");
+    } finally {
+      pendingSavesRef.current.delete(storyId);
+      setSavingIds((current) => current.filter((id) => id !== storyId));
+    }
   };
 
   const stories = (storiesQuery.data?.stories ?? []).map(toCardStory);
@@ -53,6 +106,7 @@ export default function StoriesPage() {
   return (
     <section className={styles.container}>
       <h1 className={styles.title}>Статті</h1>
+      {saveError && <p role="alert">{saveError}</p>}
 
       <div className={styles.filter}>
         {categoriesQuery.isLoading ? (
@@ -143,10 +197,18 @@ export default function StoriesPage() {
         <ul className={styles.list}>
           {stories.map((story) => (
             <li key={story._id} className={styles.item}>
-              <StoryCard story={story} isSaved={false} onSave={handleSave} />
+              <StoryCard
+                story={story}
+                isSaved={user?.savedArticles.includes(story._id) ?? false}
+                isSaving={isAuthLoading || savingIds.includes(story._id)}
+                onSave={handleSave}
+              />
             </li>
           ))}
         </ul>
+      )}
+      {showAuthModal && (
+        <ErrorWhileSavingModal onClose={() => setShowAuthModal(false)} />
       )}
     </section>
   );

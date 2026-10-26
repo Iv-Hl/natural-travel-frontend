@@ -5,8 +5,9 @@ import Link from "next/link";
 import { routes } from "@/constants/routes";
 import styles from "./PrivHeader.module.css";
 import Modal from "@/components/modals/Modal";
-import MobileMenu from "@/components/authbar/PrivAuthBar"; 
+import MobileMenu from "@/components/authbar/PrivAuthBar";
 import { useAuth } from "@/components/providers/AuthProvider";
+import ThemeToggle from "@/components/themeswitcher/ThemeSwitcher";
 
 export default function PrivHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -65,11 +66,12 @@ export default function PrivHeader() {
         <Link href={routes.profile}>Мій Профіль</Link>
       </nav>
 
+      <ThemeToggle />
       <div className={styles.desktopActions}>
         <Link href={routes.newStory} className={styles.publishBtn}>
           Опублікувати статтю
         </Link>
-       
+
         <div className={styles.userProfile}>
           <div className={styles.avatar}>
             {user?.avatarUrl ? (
@@ -81,9 +83,9 @@ export default function PrivHeader() {
             )}
           </div>
           <span className={styles.userName}>{userName}</span>
-          <button 
-            className={styles.logoutBtn} 
-            aria-label="Вийти" 
+          <button
+            className={styles.logoutBtn}
+            aria-label="Вийти"
             type="button"
             onClick={handleLogout}
           >
@@ -98,7 +100,7 @@ export default function PrivHeader() {
         <Link href={routes.newStory} className={styles.tabletPublishBtn}>
           Опублікувати статтю
         </Link>
-       
+
         <button
           className={styles.menuButton}
           aria-label="Відкрити меню"
