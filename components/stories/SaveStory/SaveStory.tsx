@@ -3,40 +3,42 @@
 import { useState } from "react";
 import axios from "axios";
 import styles from "./SaveStory.module.css";
+import  ErrorWhileSavingModal  from "../../ErrorWhileSavingModal/ErrorWhileSavingModal";
+import { useAuth } from "@/components/providers/AuthProvider";
 
 interface SaveStoryProps {
   storyId: string;
+  initialIsSaved: boolean;
 }
 
-export default function SaveStory({ storyId }: SaveStoryProps) {
-  // Имитация авторизации (поставьте false, чтобы протестировать состояние для гостя)
-  const isAuthenticated = true; 
+export default function SaveStory({ storyId, initialIsSaved }: SaveStoryProps) {
+  
+  const  isAuthenticated  = useAuth(); 
 
-  const [isSaved, setIsSaved] = useState(false);
+  const [isSaved, setIsSaved] = useState<boolean>(initialIsSaved);
   const [isLoading, setIsLoading] = useState(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
 
   const handleSaveToggle = async () => {
-    // 1. Взаимодействие с НЕ авторизованным пользователем 
+    
     if (!isAuthenticated) {
       alert("Будь ласка, увійдіть в акаунт, щоб зберігати історії!");
       return;
     }
 
-    // 2. Взаимодействие с авторизованным пользователем
     setIsLoading(true);
     try {
       if (isSaved) {
-        // Наш бэкенд DELETE-роут удаления истории
+        
         await axios.delete(`/api/users/me/saved-stories/${storyId}`);
         setIsSaved(false);
       } else {
-        // Наш бэкенд POST-роут сохранения истории
+       
         await axios.post(`/api/users/me/saved-stories/${storyId}`);
         setIsSaved(true);
       }
     } catch (error) {
-      alert("Помилка при зміні статусу історії:");
-      console.error(error);
+      setIsErrorModalOpen(true);
     } finally {
       setIsLoading(false);
     }
@@ -72,6 +74,11 @@ export default function SaveStory({ storyId }: SaveStoryProps) {
           )}
         </button>
       </div>
+      {isErrorModalOpen && (
+      <ErrorWhileSavingModal
+          onClose={() => setIsErrorModalOpen(false)}
+        />
+        )}
     </section>
   );
 }

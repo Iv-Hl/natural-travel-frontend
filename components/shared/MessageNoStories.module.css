@@ -3,12 +3,12 @@
   flex-direction: column;
   align-items: stretch;
   gap: 32px;
+  /* width: 100%; */
   max-width: 335px;
   min-height: 235px;
   padding: 40px 16px;
   border-radius: var(--radius-lg);
   background-color: var(--color-block-bg);
-  font-size: 18px;
 }
 
 .text {
@@ -16,7 +16,7 @@
   margin: 0;
   color: var(--color-main-text);
   font-family: var(--font-main);
-  
+  font-size: 18px;
   font-weight: 700;
   line-height: 1.4;
   letter-spacing: -0.01em;
@@ -40,6 +40,7 @@
   text-decoration: none;
 }
 
+
 .buttonSmall {
   width: 131px;
   max-width: 100%;
@@ -59,14 +60,12 @@
   .card {
     width: 533px;
     max-width: 100%;
-    padding: 40px 32px;
-    font-size: 20px;
   }
 
   .text {
     max-width: 100%;
     min-height: 50px;
-    
+    font-size: 18px;
     font-weight: 700;
     line-height: 1.4;
     letter-spacing: -0.01em;

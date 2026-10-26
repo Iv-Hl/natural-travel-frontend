@@ -190,16 +190,6 @@ export default function TravellersStories( { source, emptyState, limit }: Travel
         ))}
       </ul>
 
-  
-
-      {/* {!isLoading && !error && stories.length === 0 && (
-        <MessageNoStories
-          text="Ви ще нічого не публікували, поділіться своєю першою історією!"
-          buttonText="Опублікувати історію"
-          linkTo="/stories/new"
-        />
-      )}
-
       {!error && page < totalPages && (
         <button
           type="button"
@@ -209,13 +199,13 @@ export default function TravellersStories( { source, emptyState, limit }: Travel
         >
           {isLoading ? "Завантаження..." : "Показати ще"}
         </button>
-      )}  */}
+      )}  
 
       {!isLoading && !error && stories.length === 0 && (
         <MessageNoStories
           text={
             source?.type === "saved"
-              ? "У вас ще немає збережених історій, мершій збережіть вашу першу історію!"
+              ? "У вас ще немає збережених історій, мерщій збережіть вашу першу історію!"
               : "Ви ще нічого не публікували, поділіться своєю першою історією!"
           }
           buttonText={
