@@ -1,15 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
 import axios from "axios";
 import toast from "react-hot-toast";
 
 import { getTravellers, type Traveller } from "@/lib/api/travellers";
+import { Loader } from "@/components/Loader/Loader";
+import { TravellerCard } from "@/components/TravellerCard/TravellerCard";
 import css from "./TravellersList.module.css";
 
-interface TravellersSectionProps {
+interface TravellersPageProps {
   perPage?: number;
 }
 
@@ -24,11 +24,9 @@ const getErrorMessage = (error: unknown): string => {
   return "Сталася невідома помилка";
 };
 
-const Travellerspage = ({ perPage = 12 }: TravellersSectionProps) => {
-  const router = useRouter();
-
+export default function TravellersPage({ perPage = 12 }: TravellersPageProps) {
   const [travellers, setTravellers] = useState<Traveller[]>([]);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(0); // 0 = ще нічого не завантажено
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -65,7 +63,6 @@ const Travellerspage = ({ perPage = 12 }: TravellersSectionProps) => {
   useEffect(() => {
     void loadPage(1, 0);
   }, [loadPage]);
-
   useEffect(() => {
     const index = scrollToIndexRef.current;
     if (index === null) return;
@@ -83,51 +80,20 @@ const Travellerspage = ({ perPage = 12 }: TravellersSectionProps) => {
 
   return (
     <section className={css.section}>
-      <div className="travellerlist-container container">
-        <h2 className={css.title}>Мандрівники</h2>
+      <div className="container">
+        <h1 className={css.title}>Мандрівники</h1>
 
         {travellers.length > 0 && (
           <ul className={css.list} ref={listRef}>
             {travellers.map((traveller) => (
               <li key={traveller._id} className={css.item}>
-                <article className={css.card}>
-                  <div className={css.avatarWrapper}>
-                    <Image
-                      src={
-                        traveller.avatarUrl ||
-                        "https://ac.goit.global/fullstack/react/default-avatar.jpg"
-                      }
-                      alt={traveller.name}
-                      width={130}
-                      height={130}
-                      className={css.avatar}
-                    />
-                  </div>
-
-                  <h3 className={css.name}>{traveller.name}</h3>
-
-                  <p className={css.articles}>
-                    Статей: {traveller.articlesAmount ?? 0}
-                  </p>
-
-                  <button
-                    type="button"
-                    className={css.profileLink}
-                    onClick={() => router.push(`/travellers/${traveller._id}`)}
-                  >
-                    Переглянути профіль
-                  </button>
-                </article>
+                <TravellerCard traveller={traveller} />
               </li>
             ))}
           </ul>
         )}
 
-        {travellers.length === 0 && isLoading && (
-          <p className={css.message} role="status">
-            Завантаження мандрівників...
-          </p>
-        )}
+        {travellers.length === 0 && isLoading && <Loader />}
 
         {travellers.length === 0 && !isLoading && page > 0 && (
           <p className={css.message}>Мандрівників поки немає.</p>
@@ -149,6 +115,4 @@ const Travellerspage = ({ perPage = 12 }: TravellersSectionProps) => {
       </div>
     </section>
   );
-};
-
-export default Travellerspage;
+}
