@@ -17,13 +17,18 @@ export interface CurrentUser {
   name: string;
   email: string;
   avatarUrl?: string | null;
+  savedArticles: string[];
 }
+
+export type UserProfileUpdate = Pick<CurrentUser, "_id"> &
+  Partial<Pick<CurrentUser, "name" | "email" | "avatarUrl">>;
 
 interface AuthContextValue {
   user: CurrentUser | null;
   isLoading: boolean;
   refreshAuth: () => Promise<void>;
-  updateUser: (user: CurrentUser) => void;
+  updateUser: (user: UserProfileUpdate) => void;
+  updateSavedStory: (userId: string, storyId: string, isSaved: boolean) => void;
   logout: () => Promise<void>;
 }
 
@@ -56,8 +61,19 @@ export default function AuthProvider({
     }
   }, []);
 
-  const updateUser = useCallback((nextUser: CurrentUser) => {
-    setUser(nextUser);
+  const updateUser = useCallback((nextUser: UserProfileUpdate) => {
+    setUser((current) => {
+      if (!current || current._id !== nextUser._id) return current;
+
+      return {
+        ...current,
+        ...(nextUser.name !== undefined ? { name: nextUser.name } : {}),
+        ...(nextUser.email !== undefined ? { email: nextUser.email } : {}),
+        ...(nextUser.avatarUrl !== undefined
+          ? { avatarUrl: nextUser.avatarUrl }
+          : {}),
+      };
+    });
   }, []);
 
   useEffect(() => {
@@ -81,9 +97,26 @@ export default function AuthProvider({
     router.refresh();
   }, [router]);
 
+  const updateSavedStory = useCallback(
+    (userId: string, storyId: string, isSaved: boolean) => {
+      setUser((current) => {
+        if (!current || current._id !== userId) return current;
+
+        const savedArticles = current.savedArticles ?? [];
+        return {
+          ...current,
+          savedArticles: isSaved
+            ? [...new Set([...savedArticles, storyId])]
+            : savedArticles.filter((id) => id !== storyId),
+        };
+      });
+    },
+    [],
+  );
+
   const value = useMemo(
-    () => ({ user, isLoading, refreshAuth, updateUser, logout }),
-    [user, isLoading, refreshAuth, updateUser, logout],
+    () => ({ user, isLoading, refreshAuth, updateUser, logout, updateSavedStory }),
+    [user, isLoading, refreshAuth, updateUser, logout, updateSavedStory],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

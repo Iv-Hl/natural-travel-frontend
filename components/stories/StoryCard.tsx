@@ -16,15 +16,15 @@ export interface Story {
 interface StoryCardProps {
   story: Story;
   isSaved: boolean;
-  onSave: (id: string) => void;
   isSaving?: boolean;
+  onSave: (id: string) => void;
 }
 
 export default function StoryCard({
   story,
   isSaved,
-  onSave,
   isSaving = false,
+  onSave,
 }: StoryCardProps) {
   return (
     <article className={styles.card}>
@@ -35,17 +35,17 @@ export default function StoryCard({
           width={421}
           height={421}
           className={styles.image}
+          sizes="(max-width: 767px) 100vw, (max-width: 1439px) 50vw, 33vw"
         />
       </div>
 
       <div className={styles.cardContent}>
         <p className={styles.author}>
-          <span>{story.authorName ?? "Автор"}</span>
-          <span>·</span>
+          <span>{story.authorName || "Автор"}</span>
+          <span aria-hidden="true">·</span>
 
           <span className={styles.saves}>
             {story.rate ?? story.savesCount ?? 0}
-
             <Image src="/icons/bookmark.svg" alt="" width={16} height={16} />
           </span>
         </p>
@@ -59,14 +59,24 @@ export default function StoryCard({
 
           <button
             type="button"
-            className={styles.saveButton}
+            className={`${styles.saveButton} ${isSaved ? styles.saved : ""}`}
             onClick={() => onSave(story._id)}
             disabled={isSaving}
-            aria-label={isSaved ? "Прибрати зі збережених" : "Зберегти історію"}
+            aria-label={
+              isSaving
+                ? "Збереження статті"
+                : isSaved
+                  ? "Прибрати зі збережених"
+                  : "Зберегти статтю"
+            }
             aria-pressed={isSaved}
             aria-busy={isSaving}
           >
-            <Image src="/icons/bookmark.svg" alt="" width={24} height={24} />
+            {isSaving ? (
+              <span className={styles.loader} aria-hidden="true" />
+            ) : (
+              <Image src="/icons/bookmark.svg" alt="" width={24} height={24} />
+            )}
           </button>
         </div>
       </div>

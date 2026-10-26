@@ -37,19 +37,45 @@ const MAX_UPLOADED_AVATAR_SIZE = 1024 * 1024;
 const CROP_SIZE = 256;
 const OUTPUT_SIZE = 512;
 
-async function updateProfile(formData: FormData): Promise<CurrentUser> {
+type UpdatedProfile = Pick<CurrentUser, "_id" | "name" | "email" | "avatarUrl">;
+
+async function updateProfile(
+  formData: FormData,
+  userId: string,
+): Promise<UpdatedProfile> {
   const response = await fetchWithAuth("/api/users/me", {
     method: "PATCH",
     body: formData,
   });
-  const result = (await response.json().catch(() => null)) as
-    (CurrentUser & { message?: string }) | null;
+  const result: unknown = await response.json().catch(() => null);
 
-  if (!response.ok || !result) {
-    throw new Error(result?.message ?? "Не вдалося оновити профіль.");
+  if (!response.ok) {
+    const message =
+      result && typeof result === "object" && "message" in result
+        ? result.message
+        : null;
+    throw new Error(
+      typeof message === "string" ? message : "Не вдалося оновити профіль.",
+    );
   }
 
-  return result;
+  if (
+    !result || typeof result !== "object" ||
+    !("_id" in result) || result._id !== userId ||
+    !("name" in result) || typeof result.name !== "string" ||
+    !("email" in result) || typeof result.email !== "string" ||
+    !("avatarUrl" in result) ||
+    (result.avatarUrl !== null && typeof result.avatarUrl !== "string")
+  ) {
+    throw new Error("Сервер повернув некоректні дані профілю.");
+  }
+
+  return {
+    _id: userId,
+    name: result.name,
+    email: result.email,
+    avatarUrl: result.avatarUrl,
+  };
 }
 
 function PencilIcon() {
@@ -108,7 +134,7 @@ export default function TravellerInfo({ userId }: TravellerInfoProps) {
   });
 
   const profileMutation = useMutation({
-    mutationFn: updateProfile,
+    mutationFn: (formData: FormData) => updateProfile(formData, userId),
     onSuccess: (updatedUser) => {
       updateUser(updatedUser);
       queryClient.setQueryData<GetTravellerByIdResponse>(
@@ -141,6 +167,7 @@ export default function TravellerInfo({ userId }: TravellerInfoProps) {
         .required("Введіть ім’я."),
     }),
     onSubmit: async (values, helpers) => {
+      helpers.setStatus(undefined);
       const formData = new FormData();
       formData.append("name", values.name.trim());
       setFeedback(null);
@@ -599,6 +626,13 @@ export default function TravellerInfo({ userId }: TravellerInfoProps) {
                     unoptimized
                     className={styles.cropImage}
                     draggable={false}
+                    onError={() => {
+                      setSelectedAvatar(null);
+                      setFeedback({
+                        message: "Не вдалося відкрити фото. Оберіть інше зображення.",
+                        isError: true,
+                      });
+                    }}
                     onLoad={(event) =>
                       setImageSize({
                         width: event.currentTarget.naturalWidth,

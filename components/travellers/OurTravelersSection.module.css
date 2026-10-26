@@ -40,7 +40,7 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 1.5;
-  color: var(--color-white);
+  color: var(--color-primary-text);
   text-decoration: none;
   transition: background-color 0.2s ease;
 }
@@ -122,7 +122,7 @@
 
 .profileLink {
   --profile-hover-bg: #4a9849;
-  --profile-hover-text: var(--color-white);
+  --profile-hover-text: var(--color-primary-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -219,12 +219,6 @@
   color: var(--color-white);
 }
 
-.navBtn:hover:not(:disabled) .iconWrapper svg,
-.navBtn:focus-visible:not(:disabled) .iconWrapper svg,
-.navBtn:active:not(:disabled) .iconWrapper svg {
-  filter: brightness(0) invert(1);
-}
-
 :global([data-theme="dark"]) .navBtn:hover:not(:disabled),
 :global([data-theme="dark"]) .navBtn:focus-visible:not(:disabled) {
   border-color: var(--color-primary-hover-bg);
@@ -257,10 +251,6 @@
   width: 16px;
   height: 16px;
   fill: currentColor;
-}
-
-:global([data-theme="dark"]) .iconWrapper svg {
-  filter: brightness(0) invert(1);
 }
 
 /* ===== Планшет: 2 × 2 ===== */

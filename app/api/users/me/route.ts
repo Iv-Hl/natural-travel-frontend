@@ -56,7 +56,11 @@ export async function PATCH(request: Request) {
     .join("; ");
   const contentType = request.headers.get("content-type");
 
-  if (!contentType?.startsWith("multipart/form-data;")) {
+  if (
+    !contentType ||
+    !/^multipart\/form-data\s*;/i.test(contentType) ||
+    !/;\s*boundary=(?:"[^"\r\n]+"|[^;\s"]+)(?:\s*;|\s*$)/i.test(contentType)
+  ) {
     return NextResponse.json(
       { message: "Очікується форма з даними профілю." },
       { status: 400, headers: { "Cache-Control": "no-store" } },
@@ -75,6 +79,13 @@ export async function PATCH(request: Request) {
       redirect: "manual",
       signal: AbortSignal.timeout(30_000),
     });
+
+    if ([204, 205, 304].includes(upstream.status)) {
+      return new Response(null, {
+        status: upstream.status,
+        headers: { "Cache-Control": "no-store" },
+      });
+    }
 
     return new Response(await upstream.text(), {
       status: upstream.status,
