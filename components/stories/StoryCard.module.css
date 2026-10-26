@@ -7,7 +7,7 @@
   box-sizing: border-box;
   overflow: hidden;
   border-radius: 12px;
-  border: 0px solid var(--color-scheme-1-border);
+  border: 1px solid var(--color-scheme-1-border);
   background-color: var(--color-scheme-2-foreground);
 }
 
@@ -50,7 +50,7 @@
   flex-wrap: wrap;
   gap: 8px;
   margin: 0;
-  color: var(--color-scheme-2-text);
+  color: var(--color-scheme-1-text);
   font-size: 12px;
   font-weight: 600;
   line-height: 1.5;
@@ -63,8 +63,12 @@
   gap: 4px;
   min-width: 25px;
   white-space: nowrap;
+  color: var(--color-scheme-1-text);
 }
-
+.cardSvg {
+  fill: var(--color-scheme-1-text);
+  stroke: var(--color-scheme-1-text);
+}
 .title {
   display: -webkit-box;
   width: 100%;
@@ -78,7 +82,7 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
-  color: var(--color-scheme-2-text);
+  color: var(--color-scheme-1-text);
 }
 
 .cardActions {
@@ -101,7 +105,7 @@
   padding: 8px 12px;
   border: 1px solid var(--color-scheme-2-border);
   border-radius: 6px;
-  background: rgb(0 0 0 / 5%);
+  background: var(--opacity-neutral-darkest-5);
   color: var(--color-scheme-2-text);
   font-size: 14px;
   font-weight: 500;
@@ -124,19 +128,22 @@
   height: 48px;
   padding: 6px;
   box-sizing: border-box;
-  border: 1px solid var(--color-scheme-2-border);
+  border: 1px solid var(--color-scheme-1-border);
   border-radius: 6px;
-  background: rgb(0 0 0 / 5%);
-  color: var(--color-mantis-darkest);
+  background: var(--opacity-white-5);
+  color: var(--color-scheme-1-text);
   cursor: pointer;
   transition:
     background-color 0.25s ease,
     color 0.25s ease,
     border-color 0.25s ease;
 }
-.saveButton .svg {
-  color: var(--color-scheme-2-text);
+
+.buttonSvg {
+  fill: var(--color-scheme-1-text);
+  stroke: var(--color-scheme-1-text);
 }
+
 .saveButton img {
   display: block;
   transition: filter 0.25s ease;
@@ -146,21 +153,15 @@
 .saveButton:hover,
 .viewButton:focus-visible,
 .saveButton:focus-visible {
-  border-color: var(--color-mantis-dark);
-  background-color: var(--color-mantis-lighter);
-  color: var(--color-mantis-darkest);
-}
-
-.viewButton:focus-visible,
-.saveButton:focus-visible {
-  outline: 2px solid var(--color-mantis-dark);
-  outline-offset: 3px;
+  border-color: var(--color-scheme-1-accent);
+  background-color: var(--color-mantis-dark);
+  color: var(--color-scheme-2-text);
 }
 
 .viewButton:active,
 .saveButton:active {
-  border-color: var(--color-mantis-darker);
-  background-color: var(--color-mantis-darker);
+  border-color: var(--color-scheme-1-accent);
+  background-color: var(--color-scheme-1-accent);
   color: var(--color-white);
 }
 
@@ -172,8 +173,8 @@
 }
 
 .saveButton.saved {
-  border-color: var(--color-mantis-darker);
-  background-color: var(--color-mantis-darker);
+  border-color: var(--color-scheme-1-accent);
+  background-color: var(--color-scheme-1-accent);
   color: var(--color-white);
 }
 
@@ -186,8 +187,8 @@
   width: 20px;
   height: 20px;
   box-sizing: border-box;
-  border: 2px solid var(--color-mantis-lighter);
-  border-top-color: var(--color-mantis-darker);
+  border: 2px solid var(--color-scheme-1-border);
+  border-top-color: var(--color-scheme-1-accent);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
