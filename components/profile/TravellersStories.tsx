@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import StoryCard, { type Story } from "../stories/StoryCard";
 import styles from "./TravellersStories.module.css";
 import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
+import { getTravellerStories } from "@/lib/api/travellers";
 import MessageNoStories from "../shared/MessageNoStories";
 
 interface StoriesResponse {
@@ -14,14 +15,38 @@ interface StoriesResponse {
   totalPages: number;
 }
 
-const LIMIT = 6;
+interface TravellersStoriesProps {
+  travellerId?: string;
+}
 
-export default function TravellersStories() {
+const DESKTOP_BREAKPOINT = 1440;
+
+export default function TravellersStories({
+  travellerId,
+}: TravellersStoriesProps) {
   const [stories, setStories] = useState<Story[]>([]);
+  const [limit, setLimit] = useState(4);
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(
+      `(min-width: ${DESKTOP_BREAKPOINT}px)`,
+    );
+
+    const updateLimit = () => {
+      setLimit(mediaQuery.matches ? 6 : 4);
+    };
+
+    updateLimit();
+    mediaQuery.addEventListener("change", updateLimit);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateLimit);
+    };
+  }, []);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [failedPage, setFailedPage] = useState<number | null>(null);
   const [savedStoryIds, setSavedStoryIds] = useState<string[]>([]);
 
   const firstNewStoryRef = useRef<HTMLLIElement | null>(null);
@@ -29,6 +54,7 @@ export default function TravellersStories() {
   const previousCountRef = useRef(0);
   const storiesCountRef = useRef(0);
   const loadMoreControllerRef = useRef<AbortController | null>(null);
+  const effectiveLimit = travellerId ? limit : 6;
 
   useEffect(() => {
     storiesCountRef.current = stories.length;
@@ -40,40 +66,63 @@ export default function TravellersStories() {
       setError(null);
 
       try {
-        const response = await fetchWithAuth(
-          `/api/users/me/stories?page=${pageNumber}&limit=${LIMIT}`,
-          {
-            signal,
-          },
-        );
+        let storiesData: Story[];
+        let pagesCount: number;
 
-        if (!response.ok) {
-          throw new Error("Не вдалося завантажити історії");
+        if (travellerId) {
+          const data = await getTravellerStories(
+            travellerId,
+            pageNumber,
+            effectiveLimit,
+            signal,
+          );
+
+          storiesData = data.stories.map((story) => ({
+            ...story,
+            savesCount: story.rate,
+            authorName: data.user.name,
+          }));
+
+          pagesCount = data.pagination.totalPages;
+        } else {
+          const response = await fetchWithAuth(
+            `/api/users/me/stories?page=${pageNumber}&limit=6`,
+            { signal },
+          );
+
+          if (!response.ok) {
+            throw new Error("Не вдалося завантажити історії");
+          }
+
+          const data: StoriesResponse = await response.json();
+
+          storiesData = data.stories;
+          pagesCount = data.totalPages;
         }
 
-        const data: StoriesResponse = await response.json();
-
         if (signal.aborted) return;
+        setFailedPage(null);
 
         if (pageNumber === 1) {
           previousCountRef.current = 0;
           shouldScrollRef.current = false;
-          storiesCountRef.current = data.stories.length;
+          storiesCountRef.current = storiesData.length;
 
-          setStories(data.stories);
+          setStories(storiesData);
         } else {
           previousCountRef.current = storiesCountRef.current;
-          shouldScrollRef.current = data.stories.length > 0;
-          storiesCountRef.current += data.stories.length;
+          shouldScrollRef.current = storiesData.length > 0;
+          storiesCountRef.current += storiesData.length;
 
-          setStories((prev) => [...prev, ...data.stories]);
+          setStories((prev) => [...prev, ...storiesData]);
         }
 
-        setTotalPages(data.totalPages);
+        setTotalPages(pagesCount);
         setPage(pageNumber);
       } catch (err) {
         if (signal.aborted) return;
 
+        setFailedPage(pageNumber);
         setError(
           err instanceof Error ? err.message : "Сталася невідома помилка",
         );
@@ -83,7 +132,7 @@ export default function TravellersStories() {
         }
       }
     },
-    [],
+    [travellerId, effectiveLimit],
   );
 
   useEffect(() => {
@@ -132,10 +181,7 @@ export default function TravellersStories() {
     loadMoreControllerRef.current?.abort();
     loadMoreControllerRef.current = controller;
 
-    void fetchStories(
-      error && stories.length === 0 ? 1 : page + 1,
-      controller.signal,
-    );
+    void fetchStories(failedPage ?? 1, controller.signal);
   };
 
   return (
@@ -179,9 +225,13 @@ export default function TravellersStories() {
 
       {!isLoading && !error && stories.length === 0 && (
         <MessageNoStories
-          text="Ви ще нічого не публікували, поділіться своєю першою історією!"
-          buttonText="Опублікувати історію"
-          linkTo="/stories/new"
+          text={
+            travellerId
+              ? "Цей мандрівник ще не опублікував жодної історії."
+              : "Ви ще нічого не публікували, поділіться своєю першою історією!"
+          }
+          buttonText={travellerId ? "Назад до історій" : "Опублікувати історію"}
+          linkTo={travellerId ? "/stories" : "/stories/new"}
         />
       )}
 
