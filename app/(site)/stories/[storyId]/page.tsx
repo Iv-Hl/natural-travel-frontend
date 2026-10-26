@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import StoryDetails, {
   type Story,
 } from "@/components/stories/StoryDetails/StoryDetails";
+import RecommendedStories from "@/components/stories/RecommendedStories/RecommendedStories";
 
 type StoryPageProps = {
   params: Promise<{
@@ -51,7 +52,11 @@ export default async function StoryPage({ params }: StoryPageProps) {
 
       {/* Тут компонент збереження історії іншого учасника */}
 
-      {/* Тут компонент рекомендованих історій іншого учасника */}
+      <RecommendedStories
+        key={story._id}
+        storyId={story._id}
+        categoryId={story.category?._id}
+      />
     </>
   );
 }
