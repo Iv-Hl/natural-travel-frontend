@@ -39,20 +39,7 @@
 }
 
 .button:hover {
-  border-color: var(--color-primary-hover-bg);
-  background-color: var(--color-primary-hover-bg);
-  color: var(--color-primary-hover-text);
-}
-
-.button:active {
-  border-color: var(--color-primary-active-bg);
-  background-color: var(--color-primary-active-bg);
-  color: var(--color-primary-active-text);
-}
-
-.button:focus-visible {
-  outline: 3px solid var(--color-focus);
-  outline-offset: 3px;
+  background-color: var(--color-main-text);
 }
 
 @media (min-width: 768px) {

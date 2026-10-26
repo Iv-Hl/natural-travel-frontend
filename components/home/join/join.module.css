@@ -73,7 +73,7 @@
     text-align: center;
     text-decoration: none;
 
-    color: var(--color-primary-text);
+    color: #fff;
     background-color: var(--color-primary-button-bg, #4a9849);
 
     transition:
@@ -90,7 +90,7 @@
 
 .link:active {
     border-color: var(--color-primary-active-bg, #254c24);
-    color: var(--color-primary-active-text);
+    color: #fff;
     background-color: var(--color-primary-active-bg, #254c24);
 }
 

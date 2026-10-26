@@ -17,7 +17,6 @@
   display: flex;
   width: 100%;
   align-items: center;
-  justify-content: space-between;
 }
 
 .header {
@@ -39,7 +38,6 @@
   align-items: center;
   justify-content: center;
 }
-
 @media (min-width: 1312px) {
   .page {
     width: 1312px;

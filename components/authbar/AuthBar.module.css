@@ -47,11 +47,15 @@
     width: 100%;
     height: 32px;
     justify-content: center;
-    background-color: var(--color-control-bg);
+    background-color: rgba(0, 0, 0, 0.05);
     
 }
 
-.login:hover { background-color: var(--color-primary-hover-bg); color: var(--color-primary-hover-text); border-color: var(--color-primary-hover-bg); }
+.login:hover {
+    background-color: var(--color-primary-button-bg);
+    color: var(--color-primary-text);
+    border: 1px solid transparent;
+}
 
 .register {
     display:flex;
@@ -66,7 +70,11 @@
 
 }
 
-.register:hover { background-color: var(--color-primary-hover-bg); color: var(--color-primary-hover-text); border-color: var(--color-primary-hover-bg); }
+.register:hover {
+    background-color: var(--color-primary-hover-bg);
+    color: var(--color-primary-hover-text);
+    border: 1px solid var(--color-primary-button-bg);
+}
 
 @media (min-width: 768px) {
 
@@ -79,6 +87,3 @@
 
 
 
-
-.login:focus-visible, .register:focus-visible, .navigation a:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
-.login:active, .register:active { background-color: var(--color-primary-active-bg); color: var(--color-primary-active-text); border-color: var(--color-primary-active-bg); }
