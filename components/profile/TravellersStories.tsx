@@ -4,7 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import StoryCard, { type Story } from "../stories/StoryCard";
 import styles from "./TravellersStories.module.css";
 import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
+import { getTravellerStories } from "@/lib/api/travellers";
 import MessageNoStories from "../shared/MessageNoStories";
+import ErrorWhileSavingModal from "../ErrorWhileSavingModal/ErrorWhileSavingModal";
 import { useAuth } from "../providers/AuthProvider";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -23,13 +25,47 @@ interface SavedStoriesResponse {
   message?: string;
 }
 
-const LIMIT = 6;
+interface TravellersStoriesProps {
+  variant?: "own" | "saved";
+  travellerId?: string;
+}
+
+const DESKTOP_BREAKPOINT = 1440;
 
 export default function TravellersStories({
   variant = "own",
-}: {
-  variant?: "own" | "saved";
-}) {
+  travellerId,
+}: TravellersStoriesProps) {
+  const [publicLimit, setPublicLimit] = useState<number | null>(null);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(
+      `(min-width: ${DESKTOP_BREAKPOINT}px)`,
+    );
+    const updateLimit = () => setPublicLimit(mediaQuery.matches ? 6 : 4);
+    updateLimit();
+    mediaQuery.addEventListener("change", updateLimit);
+    return () => mediaQuery.removeEventListener("change", updateLimit);
+  }, []);
+
+  const limit = travellerId ? publicLimit : 6;
+  if (limit === null) return <p>Завантаження...</p>;
+
+  return (
+    <TravellersStoriesContent
+      key={travellerId ? `public:${travellerId}` : `private:${variant}`}
+      travellerId={travellerId}
+      variant={variant}
+      limit={limit}
+    />
+  );
+}
+
+function TravellersStoriesContent({
+  variant = "own",
+  travellerId,
+  limit,
+}: TravellersStoriesProps & { limit: number }) {
   const { user, isLoading: isAuthLoading, updateSavedStory } = useAuth();
   const queryClient = useQueryClient();
   const savedStoryIds = user?.savedArticles ?? [];
@@ -40,6 +76,7 @@ export default function TravellersStories({
   const [error, setError] = useState<string | null>(null);
   const [savingStoryIds, setSavingStoryIds] = useState<string[]>([]);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const firstNewStoryRef = useRef<HTMLLIElement | null>(null);
   const shouldScrollRef = useRef(false);
@@ -48,6 +85,9 @@ export default function TravellersStories({
   const loadMoreControllerRef = useRef<AbortController | null>(null);
   const pendingSavesRef = useRef(new Set<string>());
   const failedPageRef = useRef(1);
+  const isMountedRef = useRef(false);
+  const saveVersionRef = useRef(0);
+  const savedRatesRef = useRef(new Map<string, { rate: number; version: number }>());
 
   useEffect(() => {
     storiesCountRef.current = stories.length;
@@ -55,40 +95,66 @@ export default function TravellersStories({
 
   const fetchStories = useCallback(
     async (pageNumber: number, signal: AbortSignal) => {
+      const saveVersion = saveVersionRef.current;
       setIsLoading(true);
       setError(null);
 
       try {
-        const response = await fetchWithAuth(
-          `/api/users/me/${variant === "saved" ? "saved-stories" : "stories"}?page=${pageNumber}&limit=${LIMIT}`,
-          {
-            signal,
-          },
-        );
+        let storiesData: Story[];
+        let pagesCount: number;
 
-        if (!response.ok) {
-          throw new Error("Не вдалося завантажити історії");
+        if (travellerId) {
+          const data = await getTravellerStories(
+            travellerId,
+            pageNumber,
+            limit,
+            signal,
+          );
+          storiesData = data.stories.map((story) => ({
+            ...story,
+            savesCount: story.rate,
+            authorName: data.user.name,
+          }));
+          pagesCount = data.pagination.totalPages;
+        } else {
+          const response = await fetchWithAuth(
+            `/api/users/me/${variant === "saved" ? "saved-stories" : "stories"}?page=${pageNumber}&limit=${limit}`,
+            { signal },
+          );
+
+          if (!response.ok) {
+            throw new Error("Не вдалося завантажити історії");
+          }
+          const data: StoriesResponse = await response.json();
+          storiesData = data.stories;
+          pagesCount = data.totalPages ?? data.pagination?.totalPages ?? 0;
         }
 
-        const data: StoriesResponse = await response.json();
-
         if (signal.aborted) return;
+
+        // A save may finish while this GET is still returning its older snapshot.
+        storiesData = storiesData.map((story) => {
+          const update = savedRatesRef.current.get(story._id);
+          return update && update.version > saveVersion
+            ? { ...story, rate: update.rate, savesCount: update.rate }
+            : story;
+        });
 
         if (pageNumber === 1) {
           previousCountRef.current = 0;
           shouldScrollRef.current = false;
-          storiesCountRef.current = data.stories.length;
+          storiesCountRef.current = storiesData.length;
 
-          setStories(data.stories);
+          setStories(storiesData);
         } else {
           previousCountRef.current = storiesCountRef.current;
-          shouldScrollRef.current = data.stories.length > 0;
-          storiesCountRef.current += data.stories.length;
+          shouldScrollRef.current = storiesData.length > 0;
+          storiesCountRef.current += storiesData.length;
 
-          setStories((prev) => [...prev, ...data.stories]);
+          setStories((prev) => [...prev, ...storiesData]);
         }
 
-        setTotalPages(data.totalPages ?? data.pagination?.totalPages ?? 0);
+        setTotalPages(pagesCount);
         setPage(pageNumber);
       } catch (err) {
         if (signal.aborted) return;
@@ -103,15 +169,24 @@ export default function TravellersStories({
         }
       }
     },
-    [variant],
+    [variant, travellerId, limit],
   );
 
   useEffect(() => {
+    isMountedRef.current = true;
+    setStories([]);
+    setPage(1);
+    setTotalPages(0);
+    previousCountRef.current = 0;
+    storiesCountRef.current = 0;
+    shouldScrollRef.current = false;
+    failedPageRef.current = 1;
     const controller = new AbortController();
 
     void fetchStories(1, controller.signal);
 
     return () => {
+      isMountedRef.current = false;
       controller.abort();
       loadMoreControllerRef.current?.abort();
     };
@@ -138,7 +213,11 @@ export default function TravellersStories({
   };
 
   const handleSave = async (storyId: string) => {
-    if (isAuthLoading || !user || pendingSavesRef.current.has(storyId)) return;
+    if (isAuthLoading || pendingSavesRef.current.has(storyId)) return;
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
 
     const isSaved = savedStoryIds.includes(storyId);
     pendingSavesRef.current.add(storyId);
@@ -159,8 +238,16 @@ export default function TravellersStories({
       const nextIsSaved = data.savedArticles?.includes(storyId) ?? !isSaved;
       updateSavedStory(user._id, storyId, nextIsSaved);
       void queryClient.invalidateQueries({ queryKey: ["stories"] });
+      if (!isMountedRef.current) return;
 
-      if (variant === "saved" && !nextIsSaved) {
+      if (typeof data.rate === "number") {
+        savedRatesRef.current.set(storyId, {
+          rate: data.rate,
+          version: ++saveVersionRef.current,
+        });
+      }
+
+      if (!travellerId && variant === "saved" && !nextIsSaved) {
         // Refill the page after deletion so pagination cannot skip a story.
         loadMoreControllerRef.current?.abort();
         const controller = new AbortController();
@@ -174,6 +261,7 @@ export default function TravellersStories({
         );
       }
     } catch (err) {
+      if (!isMountedRef.current) return;
       setSaveError(
         err instanceof Error
           ? err.message
@@ -181,7 +269,9 @@ export default function TravellersStories({
       );
     } finally {
       pendingSavesRef.current.delete(storyId);
-      setSavingStoryIds((prev) => prev.filter((id) => id !== storyId));
+      if (isMountedRef.current) {
+        setSavingStoryIds((prev) => prev.filter((id) => id !== storyId));
+      }
     }
   };
 
@@ -242,10 +332,19 @@ export default function TravellersStories({
 
       {!isLoading && !error && stories.length === 0 && (
         <MessageNoStories
-          text={variant === "saved" ? "Ви ще не зберегли жодної історії." : "Ви ще нічого не публікували, поділіться своєю першою історією!"}
-          buttonText={variant === "saved" ? "Переглянути історії" : "Опублікувати історію"}
-          linkTo={variant === "saved" ? "/stories" : "/stories/new"}
+          text={
+            travellerId
+              ? "Цей мандрівник ще не опублікував жодної історії."
+              : variant === "saved"
+                ? "Ви ще не зберегли жодної історії."
+                : "Ви ще нічого не публікували, поділіться своєю першою історією!"
+          }
+          buttonText={travellerId ? "Назад до історій" : variant === "saved" ? "Переглянути історії" : "Опублікувати історію"}
+          linkTo={travellerId || variant === "saved" ? "/stories" : "/stories/new"}
         />
+      )}
+      {showAuthModal && (
+        <ErrorWhileSavingModal onClose={() => setShowAuthModal(false)} />
       )}
 
       {!error && page < totalPages && (
