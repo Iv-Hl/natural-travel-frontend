@@ -1,4 +1,5 @@
 import axios from "axios";
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
 
 export interface Category {
   id: string;
@@ -59,4 +60,19 @@ export async function getStories({
   });
 
   return response.data.data;
+}
+
+export async function createStory(formData: FormData): Promise<unknown> {
+  const response = await fetchWithAuth("/api/stories", {
+    method: "POST",
+    body: formData,
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(data?.message ?? "Не вдалося створити історію");
+  }
+
+  return data;
 }

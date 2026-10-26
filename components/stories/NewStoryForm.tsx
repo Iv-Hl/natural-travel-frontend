@@ -41,12 +41,37 @@ const validationSchema = Yup.object({
 
 export default function NewStoryForm() {
   const fileInputRef = useRef<HTMLInputElement>(null); // реф для доступу до елемента input type="file"
+
+  // Зберігаємо URL поточного зображення, щоб звільнити його,
+  // коли фото замінюється або компонент закривається.
+  const imageUrlRef = useRef<string | null>(null);
+
   const router = useRouter();
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [imagePreview, setImagePreview] = useState(""); // стан для збереження URL обраного файлу фото для попереднього перегляду
   const [imageFile, setImageFile] = useState<File | null>(null); // стан для збереження обраного файлу фото
   const [imageError, setImageError] = useState(""); // стан для помилки при завантаженні фото
   const [submitError, setSubmitError] = useState(""); // стан для помилки при сабміті форми
+
+  // Звільняємо ресурси, зайняті URL попереднього зображення.
+  const revokeImageUrl = () => {
+    if (imageUrlRef.current) {
+      URL.revokeObjectURL(imageUrlRef.current);
+      imageUrlRef.current = null;
+    }
+  };
+
+  // Очищаємо URL, коли компонент демонтується,
+  // наприклад під час переходу на іншу сторінку.
+  useEffect(() => {
+    return () => {
+      if (imageUrlRef.current) {
+        URL.revokeObjectURL(imageUrlRef.current);
+        imageUrlRef.current = null;
+      }
+    };
+  }, []);
 
   //     Що тут відбувається:
   // - useEffect запускає завантаження після появи компонента на сторінці.
@@ -67,7 +92,7 @@ export default function NewStoryForm() {
   }, []);
 
   return (
-    <section className={styles.container}>
+    <section className={styles.section}>
       <h1 className={styles.title}>Створити нову історію</h1>
 
       <Formik
@@ -150,25 +175,28 @@ export default function NewStoryForm() {
 
                     if (!file) return;
 
+                    revokeImageUrl();
+                    setImageFile(null);
+                    setImagePreview("");
+
                     if (!file.type.startsWith("image/")) {
-                      setImageFile(null);
-                      setImagePreview("");
                       setImageError("Оберіть файл зображення");
                       event.currentTarget.value = "";
                       return;
                     }
 
                     if (file.size > 1024 * 1024) {
-                      setImageFile(null);
-                      setImagePreview("");
                       setImageError("Розмір фото не повинен перевищувати 1 МБ");
                       event.currentTarget.value = "";
                       return;
                     }
+                    // Створюємо URL для попереднього перегляду валідного зображення.
+                    const imageUrl = URL.createObjectURL(file);
+                    imageUrlRef.current = imageUrl;
 
                     setImageFile(file);
+                    setImagePreview(imageUrl);
                     setImageError("");
-                    setImagePreview(URL.createObjectURL(file));
                   }}
                 />
               </label>
@@ -248,6 +276,7 @@ export default function NewStoryForm() {
                 type="button"
                 className={styles.cancelButton}
                 onClick={() => {
+                  revokeImageUrl();
                   resetForm();
                   setImageFile(null);
                   setImagePreview("");

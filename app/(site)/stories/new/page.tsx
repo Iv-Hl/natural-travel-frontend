@@ -1,12 +1,8 @@
-// import { blockPrivateRoute } from "@/lib/auth/blockPrivateRoute";
-
-// export default function NewStoryPage() {
-//   blockPrivateRoute();
-//   return null;
-// }
-
+import { blockPrivateRoute } from "@/lib/auth/blockPrivateRoute";
 import NewStoryForm from "@/components/stories/NewStoryForm";
 
-export default function NewStoryPage() {
+export default async function NewStoryPage() {
+  await blockPrivateRoute();
+
   return <NewStoryForm />;
 }
