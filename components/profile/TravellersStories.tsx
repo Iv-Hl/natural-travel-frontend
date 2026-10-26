@@ -19,16 +19,34 @@ interface TravellersStoriesProps {
   travellerId?: string;
 }
 
-const LIMIT = 6;
+const DESKTOP_BREAKPOINT = 1440;
 
 export default function TravellersStories({
   travellerId,
 }: TravellersStoriesProps) {
   const [stories, setStories] = useState<Story[]>([]);
+  const [limit, setLimit] = useState(4);
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(
+      `(min-width: ${DESKTOP_BREAKPOINT}px)`,
+    );
+
+    const updateLimit = () => {
+      setLimit(mediaQuery.matches ? 6 : 4);
+    };
+
+    updateLimit();
+    mediaQuery.addEventListener("change", updateLimit);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateLimit);
+    };
+  }, []);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [failedPage, setFailedPage] = useState<number | null>(null);
   const [savedStoryIds, setSavedStoryIds] = useState<string[]>([]);
 
   const firstNewStoryRef = useRef<HTMLLIElement | null>(null);
@@ -54,14 +72,20 @@ export default function TravellersStories({
           const data = await getTravellerStories(
             travellerId,
             pageNumber,
-            LIMIT,
+            limit,
+            signal,
           );
 
-          storiesData = data.stories;
+          storiesData = data.stories.map((story) => ({
+            ...story,
+            savesCount: story.rate,
+            authorName: data.user.name,
+          }));
+
           pagesCount = data.pagination.totalPages;
         } else {
           const response = await fetchWithAuth(
-            `/api/users/me/stories?page=${pageNumber}&limit=${LIMIT}`,
+            `/api/users/me/stories?page=${pageNumber}&limit=6`,
             { signal },
           );
 
@@ -76,6 +100,7 @@ export default function TravellersStories({
         }
 
         if (signal.aborted) return;
+        setFailedPage(null);
 
         if (pageNumber === 1) {
           previousCountRef.current = 0;
@@ -96,6 +121,7 @@ export default function TravellersStories({
       } catch (err) {
         if (signal.aborted) return;
 
+        setFailedPage(pageNumber);
         setError(
           err instanceof Error ? err.message : "Сталася невідома помилка",
         );
@@ -105,7 +131,7 @@ export default function TravellersStories({
         }
       }
     },
-    [travellerId],
+    [travellerId, limit],
   );
 
   useEffect(() => {
@@ -154,10 +180,7 @@ export default function TravellersStories({
     loadMoreControllerRef.current?.abort();
     loadMoreControllerRef.current = controller;
 
-    void fetchStories(
-      error && stories.length === 0 ? 1 : page + 1,
-      controller.signal,
-    );
+    void fetchStories(failedPage ?? 1, controller.signal);
   };
 
   return (

@@ -49,7 +49,7 @@ export const getTravellerById = async (
 // Додаэмо для публічного тревел пейдж
 export interface GetTravellerStoriesResponse {
   user: Traveller;
-  stories: import("@/components/stories/StoryCard").Story[];
+  stories: TravellerStory[];
   pagination: {
     page: number;
     perPage: number;
@@ -59,15 +59,27 @@ export interface GetTravellerStoriesResponse {
   };
 }
 
+// Окремий тип історії, яку повертає бекенд
+export interface TravellerStory {
+  _id: string;
+  title: string;
+  img: string;
+  date: string;
+  ownerId: string;
+  rate: number;
+}
+
 export const getTravellerStories = async (
   userId: string,
   page = 1,
   perPage = 6,
-): Promise<GetTravellerStoriesResponse> => {
+  signal?: AbortSignal,
+) => {
   const response = await axios.get<GetTravellerStoriesResponse>(
     `/api/users/${encodeURIComponent(userId)}`,
     {
       params: { page, perPage },
+      signal,
     },
   );
 

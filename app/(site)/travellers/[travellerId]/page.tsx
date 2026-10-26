@@ -3,6 +3,7 @@ import { routes } from "@/constants/routes";
 import styles from "./page.module.css";
 import TravellerInfo from "@/components/profile/TravellerInfo/TravellerInfo";
 import TravellersStories from "@/components/profile/TravellersStories";
+import PageTitle from "@/components/PageTitle/PageTitle";
 
 interface TravellerPageProps {
   params: Promise<{
@@ -33,7 +34,7 @@ type TravellerResult =
   | { status: "not-found"; message: string }
   | { status: "error"; message: string };
 
-const NOT_FOUND_MESSAGE = "Не вдалося знайти цього мандрівника";
+const NOT_FOUND_MESSAGE = "Такий користувач відсутній";
 const ERROR_MESSAGE =
   "Не вдалося завантажити профіль мандрівника. Спробуйте пізніше.";
 
@@ -126,7 +127,9 @@ export default async function TravellerPage({ params }: TravellerPageProps) {
       <TravellerInfo userId={travellerId} />
 
       <section className={styles.storiesSection}>
-        <h2 className={styles.sectionTitle}>Статті Мандрівника</h2>
+        <PageTitle className={styles.sectionTitle}>
+          Статті Мандрівника
+        </PageTitle>
 
         <TravellersStories travellerId={travellerId} />
       </section>
