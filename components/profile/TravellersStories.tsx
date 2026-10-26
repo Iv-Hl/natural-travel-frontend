@@ -54,6 +54,7 @@ export default function TravellersStories({
   const previousCountRef = useRef(0);
   const storiesCountRef = useRef(0);
   const loadMoreControllerRef = useRef<AbortController | null>(null);
+  const effectiveLimit = travellerId ? limit : 6;
 
   useEffect(() => {
     storiesCountRef.current = stories.length;
@@ -72,7 +73,7 @@ export default function TravellersStories({
           const data = await getTravellerStories(
             travellerId,
             pageNumber,
-            limit,
+            effectiveLimit,
             signal,
           );
 
@@ -131,7 +132,7 @@ export default function TravellersStories({
         }
       }
     },
-    [travellerId, limit],
+    [travellerId, effectiveLimit],
   );
 
   useEffect(() => {

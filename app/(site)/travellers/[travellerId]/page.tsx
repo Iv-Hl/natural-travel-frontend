@@ -120,16 +120,12 @@ export default async function TravellerPage({ params }: TravellerPageProps) {
     );
   }
 
-  const { data } = result;
-
   return (
     <div className={styles.page}>
       <TravellerInfo userId={travellerId} />
 
       <section className={styles.storiesSection}>
-        <PageTitle className={styles.sectionTitle}>
-          Статті Мандрівника
-        </PageTitle>
+        <h2 className={styles.sectionTitle}>Статті Мандрівника</h2>
 
         <TravellersStories travellerId={travellerId} />
       </section>
