@@ -37,6 +37,11 @@ export interface StoriesResponse {
   };
 }
 
+export interface CreateStoryResponse {
+  id?: string;
+  _id?: string;
+}
+
 export async function getCategories(): Promise<Category[]> {
   const response = await axios.get<Category[]>("/api/categories");
   return response.data;
@@ -62,7 +67,9 @@ export async function getStories({
   return response.data.data;
 }
 
-export async function createStory(formData: FormData): Promise<unknown> {
+export async function createStory(
+  formData: FormData,
+): Promise<CreateStoryResponse> {
   const response = await fetchWithAuth("/api/stories", {
     method: "POST",
     body: formData,
