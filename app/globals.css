@@ -47,16 +47,14 @@
   --color-surface-muted: var(--color-scheme-2-foreground);
   --color-block-bg: var(--color-scheme-2-foreground);
   --color-border: rgb(27 57 27 / 15%);
-  --color-control-bg: rgb(0 0 0 / 5%);
 
   /* Кнопки та акценти. */
   --color-brand: var(--color-mantis);
   --color-primary-button-bg: var(--color-mantis-dark);
-  --color-primary-text: var(--color-neutral-darkest);
+  --color-primary-text: var(--color-white);
   --color-primary-hover-bg: var(--color-mantis-lighter);
   --color-primary-hover-text: var(--color-mantis-darkest);
   --color-primary-active-bg: var(--color-mantis-darker);
-  --color-primary-active-text: var(--color-white);
 
   /* Стани полів форм. */
   --color-input-placeholder: var(--opacity-neutral-darkest-60);
@@ -86,7 +84,6 @@
   --color-surface-muted: #29372a;
   --color-block-bg: #29372a;
   --color-border: rgb(232 240 231 / 16%);
-  --color-control-bg: rgb(232 240 231 / 7%);
 
   --color-brand: #79d477;
   --color-primary-button-bg: #5dbe5c;
@@ -94,7 +91,6 @@
   --color-primary-hover-bg: #72ca70;
   --color-primary-hover-text: #102010;
   --color-primary-active-bg: #4a9849;
-  --color-primary-active-text: var(--color-primary-text);
 
   --color-input-placeholder: rgb(232 240 231 / 55%);
   --color-focus: #79d477;

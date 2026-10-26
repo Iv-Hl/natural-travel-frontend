@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./Footer.module.css";
 
 export default function Footer() {
@@ -9,7 +10,13 @@ export default function Footer() {
       <div className={styles.container}>
         {/* Логотип */}
         <Link href="/" className={styles.logoLink}>
-          <span className={styles.logoIcon} aria-hidden="true" />
+          <Image
+            src="/images/eco-mark.svg"
+            alt="Eco mark"
+            width={20}
+            height={20}
+            className={styles.logoIcon}
+          />
           <span className={styles.logoText}>
             Природні
             <br />

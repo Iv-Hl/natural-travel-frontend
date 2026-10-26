@@ -26,11 +26,11 @@
   margin: 40px auto 0;
   padding: 6px 12px;
 
-  border: 1px solid var(--color-primary-button-bg);
+  border: 1px solid #4a9849;
   border-radius: 6px;
-  background-color: var(--color-primary-button-bg);
+  background-color: #4a9849;
 
-  color: var(--color-primary-text);
+  color: #ffffff;
   font-family: inherit;
   font-size: 20px;
   font-weight: 500;
@@ -38,25 +38,19 @@
   white-space: nowrap;
 
   cursor: pointer;
-  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  transition:
+    background-color 250ms ease-in-out,
+    color 250ms ease-in-out;
 }
 
 .loadMoreButton:hover:not(:disabled) {
-  border-color: var(--color-primary-hover-bg);
-  background-color: var(--color-primary-hover-bg);
-  color: var(--color-primary-hover-text);
+  background-color: #def2de;
+  color: #1b391b;
 }
 
 .loadMoreButton:active:not(:disabled) {
-  border-color: var(--color-primary-active-bg);
-  background-color: var(--color-primary-active-bg);
-  color: var(--color-primary-active-text);
-}
-
-.loadMoreButton:focus-visible,
-.retryButton:focus-visible {
-  outline: 3px solid var(--color-focus);
-  outline-offset: 3px;
+  background-color: #254c24;
+  color: #ffffff;
 }
 
 .loadMoreButton:disabled {
@@ -67,22 +61,20 @@
 .retryButton {
   margin-top: 16px;
   padding: 10px 20px;
-  border: 1px solid var(--color-primary-button-bg);
+  border: none;
   border-radius: 6px;
-  background-color: var(--color-primary-button-bg);
-  color: var(--color-primary-text);
+  background-color: #4a9849;
+  color: #ffffff;
   font-family: inherit;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  transition:
+    background-color 250ms ease-in-out,
+    color 250ms ease-in-out;
 }
 
-.retryButton:hover:not(:disabled) { border-color: var(--color-primary-hover-bg); background-color: var(--color-primary-hover-bg); color: var(--color-primary-hover-text); }
-
-.retryButton:active:not(:disabled) {
-  border-color: var(--color-primary-active-bg);
-  background-color: var(--color-primary-active-bg);
-  color: var(--color-primary-active-text);
+.retryButton:hover:not(:disabled) {
+  background-color: #254c24;
 }
 
 .retryButton:disabled {
@@ -114,9 +106,4 @@
   .loadMoreButton {
     width: 160px;
   }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .loadMoreButton,
-  .retryButton { transition: none; }
 }

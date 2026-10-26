@@ -6,7 +6,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
-import { useQueryClient } from "@tanstack/react-query";
 
 import "swiper/css";
 
@@ -63,7 +62,6 @@ const getAuthorName = (story: ApiStory): string => {
 
 export const PopularStories = () => {
   const { user, isLoading: isAuthLoading, updateSavedStory } = useAuth();
-  const queryClient = useQueryClient();
   const savedIds = user?.savedArticles ?? [];
 
   const [retryCount, setRetryCount] = useState(0);
@@ -174,20 +172,7 @@ export const PopularStories = () => {
         throw new Error("Не вдалося змінити збережену статтю.");
       }
 
-      const result: { rate?: number; savedArticles?: string[] } = await response
-        .json()
-        .catch(() => ({}));
-      updateSavedStory(
-        user._id,
-        storyId,
-        result.savedArticles?.includes(storyId) ?? !wasSaved,
-      );
-      if (typeof result.rate === "number") {
-        setStories((current) => current.map((story) =>
-          story._id === storyId ? { ...story, rate: result.rate } : story,
-        ));
-      }
-      void queryClient.invalidateQueries({ queryKey: ["stories"] });
+      updateSavedStory(user._id, storyId, !wasSaved);
     } catch (err) {
       setSaveError(
         err instanceof Error

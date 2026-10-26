@@ -33,8 +33,8 @@
 //             </nav>
 
 //             <div className={styles.bottomSection}>
-//                 <Link
-//                     href={routes.newStory}
+//                 <Link 
+//                     href={routes.newStory} 
 //                     className={styles.publishBtnMobile}
 //                     onClick={onClose}
 //                 >
@@ -52,9 +52,9 @@
 //                         )}
 //                     </div>
 //                     <span className={styles.userName}>{userName}</span>
-//                     <button
-//                         className={styles.logoutBtn}
-//                         aria-label="Вийти"
+//                     <button 
+//                         className={styles.logoutBtn} 
+//                         aria-label="Вийти" 
 //                         type="button"
 //                         onClick={() => {
 //                             logout();
@@ -116,8 +116,8 @@ export default function MobileMenuAuth({ onClose }: MobileMenuAuthProps) {
             </nav>
 
             <div className={styles.bottomSection}>
-                <Link
-                    href={routes.newStory}
+                <Link 
+                    href={routes.newStory} 
                     className={styles.publishBtnMobile}
                     onClick={onClose}
                 >
@@ -135,9 +135,9 @@ export default function MobileMenuAuth({ onClose }: MobileMenuAuthProps) {
                         )}
                     </div>
                     <span className={styles.userName}>{userName}</span>
-                    <button
-                        className={styles.logoutBtn}
-                        aria-label="Вийти"
+                    <button 
+                        className={styles.logoutBtn} 
+                        aria-label="Вийти" 
                         type="button"
                         onClick={handleLogout}
                     >
