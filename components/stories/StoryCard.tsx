@@ -45,7 +45,7 @@ export default function StoryCard({
           <span aria-hidden="true">·</span>
 
           <span className={styles.saves}>
-            {story.savesCount ?? 0}
+            {story.savesCount ?? story.rate ?? 0}
             <svg
               className={styles.cardSvg}
               width="16"
