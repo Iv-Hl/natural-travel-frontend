@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
 
 import { getTravellers, type Traveller } from "@/lib/api/travellers";
 import { Loader } from "@/components/Loader/Loader";
@@ -53,7 +52,6 @@ export default function TravellersPage() {
     } catch (err) {
       const message = getErrorMessage(err);
       setError(message);
-      toast.error(message);
     } finally {
       setIsLoading(false);
     }
