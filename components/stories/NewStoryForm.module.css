@@ -1,209 +1,21 @@
-/* .section {
-  width: 100%;
-  padding: 16px 0 28px;
-  color: var(--color-main-text);
-}
-
-.title {
-  margin: 0 0 24px;
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1.3;
-}
-
-.form {
-  width: 100%;
-  max-width: 442px;
-}
-
-.imageField,
-.field {
-  display: flex;
-  flex-direction: column;
-}
-
-.imageField {
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.label {
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.imagePreview {
-  position: relative;
-  display: flex;
-  width: 100%;
-  aspect-ratio: 1.1;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: var(--radius-sm);
-  background: var(--color-surface-muted);
-}
-
-.placeholder {
-  display: flex;
-  width: 98px;
-  align-items: center;
-  justify-content: center;
-}
-
-.placeholder svg {
-  display: block;
-  width: 100%;
-}
-
-.previewImage {
-  object-fit: cover;
-}
-
-.uploadButton {
-  display: inline-flex;
-  width: fit-content;
-  align-items: center;
-  padding: 6px 10px;
-  border-radius: var(--radius-sm);
-  background: var(--color-surface-muted);
-  color: var(--color-main-text);
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 150ms ease;
-}
-
-.uploadButton:hover {
-  background: var(--color-primary-hover-bg);
-}
-
-.fileInput {
-  display: none;
-}
-
-.field {
-  gap: 6px;
-  margin-bottom: 16px;
-}
-
-.input,
-.textarea {
-  width: 100%;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface);
-  color: var(--color-main-text);
-  font: inherit;
-  font-size: 14px;
-}
-
-.input {
-  min-height: 44px;
-  padding: 10px 12px;
-}
-
-.textarea {
-  min-height: 140px;
-  padding: 12px;
-  resize: vertical;
-}
-
-.input:focus-visible,
-.textarea:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 1px;
-  border-color: var(--color-focus);
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-.saveButton,
-.cancelButton {
-  min-width: 120px;
-  min-height: 44px;
-  padding: 10px 20px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition:
-    background-color 150ms ease,
-    color 150ms ease,
-    opacity 150ms ease;
-}
-
-.saveButton {
-  background: var(--color-primary-button-bg);
-  color: var(--color-primary-text);
-}
-
-.saveButton:hover:not(:disabled) {
-  background: var(--color-primary-active-bg);
-}
-
-.saveButton:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.cancelButton {
-  background: var(--color-surface-muted);
-  color: var(--color-main-text);
-}
-
-.cancelButton:hover {
-  background: var(--color-primary-hover-bg);
-}
-
-.error {
-  margin: 0;
-  color: var(--color-error);
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-@media (max-width: 480px) {
-  .section {
-    padding: 16px 0 24px;
-  }
-
-  .title {
-    font-size: 24px;
-  }
-
-  .form {
-    max-width: none;
-  }
-} */
-
-/* 23.10 проємо робити адаптив */
-
 .section {
   width: 100%;
   min-width: 0;
-  /* padding: 16px 0 28px; */
   color: var(--color-main-text);
 }
 
 .title {
-  padding: 32px 0px;
+  padding: 32px 0;
   font-weight: 700;
   font-size: 32px;
   line-height: 1.1;
   letter-spacing: -0.01em;
-  color: var(--color-primary-hover-text);
+  color: var(--color-scheme-2-text);
 }
 
 .form {
   width: 100%;
-  /* min-width: 0;
-  max-width: 442px; */
+  min-width: 0;
   margin-bottom: 64px;
 }
 
@@ -215,19 +27,16 @@
 }
 
 .imageField {
-  /* gap: 8px; */
   margin-bottom: 24px;
 }
 
 .label {
-  /* font-size: 14px; 
-  line-height: 1.4; */
-  color: var(--color-primary-hover-text);
+  color: var(--color-scheme-2-text);
 }
 
 .labelArticle {
   margin-bottom: 8px;
-  color: var(--color-primary-hover-text);
+  color: var(--color-scheme-2-text);
 }
 
 .imagePreview {
@@ -240,7 +49,7 @@
   overflow: hidden;
   border-radius: 12px;
   background: var(--color-surface-muted);
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   aspect-ratio: 335 / 223;
 }
 
@@ -261,13 +70,14 @@
   max-width: 100%;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 4px 10px;
   width: 178px;
   height: 32px;
   cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--color-control-bg);
+  color: var(--color-main-text);
   transition: background-color 150ms ease;
   font-weight: 500;
   font-size: 16px;
@@ -285,7 +95,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  margin-bottom: 24px;
+  margin-bottom: 87px;
 }
 
 .field {
@@ -303,15 +113,17 @@
   font: inherit;
   font-size: 14px;
 }
+
 .input::placeholder,
 .textarea::placeholder {
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--color-input-placeholder);
 }
 
 .input {
   min-height: 40px;
   padding: 8px;
 }
+
 .textarea {
   min-height: 180px;
   padding: 12px;
@@ -329,20 +141,14 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  /* margin-bottom: 64px; */
+  padding-top: 36px;
 }
 
 .saveButton,
 .cancelButton {
-  /* min-width: 120px;
-  min-height: 44px;
-  padding: 10px 20px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm); */
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 6px 12px;
-  /* width: 335px; */
   height: 48px;
   font-weight: 500;
   font-size: 16px;
@@ -355,8 +161,8 @@
 }
 
 .cancelButton {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: var(--color-primary-hover-text);
+  background-color: var(--color-control-bg);
+  color: var(--color-scheme-2-text);
 }
 
 .cancelButton:hover {
@@ -373,7 +179,7 @@
 }
 
 .saveButton:disabled {
-  background: #4a9849;
+  background: var(--color-primary-button-bg);
   opacity: 0.3;
   cursor: not-allowed;
 }
@@ -388,9 +194,6 @@
 
 /* Mobile: 320px і більше */
 @media (min-width: 375px) {
-  /* .title {
-    font-size: 28px;
-  } */
 }
 
 /* Tablet: 768px і більше */
@@ -398,15 +201,18 @@
   .title {
     font-size: 48px;
   }
+
   .input,
   .textarea {
     font-size: 16px;
   }
+
   .actions {
     display: flex;
     flex-direction: row;
     gap: 16px;
   }
+
   .saveButton {
     order: 1;
     width: 203px;
@@ -424,15 +230,18 @@
     font-size: 56px;
     padding: 48px 0;
   }
+
   .uploadButton {
     font-size: 19px;
     width: 215px;
     height: 38px;
   }
+
   .input,
   .textarea {
     font-size: 18px;
   }
+
   .saveButton {
     order: 1;
     width: 203px;
@@ -443,5 +252,17 @@
     order: 2;
     width: 203px;
     font-size: 20px;
+  }
+
+  .form {
+    max-width: 1091px;
+  }
+
+  .fieldsContainer {
+    margin-bottom: 24px;
+  }
+
+  .actions {
+    padding-top: 36px;
   }
 }
