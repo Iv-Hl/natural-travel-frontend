@@ -2,9 +2,9 @@
 
 Frontend спільноти для публікації та збереження історій подорожей Україною.
 
-## Стек
+    ## Стек
 
-Next.js 15, React 19, TypeScript, CSS Modules, Formik, Yup, Swiper.
+    Next.js 15, React 19, TypeScript, CSS Modules, Formik, Yup, Swiper.
 
 ## Запуск
 

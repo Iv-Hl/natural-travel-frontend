@@ -1,4 +1,5 @@
 import axios from "axios";
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
 
 export interface Category {
   id: string;
@@ -36,6 +37,11 @@ export interface StoriesResponse {
   };
 }
 
+export interface CreateStoryResponse {
+  id?: string;
+  _id?: string;
+}
+
 export async function getCategories(): Promise<Category[]> {
   const response = await axios.get<Category[]>("/api/categories");
   return response.data;
@@ -59,4 +65,21 @@ export async function getStories({
   });
 
   return response.data.data;
+}
+
+export async function createStory(
+  formData: FormData,
+): Promise<CreateStoryResponse> {
+  const response = await fetchWithAuth("/api/stories", {
+    method: "POST",
+    body: formData,
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(data?.message ?? "Не вдалося створити історію");
+  }
+
+  return data;
 }

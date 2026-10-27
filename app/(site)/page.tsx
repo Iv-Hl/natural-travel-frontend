@@ -10,8 +10,8 @@ export default function HomePage() {
       <Hero />
       <PopularStories />
       <About />
-      <Join />
       <OurTravelersSection />
+      <Join />
     </>
   );
 }
