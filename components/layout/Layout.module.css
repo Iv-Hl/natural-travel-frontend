@@ -1,6 +1,5 @@
 .shell {
   margin-inline: auto;
-  padding-block: 1rem;
 }
 
 .header {
@@ -13,7 +12,6 @@
   align-items: center;
   height: 72px;
   background-color: var(--color-page-bg);
- 
 }
 
 .logo {
@@ -27,8 +25,6 @@
   width: 124px;
   height: 36px;
   gap: 6px;
- 
-  
 }
 
 .logoIcon {
@@ -38,15 +34,14 @@
   background-color: var(--color-brand);
   -webkit-mask: url("/images/eco-mark.svg") center / contain no-repeat;
   mask: url("/images/eco-mark.svg") center / contain no-repeat;
-  
 }
 .actions {
   display: flex;
   gap: 32px;
 }
- .navigation{
+.navigation {
   display: none;
- }
+}
 .authLinks {
   display: none;
 }
@@ -73,112 +68,128 @@
   fill: var(--color-main-text);
 }
 @media (min-width: 768px) {
+  .header {
+    gap: 16px;
+  }
 
-.header {
-  gap: 16px;
-}
-
-.actions{
-  gap: 16px;
-}
-.authLinks {
+  .actions {
+    gap: 16px;
+  }
+  .authLinks {
     display: flex;
     gap: 16px;
     font-weight: 500;
     height: 32px;
   }
 
-.loginLink {
-  padding: 4px 10px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  width: auto;
-  min-width: 56px;
-  height: 32px;
-  white-space: nowrap;
-  background-color: var(--color-control-bg);
-  
-}
+  .loginLink {
+    padding: 4px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    width: auto;
+    min-width: 56px;
+    height: 32px;
+    white-space: nowrap;
+    background-color: var(--color-control-bg);
+  }
 
-.loginLink:hover { background-color: var(--color-primary-hover-bg); color: var(--color-primary-hover-text); border-color: var(--color-primary-hover-bg); }
- .registerLink {
-   padding: 4px 10px;
-   border: 1px solid transparent;
-   border-radius: var(--radius-sm);
-   width: 114px;
-   height: 32px;
-   color: var(--color-primary-text);
-   background-color: var(--color-primary-button-bg);
-   
- }
-.registerLink:hover { background-color: var(--color-primary-hover-bg); color: var(--color-primary-hover-text); border-color: var(--color-primary-hover-bg); }
-
-
+  .loginLink:hover {
+    background-color: var(--color-primary-hover-bg);
+    color: var(--color-primary-hover-text);
+    border-color: var(--color-primary-hover-bg);
+  }
+  .registerLink {
+    padding: 4px 10px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    width: 114px;
+    height: 32px;
+    color: var(--color-primary-text);
+    background-color: var(--color-primary-button-bg);
+  }
+  .registerLink:hover {
+    background-color: var(--color-primary-hover-bg);
+    color: var(--color-primary-hover-text);
+    border-color: var(--color-primary-hover-bg);
+  }
 }
 
 @media (min-width: 1440px) {
-
- 
-
- .navigation {
+  .navigation {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 32px;
     font-size: 18px;
     line-height: 150%;
-    
   }
 
-
-
-  
-
-    .authLinks {
-      font-size: 20px;
-      height: 40px;
-    }
-
+  .authLinks {
+    font-size: 20px;
+    height: 40px;
+  }
 
   .loginLink {
     min-width: 65px;
     height: 38px;
-   
   }
 
   .registerLink {
     width: 137px;
     height: 38px;
-    
   }
-
 
   .menuButton {
     display: none;
   }
-
- 
-
 }
-
-
-
 
 @media (max-width: 767px) {
-  .menuButton:hover { border-color: var(--color-primary-hover-bg); background-color: var(--color-primary-hover-bg); color: var(--color-primary-hover-text); }
-  .menuButton:active { background-color: var(--color-primary-active-bg); color: var(--color-primary-active-text); }
-  .menuButton:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
+  .menuButton:hover {
+    border-color: var(--color-primary-hover-bg);
+    background-color: var(--color-primary-hover-bg);
+    color: var(--color-primary-hover-text);
+  }
+  .menuButton:active {
+    background-color: var(--color-primary-active-bg);
+    color: var(--color-primary-active-text);
+  }
+  .menuButton:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+  }
 }
 
-.loginLink:focus-visible, .registerLink:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
-.loginLink:active, .registerLink:active { border-color: var(--color-primary-active-bg); background-color: var(--color-primary-active-bg); color: var(--color-primary-active-text); }
+.loginLink:focus-visible,
+.registerLink:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+.loginLink:active,
+.registerLink:active {
+  border-color: var(--color-primary-active-bg);
+  background-color: var(--color-primary-active-bg);
+  color: var(--color-primary-active-text);
+}
 .logo {
   transform-origin: center;
   transition: transform 180ms ease;
 }
 
-.logo:hover { transform: scale(1.05); }
-.logo:active { transform: scale(0.98); }
-.logo:focus-visible { border-radius: var(--radius-sm); outline: 3px solid var(--color-focus); outline-offset: 3px; }
+.logo:hover {
+  transform: scale(1.05);
+}
+.logo:active {
+  transform: scale(0.98);
+}
+.logo:focus-visible {
+  border-radius: var(--radius-sm);
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
 
-@media (prefers-reduced-motion: reduce) { .logo { transition: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .logo {
+    transition: none;
+  }
+}
