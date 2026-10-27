@@ -50,7 +50,9 @@ interface StoryPageProps {
         <StoryDetails story={story} />
 
         {/* Тут компонент збереження історії іншого учасника */}
-        <SaveStory storyId={storyId} />
+        <SaveStory storyId={storyId}
+          initialIsSaved={false} />
+        
         {/* Тут компонент рекомендованих історій іншого учасника */}
       </>
     );

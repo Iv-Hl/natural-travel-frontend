@@ -1,18 +1,23 @@
 .card {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  width: 100%;
+  height: 517px;
+  min-width: 0;
+  box-sizing: border-box;
   overflow: hidden;
   border-radius: 12px;
   gap: 0;
-  background-color: #def2de;
-  border: 0px solid rgba(0, 0, 0, 0.15);
+  background-color: var(--color-block-bg);
+  border: 1px solid var(--color-border);
 }
 
 .imageWrapper {
+  position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .image {
@@ -20,57 +25,63 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.1);
 }
 
 .cardContent {
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
-  padding: 16px;
   width: 100%;
-  flex: 1;
+  min-width: 0;
+  padding: 16px;
+  box-sizing: border-box;
+  transition: transform 0.3s ease;
 }
 
 .author {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  flex-direction: row;
+  flex-wrap: wrap;
   gap: 8px;
   margin: 0;
+  color: var(--color-scheme-2-text);
   font-size: 12px;
   font-weight: 600;
   line-height: 1.5;
-  color: #1b391b;
+  color: var(--color-main-text);
 }
 
 .saves {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: flex-start;
-  flex-direction: row;
-  gap: 2px;
-  width: 25px;
-  height: 18px;
+  gap: 4px;
+  min-width: 25px;
+  white-space: nowrap;
 }
 
 .title {
-  margin: 0;
+  display: -webkit-box;
   width: 100%;
   min-width: 0;
-
-  font-weight: 700;
+  margin: 0;
+  overflow: hidden;
   font-size: 18px;
+  font-weight: 700;
   line-height: 1.5;
-  color: #1b391b;
+  color: var(--color-main-text);
 
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
-  overflow: hidden;
-  overflow-wrap: anywhere;
+  color: var(--color-scheme-2-text);
 }
 
 .cardActions {
@@ -78,103 +89,169 @@
   align-items: center;
   gap: 16px;
   width: 100%;
+  min-width: 0;
   margin-top: auto;
 }
 
 .viewButton {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
   flex-direction: row;
   gap: 8px;
 
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 6px 12px;
   flex: 1;
   min-width: 0;
   height: 48px;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--color-control-bg);
   text-decoration: none;
   font-weight: 500;
   font-size: 16px;
   line-height: 1.5;
-  color: #1b391b;
+  color: var(--color-main-text);
   transition:
-    background-color 250ms ease-in-out,
-    color 250ms ease-in-out;
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .saveButton {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   flex-direction: row;
   flex-shrink: 0;
   gap: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 6px;
   width: 48px;
   height: 48px;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--color-control-bg);
+  color: var(--color-main-text);
   transition:
-    background-color 250ms ease-in-out,
-    color 250ms ease-in-out;
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+}
+.saveButton .svg {
+  color: var(--color-scheme-2-text);
+}
+.saveButton img {
+  display: block;
+  transition: filter 0.25s ease;
 }
 
 .viewButton:hover,
 .saveButton:hover {
-  background-color: #4a9849;
-  color: #ffffff;
+  background-color: var(--color-primary-hover-bg);
+  border-color: var(--color-primary-hover-bg);
+  color: var(--color-primary-hover-text);
 }
 
-.viewButton:focus,
-.saveButton:focus {
-  outline: 2px solid #254c24;
+.viewButton:focus-visible,
+.saveButton:focus-visible {
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
 }
 
 .viewButton:active,
 .saveButton:active {
-  background-color: #254c24;
-  color: #ffffff;
+  background-color: var(--color-primary-active-bg);
+  border-color: var(--color-primary-active-bg);
+  color: var(--color-primary-active-text);
 }
 
-.saveButton:hover img,
 .saveButton:active img {
   filter: brightness(0) invert(1);
 }
 
+.saveButton:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
 .saveButton[aria-pressed="true"] {
-  background-color: #254c24;
+  background-color: var(--color-primary-active-bg);
+  border-color: var(--color-primary-active-bg);
+  color: var(--color-primary-active-text);
 }
 
-.saveButton[aria-pressed="true"] img {
-  filter: brightness(0) invert(1);
-}
-.saveButton img {
-  transition: filter 250ms ease-in-out;
+.saveButton:disabled {
+  cursor: wait;
+  opacity: 0.7;
 }
 
-/* Комп'ютер */
-@media screen and (min-width: 1440px) {
+.loader {
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  border: 2px solid var(--color-mantis-lighter);
+  border-top-color: var(--color-mantis-darker);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (min-width: 768px) {
+  .card {
+    width: 340px;
+    height: 522px;
+  }
+
+  .cardContent {
+    gap: 16px;
+  }
+
+  .author {
+    gap: 12px;
+    font-size: 12px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .viewButton {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .card {
+    width: 421px;
+    height: 633px;
+  }
+
+  .cardContent {
+    gap: 16px;
+    padding: 16px;
+  }
+
   .author {
     gap: 16px;
     font-size: 16px;
   }
 
-  .saves {
-    width: 28px;
-    height: 24px;
-  }
-
   .title {
-    font-weight: 700;
     font-size: 26px;
   }
 
   .viewButton {
     font-size: 20px;
+  }
+
+  .cardActions {
+    gap: 16px;
   }
 }
