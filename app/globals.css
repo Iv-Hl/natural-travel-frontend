@@ -53,8 +53,8 @@
   --color-brand: var(--color-mantis);
   --color-primary-button-bg: var(--color-mantis-dark);
   --color-primary-text: var(--color-white);
-  --color-primary-hover-bg: var(--color-mantis-lighter);
-  --color-primary-hover-text: var(--color-mantis-darkest);
+  --color-primary-hover-bg: var(--color-mantis-dark);
+  --color-primary-hover-text: var(--color-white);
   --color-primary-active-bg: var(--color-mantis-darker);
   --color-primary-active-text: var(--color-white);
 
@@ -67,7 +67,7 @@
   /* Прозорість кольорів */
   --opacity-neutral-darkest-15: rgba(0, 0, 0, 0.15);
   --opacity-neutral-darkest-60: rgba(0, 0, 0, 0.6);
-
+  --opacity-neutral-darkest-0: var(--opacity-transparent);
   /* Радіуси заокруглення. */
   --radius-sm: 6px;
   --radius-md: 12px;

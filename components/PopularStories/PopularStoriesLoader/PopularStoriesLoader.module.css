@@ -1,13 +1,19 @@
 .section {
   width: 100%;
-  min-height: 767px;
+  min-height: 895px;
   padding: 64px 0;
   background-color: var(--color-scheme-2-background);
   color: var(--color-mantis-darkest);
   overflow: hidden;
 }
+
 .headerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 40px;
+  min-height: 34px;
 }
 
 .sectionTitle {
@@ -148,10 +154,13 @@
 @media screen and (min-width: 768px) {
   .section {
     .section {
-      min-height: 703px;
+      min-height: 831px;
       padding: 64px 0;
     }
     min-height: 703px;
+  }
+  .headerContainer {
+    min-height: 53px;
   }
   .sectionTitle {
     font-size: 44px;
@@ -173,10 +182,13 @@
   .section {
     width: 100%;
     max-width: 1440px;
-    min-height: 823px;
+    min-height: 967px;
     padding: 72px 0;
     margin: 0 auto;
     box-sizing: border-box;
+  }
+  .headerContainer {
+    min-height: 62px;
   }
   .sectionTitle {
     font-size: 52px;

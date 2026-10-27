@@ -64,8 +64,12 @@
   gap: 4px;
   min-width: 25px;
   white-space: nowrap;
+  color: var(--color-scheme-1-text);
 }
-
+.cardSvg {
+  fill: var(--color-scheme-1-text);
+  stroke: var(--color-scheme-1-text);
+}
 .title {
   display: -webkit-box;
   width: 100%;
@@ -139,36 +143,40 @@
     color 0.25s ease,
     border-color 0.25s ease;
 }
-.saveButton .svg {
-  color: var(--color-scheme-2-text);
+.buttonSvg {
+  fill: var(--color-scheme-1-text);
+  stroke: var(--color-scheme-1-text);
 }
-.saveButton img {
+
+.saveButton {
   display: block;
   transition: filter 0.25s ease;
 }
 
 .viewButton:hover,
-.saveButton:hover {
+.saveButton:hover,
+.viewButton:focus-visible,
+.saveButton:focus-visible {
   background-color: var(--color-primary-hover-bg);
   border-color: var(--color-primary-hover-bg);
   color: var(--color-primary-hover-text);
 }
 
-.viewButton:focus-visible,
-.saveButton:focus-visible {
-  outline: 3px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
 .viewButton:active,
 .saveButton:active {
-  background-color: var(--color-primary-active-bg);
-  border-color: var(--color-primary-active-bg);
+  background-color: var(--color-mantis-darker);
+  border-color: var(--opacity-transparent);
   color: var(--color-primary-active-text);
 }
 
 .saveButton:active img {
   filter: brightness(0) invert(1);
+}
+
+.saveButton.saved {
+  border-color: var(--color-mantis-darker);
+  background-color: var(--color-mantis-darker);
+  color: var(--color-white);
 }
 
 .saveButton:disabled {
@@ -191,8 +199,8 @@
   width: 20px;
   height: 20px;
   box-sizing: border-box;
-  border: 2px solid var(--color-mantis-lighter);
-  border-top-color: var(--color-mantis-darker);
+  border: 2px solid var(--color-scheme-1-border);
+  border-top-color: var(--color-scheme-1-accent);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
