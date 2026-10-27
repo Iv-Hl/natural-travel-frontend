@@ -55,7 +55,6 @@ export default async function StoryPage({ params }: StoryPageProps) {
       <RecommendedStories
         key={story._id}
         storyId={story._id}
-        categoryId={story.category?._id}
       />
     </>
   );

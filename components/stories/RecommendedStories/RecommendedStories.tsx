@@ -1,66 +1,72 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import StoryCard, {
   type Story as CardStory,
 } from "@/components/stories/StoryCard";
 import ErrorWhileSavingModal from "@/components/ErrorWhileSavingModal/ErrorWhileSavingModal";
 import { useAuth } from "@/components/providers/AuthProvider";
-import { getStories, type Story as ApiStory } from "@/lib/api/stories";
 import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
 import styles from "./RecommendedStories.module.css";
 
 interface RecommendedStoriesProps {
   storyId: string;
-  categoryId?: string;
 }
 
-function toCardStory(story: ApiStory): CardStory {
+interface RecommendationStory {
+  _id: string;
+  title: string;
+  img: string;
+  date: string;
+  ownerId: string;
+  rate: number;
+  author: {
+    id: string;
+    name: string;
+    avatarUrl: string | null;
+  } | null;
+}
+
+interface RecommendationsResponse {
+  items: RecommendationStory[];
+  page: number;
+  limit: number;
+  total: number;
+  hasNextPage: boolean;
+}
+
+function toCardStory(story: RecommendationStory): CardStory {
   return {
     _id: story._id,
     title: story.title,
     img: story.img,
     date: story.date,
-    ownerId: story.ownerId?._id ?? "",
-    authorName: story.ownerId?.name ?? "Автор",
+    ownerId: String(story.ownerId ?? ""),
+    authorName: story.author?.name ?? "Автор",
     rate: story.rate,
+    savesCount: story.rate ?? 0,
   };
 }
 
-async function getRecommendations(
-  storyId: string,
-  categoryId?: string,
-): Promise<CardStory[]> {
-  const uniqueStories = new Map<string, ApiStory>();
+async function getRecommendations(storyId: string): Promise<CardStory[]> {
+  const response = await fetch(
+    `/api/stories/${encodeURIComponent(storyId)}/recommendations?limit=3`,
+    { cache: "no-store" },
+  );
 
-  const addStories = (stories: ApiStory[]) => {
-    for (const story of stories) {
-      if (story._id !== storyId) {
-        uniqueStories.set(story._id, story);
-      }
-    }
-  };
-
-  const firstResult = await getStories({
-    limit: 4,
-    category: categoryId,
-  });
-
-  addStories(firstResult.stories);
-
-  if (categoryId && uniqueStories.size < 3) {
-    const otherStories = await getStories({ limit: 4 });
-    addStories(otherStories.stories);
+  if (!response.ok) {
+    throw new Error("Не вдалося завантажити рекомендовані історії.");
   }
 
-  return Array.from(uniqueStories.values()).slice(0, 3).map(toCardStory);
+  const data: RecommendationsResponse = await response.json();
+  return data.items.map(toCardStory);
 }
 
 export default function RecommendedStories({
   storyId,
-  categoryId,
 }: RecommendedStoriesProps) {
+  const queryClient = useQueryClient();
   const titleId = useId();
   const { user, isLoading: isAuthLoading, updateSavedStory } = useAuth();
 
@@ -72,8 +78,8 @@ export default function RecommendedStories({
   const savedIds = user?.savedArticles ?? [];
 
   const recommendationsQuery = useQuery({
-    queryKey: ["recommendedStories", storyId, categoryId ?? null],
-    queryFn: () => getRecommendations(storyId, categoryId),
+    queryKey: ["recommendedStories", storyId],
+    queryFn: () => getRecommendations(storyId),
     staleTime: 60_000,
   });
 
@@ -106,6 +112,9 @@ export default function RecommendedStories({
       }
 
       updateSavedStory(user._id, id, !wasSaved);
+      void queryClient.invalidateQueries({
+        queryKey: ["recommendedStories", storyId],
+      });
     } catch (error) {
       setSaveError(
         error instanceof Error
