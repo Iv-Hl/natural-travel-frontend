@@ -40,9 +40,8 @@ export async function fetchWithAuth(
   }
 
   if (refreshStatus === null || refreshStatus < 200 || refreshStatus >= 300) {
-    const status = refreshStatus !== null && refreshStatus >= 500
-      ? refreshStatus
-      : 502;
+    const status =
+      refreshStatus !== null && refreshStatus >= 500 ? refreshStatus : 502;
     return Response.json(
       { message: "Не вдалося оновити сесію. Спробуйте ще раз." },
       { status },

@@ -8,8 +8,8 @@
   overflow: hidden;
   border-radius: 12px;
   gap: 0;
-  border: 1px solid var(--color-border);
   background-color: var(--color-block-bg);
+  border: 1px solid var(--color-border);
 }
 
 .imageWrapper {
@@ -51,11 +51,11 @@
   flex-wrap: wrap;
   gap: 8px;
   margin: 0;
-  color: var(--color-main-text);
+  color: var(--color-scheme-2-text);
   font-size: 12px;
   font-weight: 600;
   line-height: 1.5;
-  overflow-wrap: anywhere;
+  color: var(--color-main-text);
 }
 
 .saves {
@@ -64,8 +64,12 @@
   gap: 4px;
   min-width: 25px;
   white-space: nowrap;
+  color: var(--color-scheme-1-text);
 }
-
+.cardSvg {
+  fill: var(--color-scheme-1-text);
+  stroke: var(--color-scheme-1-text);
+}
 .title {
   display: -webkit-box;
   width: 100%;
@@ -75,11 +79,13 @@
   font-size: 18px;
   font-weight: 700;
   line-height: 1.5;
-  overflow-wrap: anywhere;
+  color: var(--color-main-text);
+
+  display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
-  color: var(--color-main-text);
+  color: var(--color-scheme-2-text);
 }
 
 .cardActions {
@@ -96,20 +102,21 @@
   flex: 1;
   align-items: center;
   justify-content: center;
-  min-width: 0;
-  min-height: 48px;
-  box-sizing: border-box;
-  padding: 8px 12px;
+  flex-direction: row;
+  gap: 8px;
+
   border: 1px solid var(--color-border);
   border-radius: 6px;
+  padding: 6px 12px;
+  flex: 1;
+  min-width: 0;
+  height: 48px;
   background-color: var(--color-control-bg);
-  color: var(--color-main-text);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.3;
-  text-align: center;
   text-decoration: none;
-  overflow-wrap: anywhere;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-main-text);
   transition:
     background-color 0.25s ease,
     color 0.25s ease,
@@ -121,64 +128,66 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  padding: 6px;
-  box-sizing: border-box;
+  flex-direction: row;
+  flex-shrink: 0;
+  gap: 12px;
   border: 1px solid var(--color-border);
   border-radius: 6px;
+  padding: 6px;
+  width: 48px;
+  height: 48px;
   background-color: var(--color-control-bg);
   color: var(--color-main-text);
-  cursor: pointer;
   transition:
     background-color 0.25s ease,
     color 0.25s ease,
     border-color 0.25s ease;
 }
-.saveButton .svg {
-  color: var(--color-main-text);
-}
-.saveButton img {
-  display: block;
-  transition: filter 0.25s ease;
+.buttonSvg {
+  fill: var(--color-scheme-1-text);
+  stroke: var(--color-scheme-1-text);
 }
 
-[data-theme="dark"] .saveButton img,
-[data-theme="dark"] .saves img {
-  filter: brightness(0) invert(1);
+.saveButton {
+  display: block;
+  transition: filter 0.25s ease;
 }
 
 .viewButton:hover,
 .saveButton:hover,
 .viewButton:focus-visible,
 .saveButton:focus-visible {
-  border-color: var(--color-primary-hover-bg);
   background-color: var(--color-primary-hover-bg);
+  border-color: var(--color-primary-hover-bg);
   color: var(--color-primary-hover-text);
 }
 
-.viewButton:focus-visible,
-.saveButton:focus-visible {
-  outline: 3px solid var(--color-focus);
-  outline-offset: 3px;
-}
-
-.saveButton:hover img,
-.saveButton:focus-visible img {
-  filter: brightness(0);
-}
-
 .viewButton:active,
-.saveButton:active,
-.saveButton.saved {
-  border-color: var(--color-primary-active-bg);
-  background-color: var(--color-primary-active-bg);
+.saveButton:active {
+  background-color: var(--color-mantis-darker);
+  border-color: var(--opacity-transparent);
   color: var(--color-primary-active-text);
 }
 
-.saveButton:active img,
-.saveButton.saved img {
+.saveButton:active img {
   filter: brightness(0) invert(1);
+}
+
+.saveButton.saved {
+  border-color: var(--color-mantis-darker);
+  background-color: var(--color-mantis-darker);
+  color: var(--color-white);
+}
+
+.saveButton:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.saveButton[aria-pressed="true"] {
+  background-color: var(--color-primary-active-bg);
+  border-color: var(--color-primary-active-bg);
+  color: var(--color-primary-active-text);
 }
 
 .saveButton:disabled {
@@ -190,8 +199,8 @@
   width: 20px;
   height: 20px;
   box-sizing: border-box;
-  border: 2px solid var(--color-mantis-lighter);
-  border-top-color: var(--color-mantis-darker);
+  border: 2px solid var(--color-scheme-1-border);
+  border-top-color: var(--color-scheme-1-accent);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
@@ -204,7 +213,7 @@
 
 @media (min-width: 768px) {
   .card {
-    width: 100%;
+    width: 340px;
     height: 522px;
   }
 
@@ -228,7 +237,7 @@
 
 @media (min-width: 1440px) {
   .card {
-    width: 100%;
+    width: 421px;
     height: 633px;
   }
 

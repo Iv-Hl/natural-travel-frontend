@@ -1,9 +1,9 @@
 .section {
   width: 100%;
-  min-height: 767px;
+  min-height: 895px;
   padding: 64px 0;
   background-color: var(--color-scheme-2-background);
-  color: var(--color-main-text);
+  color: var(--color-mantis-darkest);
   overflow: hidden;
 }
 
@@ -13,7 +13,7 @@
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 40px;
-  min-height: 62px;
+  min-height: 34px;
 }
 
 .sectionTitle {
@@ -63,10 +63,10 @@
   height: 48px;
   padding: 12px;
   margin-top: 40px;
-  border: 1px solid var(--color-primary-button-bg);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background-color: var(--color-primary-button-bg);
-  color: var(--color-primary-text);
+  background-color: var(--color-control-bg);
+  color: var(--color-main-text);
   cursor: pointer;
   transition:
     background-color 0.2s ease,
@@ -77,13 +77,16 @@
 .navButton:hover,
 .navButton:focus-visible {
   background-color: var(--color-primary-hover-bg);
+  border-color: var(--color-primary-hover-bg);
   color: var(--color-primary-hover-text);
 }
+
 .navButton:active {
-  border-color: var(--color-primary-active-bg);
-  background-color: var(--color-primary-active-bg);
+  background-color: var(--color-mantis-darker);
+  border-color: var(--opacity-transparent);
   color: var(--color-primary-active-text);
 }
+
 .navButton:disabled,
 .navButton.disabled {
   opacity: 0.35;
@@ -93,23 +96,23 @@
 .navButton svg {
   width: 24px;
   height: 24px;
-  fill: currentColor;
+  fill: var(--color-scheme-1-text);
 }
 
-.endStoriesButton {
+.endStoriesButton,
+.viewButton {
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
   width: 100%;
-  max-width: 335px;
   min-height: 48px;
   padding: 6px 12px;
   margin: 40px auto 0;
-  border: 1px solid var(--color-primary-button-bg);
+  border: 1px solid var(--color-mantis-dark);
   border-radius: 6px;
-  background-color: var(--color-primary-button-bg);
-  color: var(--color-primary-text);
+  background-color: var(--color-mantis-dark);
+  color: var(--color-white);
   font-size: 16px;
   font-weight: 500;
   text-align: center;
@@ -121,18 +124,18 @@
 }
 
 .endStoriesButton:hover {
-  background-color: var(--color-primary-hover-bg);
-  color: var(--color-primary-hover-text);
+  background-color: var(--color-mantis-lighter);
+  color: var(--color-mantis-darkest);
 }
 
 .endStoriesButton:focus-visible {
-  outline: 2px solid var(--color-primary-button-bg);
+  outline: 2px solid var(--color-mantis-dark);
   outline-offset: 3px;
 }
 
 .endStoriesButton:active {
-  background-color: var(--color-primary-button-bg);
-  color: var(--color-primary-text);
+  background-color: var(--color-mantis-dark);
+  color: var(--color-white);
 }
 
 .viewButton {
@@ -173,11 +176,15 @@
 .desktopCard {
   display: none;
 }
+
 @media (min-width: 768px) {
   .section {
     padding: 64px 0;
+    min-height: 831px;
   }
-
+  .headerContainer {
+    min-height: 53px;
+  }
   .sectionTitle {
     font-size: 44px;
   }
@@ -185,36 +192,36 @@
   .endStoriesButton {
     display: none;
   }
+
   .allStoriesButton {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-height: 48px;
     padding: 6px 12px;
-    border: 1px solid var(--color-primary-button-bg);
+    border: 1px solid var(--color-mantis-dark);
     border-radius: 6px;
-    background-color: var(--color-primary-button-bg);
-    color: var(--color-primary-text);
+    background-color: var(--color-mantis-dark);
+    color: var(--color-white);
     font-size: 16px;
     text-decoration: none;
     transition: background-color 0.2s ease;
   }
 
   .allStoriesButton:hover {
-    background-color: var(--color-primary-hover-bg);
-    border: 1px solid var(--color-primary-button-bg);
-    color: var(--color-primary-hover-text);
+    background-color: var(--color-mantis-lighter);
+    border: 1px solid var(--color-mantis-dark);
+    color: var(--color-mantis-darkest);
   }
 
   .allStoriesButton:focus-visible {
-    outline: 2px solid var(--color-primary-button-bg);
-    background-color: var(--color-primary-hover-bg);
-    color: var(--color-primary-hover-text);
+    outline: 2px solid var(--color-mantis-dark);
+    color: var(--color-mantis-darkest);
   }
   .allStoriesButton:active {
-    background-color: var(--color-primary-button-bg);
-    border: 1px solid var(--color-primary-button-bg);
-    color: var(--color-primary-text);
+    background-color: var(--color-mantis-dark);
+    border: 1px solid var(--color-mantis-dark);
+    color: var(--color-white);
   }
   .loadingGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -232,8 +239,11 @@
     padding: 72px 0;
     margin: 0 auto;
     box-sizing: border-box;
+    min-height: 967px;
   }
-
+  .headerContainer {
+    min-height: 62px;
+  }
   .sectionTitle {
     font-size: 52px;
   }
@@ -241,13 +251,12 @@
   .allStoriesButton {
     width: 120px;
   }
-  @media (min-width: 1440px) {
-    .loadingGrid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
 
-    .desktopCard {
-      display: flex;
-    }
+  .loadingGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .desktopCard {
+    display: flex;
   }
 }

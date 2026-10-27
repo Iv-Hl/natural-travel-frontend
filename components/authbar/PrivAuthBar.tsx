@@ -33,8 +33,8 @@
 //             </nav>
 
 //             <div className={styles.bottomSection}>
-//                 <Link
-//                     href={routes.newStory}
+//                 <Link 
+//                     href={routes.newStory} 
 //                     className={styles.publishBtnMobile}
 //                     onClick={onClose}
 //                 >
@@ -52,9 +52,9 @@
 //                         )}
 //                     </div>
 //                     <span className={styles.userName}>{userName}</span>
-//                     <button
-//                         className={styles.logoutBtn}
-//                         aria-label="Вийти"
+//                     <button 
+//                         className={styles.logoutBtn} 
+//                         aria-label="Вийти" 
 //                         type="button"
 //                         onClick={() => {
 //                             logout();
@@ -79,20 +79,15 @@ import { useAuth } from "@/components/providers/AuthProvider";
 
 type MobileMenuAuthProps = {
     onClose: () => void;
+    onRequestLogout: () => void;
 }
 
-export default function MobileMenuAuth({ onClose }: MobileMenuAuthProps) {
-    const { user, logout } = useAuth();
+export default function MobileMenuAuth({
+    onClose,
+    onRequestLogout,
+}: MobileMenuAuthProps) {
+    const { user } = useAuth();
     const userName = user?.name || "Імʼя";
-
-    const handleLogout = async () => {
-        try {
-            await logout();
-            onClose();
-        } catch (error) {
-            console.error("Не вдалося вийти з системи:", error);
-        }
-    };
 
     return (
         <div className={styles.menu}>
@@ -116,8 +111,8 @@ export default function MobileMenuAuth({ onClose }: MobileMenuAuthProps) {
             </nav>
 
             <div className={styles.bottomSection}>
-                <Link
-                    href={routes.newStory}
+                <Link 
+                    href={routes.newStory} 
                     className={styles.publishBtnMobile}
                     onClick={onClose}
                 >
@@ -135,11 +130,11 @@ export default function MobileMenuAuth({ onClose }: MobileMenuAuthProps) {
                         )}
                     </div>
                     <span className={styles.userName}>{userName}</span>
-                    <button
-                        className={styles.logoutBtn}
-                        aria-label="Вийти"
+                    <button 
+                        className={styles.logoutBtn} 
+                        aria-label="Вийти" 
                         type="button"
-                        onClick={handleLogout}
+                        onClick={onRequestLogout}
                     >
                         <svg className={styles.logoutIcon} aria-hidden="true" focusable="false">
                             <use href="/icons/symbol-defs.svg#icon-logout" />
