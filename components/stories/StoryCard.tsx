@@ -45,9 +45,15 @@ export default function StoryCard({
           <span aria-hidden="true">·</span>
 
           <span className={styles.saves}>
-            {story.rate ?? story.savesCount ?? 0}
-
-            <Image src="/icons/bookmark.svg" alt="" width={16} height={16} />
+            {story.savesCount ?? 0}
+            <svg
+              className={styles.cardSvg}
+              width="16"
+              height="16"
+              aria-hidden="true"
+            >
+              <use href="/icons/symbol-defs.svg#icon-bookmark" />
+            </svg>
           </span>
         </p>
 
@@ -70,7 +76,14 @@ export default function StoryCard({
             {isSaving ? (
               <span className={styles.loader} aria-hidden="true" />
             ) : (
-              <Image src="/icons/bookmark.svg" alt="" width={24} height={24} />
+              <svg
+                className={styles.buttonSvg}
+                width="24"
+                height="24"
+                aria-hidden="true"
+              >
+                <use href="/icons/symbol-defs.svg#icon-bookmark" />
+              </svg>
             )}
           </button>
         </div>
