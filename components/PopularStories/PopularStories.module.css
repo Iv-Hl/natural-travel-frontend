@@ -1,6 +1,6 @@
 .section {
   width: 100%;
-  min-height: 767px;
+  min-height: 895px;
   padding: 64px 0;
   background-color: var(--color-scheme-2-background);
   color: var(--color-mantis-darkest);
@@ -13,7 +13,7 @@
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 40px;
-  min-height: 62px;
+  min-height: 34px;
 }
 
 .sectionTitle {
@@ -63,10 +63,10 @@
   height: 48px;
   padding: 12px;
   margin-top: 40px;
-  border: 1px solid var(--color-mantis-dark);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background-color: var(--color-mantis-dark);
-  color: var(--color-mantis-darkest);
+  background-color: var(--color-control-bg);
+  color: var(--color-main-text);
   cursor: pointer;
   transition:
     background-color 0.2s ease,
@@ -76,14 +76,15 @@
 
 .navButton:hover,
 .navButton:focus-visible {
-  background-color: var(--color-scheme-2-background);
-  color: var(--color-white);
+  background-color: var(--color-primary-hover-bg);
+  border-color: var(--color-primary-hover-bg);
+  color: var(--color-primary-hover-text);
 }
 
 .navButton:active {
-  border-color: var(--color-mantis-darker);
   background-color: var(--color-mantis-darker);
-  color: var(--color-white);
+  border-color: var(--opacity-transparent);
+  color: var(--color-primary-active-text);
 }
 
 .navButton:disabled,
@@ -95,7 +96,7 @@
 .navButton svg {
   width: 24px;
   height: 24px;
-  fill: currentColor;
+  fill: var(--color-scheme-1-text);
 }
 
 .endStoriesButton,
@@ -179,8 +180,11 @@
 @media (min-width: 768px) {
   .section {
     padding: 64px 0;
+    min-height: 831px;
   }
-
+  .headerContainer {
+    min-height: 53px;
+  }
   .sectionTitle {
     font-size: 44px;
   }
@@ -235,8 +239,11 @@
     padding: 72px 0;
     margin: 0 auto;
     box-sizing: border-box;
+    min-height: 967px;
   }
-
+  .headerContainer {
+    min-height: 62px;
+  }
   .sectionTitle {
     font-size: 52px;
   }

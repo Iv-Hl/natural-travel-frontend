@@ -20,15 +20,16 @@ export interface CurrentUser {
   savedArticles: string[];
 }
 
-export type UserProfileUpdate = Pick<CurrentUser, "_id"> &
-  Partial<Pick<CurrentUser, "name" | "email" | "avatarUrl">>;
-
 interface AuthContextValue {
   user: CurrentUser | null;
   isLoading: boolean;
   refreshAuth: () => Promise<void>;
-  updateUser: (user: UserProfileUpdate) => void;
-  updateSavedStory: (userId: string, storyId: string, isSaved: boolean) => void;
+  updateUser: (user: CurrentUser) => void;
+  updateSavedStory: (
+    userId: string,
+    storyId: string,
+    isSaved: boolean,
+  ) => void;
   logout: () => Promise<void>;
 }
 
@@ -61,19 +62,8 @@ export default function AuthProvider({
     }
   }, []);
 
-  const updateUser = useCallback((nextUser: UserProfileUpdate) => {
-    setUser((current) => {
-      if (!current || current._id !== nextUser._id) return current;
-
-      return {
-        ...current,
-        ...(nextUser.name !== undefined ? { name: nextUser.name } : {}),
-        ...(nextUser.email !== undefined ? { email: nextUser.email } : {}),
-        ...(nextUser.avatarUrl !== undefined
-          ? { avatarUrl: nextUser.avatarUrl }
-          : {}),
-      };
-    });
+  const updateUser = useCallback((nextUser: CurrentUser) => {
+    setUser(nextUser);
   }, []);
 
   useEffect(() => {
@@ -115,8 +105,8 @@ export default function AuthProvider({
   );
 
   const value = useMemo(
-    () => ({ user, isLoading, refreshAuth, updateUser, logout, updateSavedStory }),
-    [user, isLoading, refreshAuth, updateUser, logout, updateSavedStory],
+    () => ({ user, isLoading, refreshAuth, updateUser, updateSavedStory, logout }),
+    [user, isLoading, refreshAuth, updateUser, updateSavedStory, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -5,10 +5,9 @@ import StoryCard, { type Story } from "../stories/StoryCard";
 import styles from "./TravellersStories.module.css";
 import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
 import { getTravellerStories } from "@/lib/api/travellers";
-import MessageNoStories from "../shared/MessageNoStories";
+import { useAuth } from "@/components/providers/AuthProvider";
 import ErrorWhileSavingModal from "../ErrorWhileSavingModal/ErrorWhileSavingModal";
-import { useAuth } from "../providers/AuthProvider";
-import { useQueryClient } from "@tanstack/react-query";
+import MessageNoStories from "../shared/MessageNoStories";
 
 interface StoriesResponse {
   stories: Story[];
@@ -20,72 +19,59 @@ interface StoriesResponse {
 }
 
 interface SavedStoriesResponse {
+  stories: Array<{ _id: string }>;
+  pagination?: { totalPages?: number };
   savedArticles?: string[];
   rate?: number;
   message?: string;
 }
 
 interface TravellersStoriesProps {
-  variant?: "own" | "saved";
   travellerId?: string;
 }
 
 const DESKTOP_BREAKPOINT = 1440;
 
 export default function TravellersStories({
-  variant = "own",
   travellerId,
 }: TravellersStoriesProps) {
-  const [publicLimit, setPublicLimit] = useState<number | null>(null);
-
+  const { user, isLoading: isAuthLoading, updateSavedStory } = useAuth();
+  const userId = user?._id;
+  const [stories, setStories] = useState<Story[]>([]);
+  const [limit, setLimit] = useState(4);
   useEffect(() => {
     const mediaQuery = window.matchMedia(
       `(min-width: ${DESKTOP_BREAKPOINT}px)`,
     );
-    const updateLimit = () => setPublicLimit(mediaQuery.matches ? 6 : 4);
+
+    const updateLimit = () => {
+      setLimit(mediaQuery.matches ? 6 : 4);
+    };
+
     updateLimit();
     mediaQuery.addEventListener("change", updateLimit);
-    return () => mediaQuery.removeEventListener("change", updateLimit);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateLimit);
+    };
   }, []);
-
-  const limit = travellerId ? publicLimit : 6;
-  if (limit === null) return <p>Завантаження...</p>;
-
-  return (
-    <TravellersStoriesContent
-      key={travellerId ? `public:${travellerId}:${limit}` : `private:${variant}`}
-      travellerId={travellerId}
-      variant={variant}
-      limit={limit}
-    />
-  );
-}
-
-function TravellersStoriesContent({
-  variant = "own",
-  travellerId,
-  limit,
-}: TravellersStoriesProps & { limit: number }) {
-  const { user, isLoading: isAuthLoading, updateSavedStory } = useAuth();
-  const queryClient = useQueryClient();
-  const savedStoryIds = user?.savedArticles ?? [];
-  const [stories, setStories] = useState<Story[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [failedPage, setFailedPage] = useState<number | null>(null);
+  const [savedStoryIds, setSavedStoryIds] = useState<string[]>([]);
   const [savingStoryIds, setSavingStoryIds] = useState<string[]>([]);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const currentUserIdRef = useRef(userId);
 
   const firstNewStoryRef = useRef<HTMLLIElement | null>(null);
   const shouldScrollRef = useRef(false);
   const previousCountRef = useRef(0);
   const storiesCountRef = useRef(0);
   const loadMoreControllerRef = useRef<AbortController | null>(null);
-  const pendingSavesRef = useRef(new Set<string>());
-  const failedPageRef = useRef(1);
-  const isMountedRef = useRef(false);
+  const effectiveLimit = travellerId ? limit : 6;
 
   useEffect(() => {
     storiesCountRef.current = stories.length;
@@ -104,30 +90,35 @@ function TravellersStoriesContent({
           const data = await getTravellerStories(
             travellerId,
             pageNumber,
-            limit,
+            effectiveLimit,
             signal,
           );
+
           storiesData = data.stories.map((story) => ({
             ...story,
             savesCount: story.rate,
             authorName: data.user.name,
           }));
+
           pagesCount = data.pagination.totalPages;
         } else {
           const response = await fetchWithAuth(
-            `/api/users/me/${variant === "saved" ? "saved-stories" : "stories"}?page=${pageNumber}&limit=${limit}`,
+            `/api/users/me/stories?page=${pageNumber}&limit=6`,
             { signal },
           );
 
           if (!response.ok) {
             throw new Error("Не вдалося завантажити історії");
           }
+
           const data: StoriesResponse = await response.json();
+
           storiesData = data.stories;
           pagesCount = data.totalPages ?? data.pagination?.totalPages ?? 0;
         }
 
         if (signal.aborted) return;
+        setFailedPage(null);
 
         if (pageNumber === 1) {
           previousCountRef.current = 0;
@@ -148,7 +139,7 @@ function TravellersStoriesContent({
       } catch (err) {
         if (signal.aborted) return;
 
-        failedPageRef.current = pageNumber;
+        setFailedPage(pageNumber);
         setError(
           err instanceof Error ? err.message : "Сталася невідома помилка",
         );
@@ -158,21 +149,68 @@ function TravellersStoriesContent({
         }
       }
     },
-    [variant, travellerId, limit],
+    [travellerId, effectiveLimit],
   );
 
   useEffect(() => {
-    isMountedRef.current = true;
     const controller = new AbortController();
 
     void fetchStories(1, controller.signal);
 
     return () => {
-      isMountedRef.current = false;
       controller.abort();
       loadMoreControllerRef.current?.abort();
     };
   }, [fetchStories]);
+
+  useEffect(() => {
+    currentUserIdRef.current = userId;
+
+    if (!userId) setSavedStoryIds([]);
+    if (isAuthLoading || !userId) return;
+
+    const controller = new AbortController();
+
+    const fetchSavedStoryIds = async () => {
+      try {
+        const response = await fetchWithAuth(
+          "/api/users/me/saved-stories?page=1&limit=50",
+          { signal: controller.signal },
+        );
+        if (!response.ok)
+          throw new Error("Не вдалося завантажити збережені історії");
+
+        const firstPage: SavedStoriesResponse = await response.json();
+        const ids = firstPage.stories.map((story) => story._id);
+        const totalPages = firstPage.pagination?.totalPages ?? 1;
+
+        for (let pageNumber = 2; pageNumber <= totalPages; pageNumber += 1) {
+          const pageResponse = await fetchWithAuth(
+            `/api/users/me/saved-stories?page=${pageNumber}&limit=50`,
+            { signal: controller.signal },
+          );
+          if (!pageResponse.ok)
+            throw new Error("Не вдалося завантажити збережені історії");
+          const pageData: SavedStoriesResponse = await pageResponse.json();
+          ids.push(...pageData.stories.map((story) => story._id));
+        }
+
+        if (!controller.signal.aborted) setSavedStoryIds(ids);
+      } catch (err) {
+        if (!controller.signal.aborted) {
+          setSaveError(
+            err instanceof Error
+              ? err.message
+              : "Не вдалося завантажити збережені історії",
+          );
+        }
+      }
+    };
+
+    void fetchSavedStoryIds();
+
+    return () => controller.abort();
+  }, [userId, isAuthLoading]);
 
   useEffect(() => {
     if (shouldScrollRef.current && firstNewStoryRef.current) {
@@ -195,14 +233,16 @@ function TravellersStoriesContent({
   };
 
   const handleSave = async (storyId: string) => {
-    if (isAuthLoading || pendingSavesRef.current.has(storyId)) return;
-    if (!user) {
+    if (isAuthLoading) return;
+
+    if (!userId) {
       setShowAuthModal(true);
       return;
     }
 
+    if (savingStoryIds.includes(storyId)) return;
+
     const isSaved = savedStoryIds.includes(storyId);
-    pendingSavesRef.current.add(storyId);
     setSaveError(null);
     setSavingStoryIds((prev) => [...prev, storyId]);
 
@@ -217,17 +257,25 @@ function TravellersStoriesContent({
       if (!response.ok)
         throw new Error(data.message ?? "Не вдалося змінити збережену історію");
 
-      const nextIsSaved = data.savedArticles?.includes(storyId) ?? !isSaved;
-      updateSavedStory(user._id, storyId, nextIsSaved);
-      void queryClient.invalidateQueries({ queryKey: ["stories"] });
-      if (!isMountedRef.current) return;
+      if (currentUserIdRef.current !== userId) return;
 
-      if (!travellerId && variant === "saved" && !nextIsSaved) {
-        loadMoreControllerRef.current?.abort();
-        const controller = new AbortController();
-        loadMoreControllerRef.current = controller;
-        await fetchStories(1, controller.signal);
-      } else if (typeof data.rate === "number") {
+      if (data.savedArticles) {
+        setSavedStoryIds(data.savedArticles.map(String));
+      } else {
+        setSavedStoryIds((prev) =>
+          isSaved ? prev.filter((id) => id !== storyId) : [...prev, storyId],
+        );
+      }
+
+      updateSavedStory(
+        userId,
+        storyId,
+        data.savedArticles
+          ? data.savedArticles.map(String).includes(storyId)
+          : !isSaved,
+      );
+
+      if (typeof data.rate === "number") {
         setStories((prev) =>
           prev.map((story) =>
             story._id === storyId ? { ...story, rate: data.rate } : story,
@@ -235,17 +283,13 @@ function TravellersStoriesContent({
         );
       }
     } catch (err) {
-      if (!isMountedRef.current) return;
       setSaveError(
         err instanceof Error
           ? err.message
           : "Не вдалося змінити збережену історію",
       );
     } finally {
-      pendingSavesRef.current.delete(storyId);
-      if (isMountedRef.current) {
-        setSavingStoryIds((prev) => prev.filter((id) => id !== storyId));
-      }
+      setSavingStoryIds((prev) => prev.filter((id) => id !== storyId));
     }
   };
 
@@ -256,10 +300,7 @@ function TravellersStoriesContent({
     loadMoreControllerRef.current?.abort();
     loadMoreControllerRef.current = controller;
 
-    void fetchStories(
-      failedPageRef.current,
-      controller.signal,
-    );
+    void fetchStories(failedPage ?? 1, controller.signal);
   };
 
   return (
@@ -309,16 +350,11 @@ function TravellersStoriesContent({
           text={
             travellerId
               ? "Цей мандрівник ще не опублікував жодної історії."
-              : variant === "saved"
-                ? "Ви ще не зберегли жодної історії."
-                : "Ви ще нічого не публікували, поділіться своєю першою історією!"
+              : "Ви ще нічого не публікували, поділіться своєю першою історією!"
           }
-          buttonText={travellerId ? "Назад до історій" : variant === "saved" ? "Переглянути історії" : "Опублікувати історію"}
-          linkTo={travellerId || variant === "saved" ? "/stories" : "/stories/new"}
+          buttonText={travellerId ? "Назад до історій" : "Опублікувати історію"}
+          linkTo={travellerId ? "/stories" : "/stories/new"}
         />
-      )}
-      {showAuthModal && (
-        <ErrorWhileSavingModal onClose={() => setShowAuthModal(false)} />
       )}
 
       {!error && page < totalPages && (
@@ -330,6 +366,10 @@ function TravellersStoriesContent({
         >
           {isLoading ? "Завантаження..." : "Показати ще"}
         </button>
+      )}
+
+      {showAuthModal && (
+        <ErrorWhileSavingModal onClose={() => setShowAuthModal(false)} />
       )}
     </section>
   );

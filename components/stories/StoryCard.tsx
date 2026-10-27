@@ -23,8 +23,8 @@ interface StoryCardProps {
 export default function StoryCard({
   story,
   isSaved,
-  isSaving = false,
   onSave,
+  isSaving = false,
 }: StoryCardProps) {
   return (
     <article className={styles.card}>
@@ -69,13 +69,7 @@ export default function StoryCard({
             className={`${styles.saveButton} ${isSaved ? styles.saved : ""}`}
             onClick={() => onSave(story._id)}
             disabled={isSaving}
-            aria-label={
-              isSaving
-                ? "Збереження статті"
-                : isSaved
-                  ? "Прибрати зі збережених"
-                  : "Зберегти статтю"
-            }
+            aria-label={isSaved ? "Прибрати зі збережених" : "Зберегти історію"}
             aria-pressed={isSaved}
             aria-busy={isSaving}
           >
