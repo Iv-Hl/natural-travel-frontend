@@ -11,7 +11,7 @@ import MessageNoStories from "../shared/MessageNoStories";
 import { usePathname } from "next/navigation";
 
 interface StoriesResponse {
-  stories: Story[];
+  stories: Array<Story & { author?: { name?: string } | null }>;
   total?: number;
   page?: number;
   limit?: number;
@@ -19,9 +19,7 @@ interface StoriesResponse {
   pagination?: { totalPages?: number };
 }
 
-interface SavedStoriesResponse {
-  stories: Array<{ _id: string }>;
-  pagination?: { totalPages?: number };
+interface SaveStoryResponse {
   savedArticles?: string[];
   rate?: number;
   message?: string;
@@ -39,7 +37,7 @@ export default function TravellersStories({
   isSavedTab: isSavedProp,
 }: TravellersStoriesProps) {
   const pathname = usePathname();
-  const isSavedTab = isSavedProp ??pathname.includes("/saved");
+  const isSavedTab = isSavedProp ?? pathname.includes("/saved");
 
   const { user, isLoading: isAuthLoading, updateSavedStory } = useAuth();
   const userId = user?._id;
@@ -66,22 +64,20 @@ export default function TravellersStories({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [failedPage, setFailedPage] = useState<number | null>(null);
-  const [savedStoryIds, setSavedStoryIds] = useState<string[]>([]);
+  const savedStoryIds = user?.savedArticles ?? [];
+  const savedArticlesForTab =
+    !travellerId && isSavedTab ? user?.savedArticles : undefined;
   const [savingStoryIds, setSavingStoryIds] = useState<string[]>([]);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const currentUserIdRef = useRef(userId);
+  const pendingSaves = useRef(new Set<string>());
 
   const firstNewStoryRef = useRef<HTMLLIElement | null>(null);
   const shouldScrollRef = useRef(false);
   const previousCountRef = useRef(0);
-  const storiesCountRef = useRef(0);
   const loadMoreControllerRef = useRef<AbortController | null>(null);
   const effectiveLimit = travellerId ? limit : 6;
-
-  useEffect(() => {
-    storiesCountRef.current = stories.length;
-  }, [stories]);
 
   const fetchStories = useCallback(
     async (pageNumber: number, signal: AbortSignal) => {
@@ -102,19 +98,16 @@ export default function TravellersStories({
 
           storiesData = data.stories.map((story) => ({
             ...story,
-            savesCount: story.rate,
+            savesCount: story.rate ?? 0,
             authorName: data.user.name,
           }));
 
           pagesCount = data.pagination.totalPages;
         } else {
           const endpoint = isSavedTab
-            ? "/api/users/me/saved-stories"
-            : "/api/users/me/stories";
-          const response = await fetchWithAuth(
-            endpoint,
-            { signal },
-          );
+            ? `/api/users/me/saved-stories?page=${pageNumber}&limit=${effectiveLimit}`
+            : `/api/users/me/stories?page=${pageNumber}&limit=${effectiveLimit}`;
+          const response = await fetchWithAuth(endpoint, { signal });
 
           if (!response.ok) {
             throw new Error("Не вдалося завантажити історії");
@@ -122,8 +115,14 @@ export default function TravellersStories({
 
           const data: StoriesResponse = await response.json();
 
-          storiesData = data.stories;
-          pagesCount = data.totalPages ?? data.pagination?.totalPages ?? 0;
+          storiesData = data.stories.map((story) => ({
+            ...story,
+            authorName: story.authorName ?? story.author?.name,
+            savesCount: story.rate ?? 0,
+          }));
+          pagesCount = isSavedTab
+            ? (data.pagination?.totalPages ?? 0)
+            : (data.totalPages ?? 0);
         }
 
         if (signal.aborted) return;
@@ -132,15 +131,21 @@ export default function TravellersStories({
         if (pageNumber === 1) {
           previousCountRef.current = 0;
           shouldScrollRef.current = false;
-          storiesCountRef.current = storiesData.length;
-
-          setStories(storiesData);
+          setStories([
+            ...new Map(storiesData.map((story) => [story._id, story])).values(),
+          ]);
         } else {
-          previousCountRef.current = storiesCountRef.current;
-          shouldScrollRef.current = storiesData.length > 0;
-          storiesCountRef.current += storiesData.length;
-
-          setStories((prev) => [...prev, ...storiesData]);
+          setStories((prev) => {
+            const existingIds = new Set(prev.map((story) => story._id));
+            const newStories = storiesData.filter((story) => {
+              if (existingIds.has(story._id)) return false;
+              existingIds.add(story._id);
+              return true;
+            });
+            previousCountRef.current = prev.length;
+            shouldScrollRef.current = newStories.length > 0;
+            return [...prev, ...newStories];
+          });
         }
 
         setTotalPages(pagesCount);
@@ -162,64 +167,26 @@ export default function TravellersStories({
   );
 
   useEffect(() => {
+    if (!travellerId && (isAuthLoading || !userId)) {
+      setStories([]);
+      setIsLoading(isAuthLoading);
+      return;
+    }
+
     const controller = new AbortController();
 
+    // A bookmark change resets saved pagination so shifted pages cannot skip stories.
     void fetchStories(1, controller.signal);
 
     return () => {
       controller.abort();
       loadMoreControllerRef.current?.abort();
     };
-  }, [fetchStories]);
+  }, [fetchStories, travellerId, userId, isAuthLoading, savedArticlesForTab]);
 
   useEffect(() => {
     currentUserIdRef.current = userId;
-
-    if (!userId) setSavedStoryIds([]);
-    if (isAuthLoading || !userId) return;
-
-    const controller = new AbortController();
-
-    const fetchSavedStoryIds = async () => {
-      try {
-        const response = await fetchWithAuth(
-          "/api/users/me/saved-stories?page=1&limit=50",
-          { signal: controller.signal },
-        );
-        if (!response.ok)
-          throw new Error("Не вдалося завантажити збережені історії");
-
-        const firstPage: SavedStoriesResponse = await response.json();
-        const ids = firstPage.stories.map((story) => story._id);
-        const totalPages = firstPage.pagination?.totalPages ?? 1;
-
-        for (let pageNumber = 2; pageNumber <= totalPages; pageNumber += 1) {
-          const pageResponse = await fetchWithAuth(
-            `/api/users/me/saved-stories?page=${pageNumber}&limit=50`,
-            { signal: controller.signal },
-          );
-          if (!pageResponse.ok)
-            throw new Error("Не вдалося завантажити збережені історії");
-          const pageData: SavedStoriesResponse = await pageResponse.json();
-          ids.push(...pageData.stories.map((story) => story._id));
-        }
-
-        if (!controller.signal.aborted) setSavedStoryIds(ids);
-      } catch (err) {
-        if (!controller.signal.aborted) {
-          setSaveError(
-            err instanceof Error
-              ? err.message
-              : "Не вдалося завантажити збережені історії",
-          );
-        }
-      }
-    };
-
-    void fetchSavedStoryIds();
-
-    return () => controller.abort();
-  }, [userId, isAuthLoading]);
+  }, [userId]);
 
   useEffect(() => {
     if (shouldScrollRef.current && firstNewStoryRef.current) {
@@ -249,9 +216,10 @@ export default function TravellersStories({
       return;
     }
 
-    if (savingStoryIds.includes(storyId)) return;
+    if (pendingSaves.current.has(storyId)) return;
 
     const isSaved = savedStoryIds.includes(storyId);
+    pendingSaves.current.add(storyId);
     setSaveError(null);
     setSavingStoryIds((prev) => [...prev, storyId]);
 
@@ -260,37 +228,30 @@ export default function TravellersStories({
         `/api/users/me/saved-stories/${encodeURIComponent(storyId)}`,
         { method: isSaved ? "DELETE" : "POST" },
       );
-      const data: SavedStoriesResponse = await response
-        .json()
-        .catch(() => ({}));
+      const data: SaveStoryResponse = await response.json().catch(() => ({}));
       if (!response.ok)
         throw new Error(data.message ?? "Не вдалося змінити збережену історію");
 
       if (currentUserIdRef.current !== userId) return;
 
-      if (data.savedArticles) {
-        setSavedStoryIds(data.savedArticles.map(String));
-      } else {
-        setSavedStoryIds((prev) =>
-          isSaved ? prev.filter((id) => id !== storyId) : [...prev, storyId],
-        );
-      }
+      const nextIsSaved = data.savedArticles
+        ? data.savedArticles.map(String).includes(storyId)
+        : !isSaved;
+      updateSavedStory(userId, storyId, nextIsSaved);
 
-      updateSavedStory(
-        userId,
-        storyId,
-        data.savedArticles
-          ? data.savedArticles.map(String).includes(storyId)
-          : !isSaved,
-      );
+      setStories((prev) => {
+        if (!travellerId && isSavedTab && !nextIsSaved) {
+          return prev.filter((story) => story._id !== storyId);
+        }
 
-      if (typeof data.rate === "number") {
-        setStories((prev) =>
-          prev.map((story) =>
-            story._id === storyId ? { ...story, rate: data.rate } : story,
-          ),
-        );
-      }
+        return prev.map((story) => {
+          if (story._id !== storyId) return story;
+          const rate =
+            data.rate ??
+            Math.max(0, (story.rate ?? 0) + (nextIsSaved ? 1 : -1));
+          return { ...story, rate, savesCount: rate };
+        });
+      });
     } catch (err) {
       setSaveError(
         err instanceof Error
@@ -298,6 +259,7 @@ export default function TravellersStories({
           : "Не вдалося змінити збережену історію",
       );
     } finally {
+      pendingSaves.current.delete(storyId);
       setSavingStoryIds((prev) => prev.filter((id) => id !== storyId));
     }
   };
@@ -311,8 +273,8 @@ export default function TravellersStories({
 
     void fetchStories(failedPage ?? 1, controller.signal);
   };
-   
-   const emptyMessage = travellerId
+
+  const emptyMessage = travellerId
     ? {
         text: "Цей користувач ще не публікував історій",
         buttonText: "Назад до історій",
@@ -328,8 +290,8 @@ export default function TravellersStories({
           text: "Ви ще нічого не публікували, поділіться своєю першою історією!",
           buttonText: "Опублікувати історію",
           linkTo: "/stories/new",
-       };
-  
+        };
+
   return (
     <section className={styles.container}>
       {saveError && <p role="alert">{saveError}</p>}
@@ -373,10 +335,10 @@ export default function TravellersStories({
       {isLoading && <p>Завантаження...</p>}
 
       {!isLoading && !error && stories.length === 0 && (
-       <MessageNoStories
-         text={emptyMessage.text}
-         buttonText={emptyMessage.buttonText}
-         linkTo={emptyMessage.linkTo}
+        <MessageNoStories
+          text={emptyMessage.text}
+          buttonText={emptyMessage.buttonText}
+          linkTo={emptyMessage.linkTo}
         />
       )}
 
@@ -389,12 +351,11 @@ export default function TravellersStories({
         >
           {isLoading ? "Завантаження..." : "Показати ще"}
         </button>
-      )}  
-
-       {showAuthModal && (
-        <ErrorWhileSavingModal onClose={() => setShowAuthModal(false)} />
       )}
 
+      {showAuthModal && (
+        <ErrorWhileSavingModal onClose={() => setShowAuthModal(false)} />
+      )}
     </section>
   );
 }
