@@ -281,6 +281,7 @@ export default function NewStoryForm() {
                   setImageFile(null);
                   setImagePreview("");
                   setImageError("");
+                  setSubmitError("");
                   if (fileInputRef.current) {
                     fileInputRef.current.value = "";
                   } //   очищаємо значення input type="file" через реф
