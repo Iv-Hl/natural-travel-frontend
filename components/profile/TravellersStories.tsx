@@ -338,6 +338,7 @@ export default function TravellersStories({
         <MessageNoStories
           text={emptyMessage.text}
           buttonText={emptyMessage.buttonText}
+          buttonVariant={travellerId ? "back" : isSavedTab ? "stories" : "publish"}
           linkTo={emptyMessage.linkTo}
         />
       )}

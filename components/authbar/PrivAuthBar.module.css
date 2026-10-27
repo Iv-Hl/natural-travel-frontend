@@ -1,75 +1,75 @@
 .menu {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-height: calc(100dvh - 152px);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: calc(100dvh - 120px);
 }
 
 .navigation {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 32px;
-    font-weight: 400;
-    font-size: 16px;
-    margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  font-weight: 400;
+  font-size: 16px;
+  margin-top: 40px;
 }
 
 .navigation a:hover {
-    text-decoration: underline;
-    text-underline-offset: 4px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .bottomSection {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 24px;
-    width: 100%;
-    max-width: 335px;
-    margin-top: auto;
-    margin-left: auto;
-    margin-right: auto;
-    padding-bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  max-width: 335px;
+  margin-top: auto;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 68px;
 }
 
 .publishBtnMobile {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px 20px;
-    border-radius: 24px;
-    width: 100%;
-    height: 48px;
-    color: var(--color-primary-text, #fff);
-    background-color: #2b7833;
-    font-weight: 500;
-    font-size: 16px;
-    text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 24px;
+  width: 100%;
+  height: 48px;
+  color: var(--color-primary-text, #fff);
+  background-color: #2b7833;
+  font-weight: 500;
+  font-size: 16px;
+  text-align: center;
 }
 
 .publishBtnMobile:hover {
-    background-color: #235e28;
+  background-color: #235e28;
 }
 
 .userProfileMobile {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
 }
 
 .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #e2e8f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .avatarImg {
@@ -80,31 +80,110 @@
 }
 
 .avatarIcon {
-    width: 32px;
-    height: 32px;
-    fill: #64748b;
+  width: 32px;
+  height: 32px;
+  fill: #64748b;
 }
 
 .userName {
-    font-weight: 500;
-    font-size: 16px;
-    color: inherit;
+  font-weight: 500;
+  font-size: 16px;
+  color: inherit;
 }
 
 .logoutBtn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-left: 12px;
-    border-left: 1px solid var(--color-border, #cbd5e1);
-    margin-left: 4px;
+  background: none;
+  transform-origin: center;
+  transition: transform 180ms ease;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 12px;
+  border-left: 1px solid var(--color-border, #cbd5e1);
+  margin-left: 4px;
 }
 
 .logoutIcon {
-    width: 20px;
-    height: 20px;
-    fill: currentColor;
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.logoutBtn:hover {
+  transform: scale(1.05);
+}
+
+.logoutBtn:active {
+  transform: scale(0.98);
+}
+
+.logoutBtn:focus-visible {
+  border-radius: var(--radius-sm);
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logoutBtn {
+    transition: none;
+  }
+}
+/* Explicit CTA states requested for the light theme. */
+
+:global(html:not([data-theme="dark"])) .publishBtnMobile {
+  background-color: #4a9849;
+  color: #fff;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+  border: 1px solid var(--color-mantis-dark);
+  border-radius: 6px;
+}
+
+:global(html:not([data-theme="dark"])) .publishBtnMobile:hover,
+:global(html:not([data-theme="dark"])) .publishBtnMobile:focus-visible {
+  border-color: #def2de;
+  border: 1px solid var(--color-mantis-dark);
+  background-color: #def2de;
+  color: #1b391b;
+}
+
+:global(html:not([data-theme="dark"])) .publishBtnMobile:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+:global(html:not([data-theme="dark"])) .publishBtnMobile:active {
+  border-color: #254c24;
+  background-color: #254c24;
+  color: #fff;
+}
+/* Dark-theme CTA colors requested. */
+:global(html[data-theme="dark"]) .publishBtnMobile {
+  border: 1px solid #72ca70;
+  border-radius: 6px;
+  background-color: #68db68;
+  color: #102010;
+}
+
+:global(html[data-theme="dark"]) .publishBtnMobile:hover:not(:disabled),
+:global(html[data-theme="dark"])
+  .publishBtnMobile:focus-visible:not(:disabled) {
+  border: 1px solid #72ca70;
+  background-color: #a3cba3;
+  color: #102010;
+}
+
+:global(html[data-theme="dark"]) .publishBtnMobile:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+:global(html[data-theme="dark"]) .publishBtnMobile:active:not(:disabled) {
+  border: 1px solid #72ca70;
+  background-color: #275c26;
+  color: #fff;
 }

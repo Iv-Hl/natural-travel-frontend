@@ -6,15 +6,12 @@ type AuthResponse = {
 
 function localizeAuthError(message?: string) {
   if (message === "User with this email already exists") {
-    return "РљРѕСЂРёСЃС‚СѓРІР°С‡ С–Р· С‚Р°РєРёРј email СѓР¶Рµ Р·Р°СЂРµС”СЃС‚СЂРѕРІР°РЅРёР№";
+    return "Користувач із таким email уже зареєстрований";
   }
   if (message === "Invalid credentials" || message === "Unauthorized") {
-    return "РќРµРїСЂР°РІРёР»СЊРЅРёР№ email Р°Р±Рѕ РїР°СЂРѕР»СЊ";
+    return "Неправильний email або пароль";
   }
-  return (
-    message ||
-    "РќРµ РІРґР°Р»РѕСЃСЏ РІРёРєРѕРЅР°С‚Рё Р·Р°РїРёС‚. РЎРїСЂРѕР±СѓР№С‚Рµ С‰Рµ СЂР°Р·."
-  );
+  return message || "Не вдалося виконати запит. Спробуйте ще раз.";
 }
 
 export async function submitAuthForm(
@@ -29,14 +26,10 @@ export async function submitAuthForm(
   } catch (error) {
     if (axios.isAxiosError<AuthResponse>(error)) {
       if (!error.response) {
-        throw new Error(
-          "РќРµ РІРґР°Р»РѕСЃСЏ Р·вЂ™С”РґРЅР°С‚РёСЃСЏ С–Р· СЃРµСЂРІРµСЂРѕРј. РЎРїСЂРѕР±СѓР№С‚Рµ С‰Рµ СЂР°Р·.",
-        );
+        throw new Error("Не вдалося з’єднатися із сервером. Спробуйте ще раз.");
       }
       throw new Error(localizeAuthError(error.response.data?.message));
     }
-    throw new Error(
-      "РќРµ РІРґР°Р»РѕСЃСЏ РІРёРєРѕРЅР°С‚Рё Р·Р°РїРёС‚. РЎРїСЂРѕР±СѓР№С‚Рµ С‰Рµ СЂР°Р·.",
-    );
+    throw new Error("Не вдалося виконати запит. Спробуйте ще раз.");
   }
 }

@@ -190,6 +190,29 @@
   color: var(--color-primary-active-text);
 }
 
+/* Bookmark icon colors for both theme modes. */
+:global(html:not([data-theme="dark"])) .buttonSvg {
+  fill: #000;
+  stroke: #000;
+}
+
+:global(html:not([data-theme="dark"])) .saveButton:hover .buttonSvg,
+:global(html:not([data-theme="dark"])) .saveButton:focus-visible .buttonSvg {
+  fill: #fff;
+  stroke: #fff;
+}
+
+:global(html[data-theme="dark"]) .buttonSvg {
+  fill: #fff;
+  stroke: #fff;
+}
+
+:global(html[data-theme="dark"]) .saveButton:hover .buttonSvg,
+:global(html[data-theme="dark"]) .saveButton:focus-visible .buttonSvg {
+  fill: #000;
+  stroke: #000;
+}
+
 .saveButton:disabled {
   cursor: wait;
   opacity: 0.7;

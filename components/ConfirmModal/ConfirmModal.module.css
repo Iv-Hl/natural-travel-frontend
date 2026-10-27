@@ -216,3 +216,27 @@
     font-size: 20px;
   }
 }
+/* Light-theme confirmation button states. */
+
+:global(html:not([data-theme="dark"])) .primary {
+  border: 1px solid var(--color-mantis-dark);
+  border-radius: 6px;
+}
+
+:global(html:not([data-theme="dark"])) .primary:hover:not(:disabled),
+:global(html:not([data-theme="dark"])) .primary:focus-visible:not(:disabled) {
+  border: 1px solid var(--color-mantis-dark);
+  background-color: #def2de;
+  color: #1b391b;
+}
+
+:global(html:not([data-theme="dark"])) .primary:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+:global(html:not([data-theme="dark"])) .primary:active:not(:disabled) {
+  border: 1px solid #254c24;
+  background-color: #254c24;
+  color: #fff;
+}

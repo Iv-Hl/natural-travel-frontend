@@ -34,12 +34,12 @@
   background-color: var(--color-primary-button-bg);
   color: var(--color-primary-text, var(--color-white));
   font-family: var(--font-main);
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 500;
   text-align: center;
   text-decoration: none;
+  white-space: nowrap;
 }
-
 
 .buttonSmall {
   width: 131px;
@@ -54,6 +54,43 @@
 .button:hover {
   background-color: var(--color-main-text);
   color: #000;
+}
+
+@media (max-width: 767px) {
+  .button,
+  .buttonSmall,
+  .buttonLarge {
+    width: 303px;
+    max-width: 100%;
+    height: 48px;
+    min-height: 48px;
+    text-align: center;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1365px) {
+  .button,
+  .buttonSmall,
+  .buttonLarge {
+    width: 163px;
+    height: 48px;
+    min-height: 48px;
+    text-align: center;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1365px) {
+  .button.buttonBack {
+    width: 163px;
+  }
+
+  .button.buttonStories {
+    width: 110px;
+  }
+
+  .button.buttonPublish {
+    width: 205px;
+  }
 }
 
 @media (min-width: 768px) {
@@ -77,11 +114,90 @@
     min-height: 48px;
     padding: 6px 12px;
     gap: 8px;
+    font-size: 16px;
   }
 }
 
-@media (min-width: 1440px){
- .text{
-  font-size: 26px;
- }
+@media (min-width: 1366px) {
+  .button {
+    font-size: 20px;
+  }
+
+  .button.buttonBack {
+    width: 198px;
+    height: 48px;
+  }
+
+  .button.buttonStories {
+    width: 131px;
+    height: 48px;
+  }
+
+  .button.buttonPublish {
+    width: 250px;
+    height: 48px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .text {
+    font-size: 26px;
+  }
+}
+
+/* Explicit CTA states requested for the light theme. */
+
+:global(html:not([data-theme="dark"])) .button {
+  border-color: #4a9849;
+  background-color: #4a9849;
+  color: #fff;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+  border: 1px solid #4a9849;
+  border-radius: 6px;
+}
+
+:global(html:not([data-theme="dark"])) .button:hover,
+:global(html:not([data-theme="dark"])) .button:focus-visible {
+  border: 1px solid #4a9849;
+  background-color: #def2de;
+  color: #1b391b;
+}
+
+:global(html:not([data-theme="dark"])) .button:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+:global(html:not([data-theme="dark"])) .button:active {
+  border-color: #254c24;
+  background-color: #254c24;
+  color: #fff;
+}
+/* Dark-theme CTA colors requested. */
+:global(html[data-theme="dark"]) .button {
+  border: 1px solid #72ca70;
+  border-radius: 6px;
+  background-color: #68db68;
+  color: #102010;
+}
+
+:global(html[data-theme="dark"]) .button:hover:not(:disabled),
+:global(html[data-theme="dark"]) .button:focus-visible:not(:disabled) {
+  border: 1px solid #72ca70;
+  background-color: #a3cba3;
+  color: #102010;
+}
+
+:global(html[data-theme="dark"]) .button:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+:global(html[data-theme="dark"]) .button:active:not(:disabled) {
+  border: 1px solid #72ca70;
+  background-color: #275c26;
+  color: #fff;
 }

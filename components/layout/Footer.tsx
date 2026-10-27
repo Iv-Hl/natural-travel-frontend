@@ -6,7 +6,7 @@ export default function Footer() {
 
   return (
     <footer className={styles.footer}>
-      <div className={styles.container}>
+      <div className={`container ${styles.footerContainer}`}>
         {/* Логотип */}
         <Link href="/" className={styles.logoLink}>
           <span className={styles.logoIcon} aria-hidden="true" />

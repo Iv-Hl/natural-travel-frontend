@@ -14,9 +14,11 @@ export default function SiteLayout({
   const { user, isLoading } = useAuth();
 
   return (
-    <div className={`container ${styles.shell}`}>
-      {!isLoading && (user ? <PrivHeader /> : <Header />)}
-      <main>{children}</main>
+    <div className={styles.shell}>
+      <div className={`container ${styles.pageContainer}`}>
+        {!isLoading && (user ? <PrivHeader /> : <Header />)}
+        <main>{children}</main>
+      </div>
       <Footer />
     </div>
   );

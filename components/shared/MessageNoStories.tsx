@@ -6,6 +6,7 @@ interface MessageNoStoriesProps {
   buttonText: string;
   linkTo: string;
   isLarge?: boolean;
+  buttonVariant?: "back" | "stories" | "publish";
 }
 
 export default function MessageNoStories({
@@ -13,11 +14,23 @@ export default function MessageNoStories({
   buttonText,
   linkTo,
   isLarge = false,
+  buttonVariant,
 }: MessageNoStoriesProps) {
+  const variantClass =
+    buttonVariant === "back"
+      ? styles.buttonBack
+      : buttonVariant === "stories"
+        ? styles.buttonStories
+        : buttonVariant === "publish"
+          ? styles.buttonPublish
+          : "";
+
   return (
     <div className={styles.card}>
       <p className={styles.text}>{text}</p>
-      <Link href={linkTo} className={`${styles.button} ${isLarge ? styles.buttonLarge : styles.buttonSmall}`}
+      <Link
+        href={linkTo}
+        className={`${styles.button} ${variantClass} ${isLarge ? styles.buttonLarge : styles.buttonSmall}`}
       >
         {buttonText}
       </Link>

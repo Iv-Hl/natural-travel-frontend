@@ -39,6 +39,10 @@ export default function PrivHeader() {
     setIsMenuOpen(false);
   };
 
+  const toggleMenu = () => {
+    setIsMenuOpen((isOpen) => !isOpen);
+  };
+
   const requestLogout = () => {
     closeMenu();
     setIsLogoutConfirmOpen(true);
@@ -108,29 +112,41 @@ export default function PrivHeader() {
 
           <button
             className={styles.menuButton}
-            aria-label="Р’С–РґРєСЂРёС‚Рё РјРµРЅСЋ"
+            aria-label={isMenuOpen ? "Закрити меню" : "Відкрити меню"}
             type="button"
             aria-expanded={isMenuOpen}
             aria-controls="mobile-navigation"
-            onClick={() => setIsMenuOpen(true)}
+            onClick={toggleMenu}
           >
-            <svg className={styles.menuIcon} aria-hidden="true" focusable="false">
-              <use href="/icons/symbol-defs.svg#icon-burger-menu" />
-            </svg>
+            {isMenuOpen ? (
+              <svg className={styles.menuIcon} aria-hidden="true" focusable="false">
+                <use href="/icons/symbol-defs.svg#icon-close" />
+              </svg>
+            ) : (
+              <svg className={styles.menuIcon} aria-hidden="true" focusable="false">
+                <use href="/icons/symbol-defs.svg#icon-burger-menu" />
+              </svg>
+            )}
           </button>
         </div>
 
         <button
           className={`${styles.menuButton} ${styles.mobileMenuButton}`}
-          aria-label="Р’С–РґРєСЂРёС‚Рё РјРµРЅСЋ"
+          aria-label={isMenuOpen ? "Закрити меню" : "Відкрити меню"}
           type="button"
           aria-expanded={isMenuOpen}
           aria-controls="mobile-navigation"
-          onClick={() => setIsMenuOpen(true)}
+          onClick={toggleMenu}
         >
-          <svg className={styles.menuIcon} aria-hidden="true" focusable="false">
-            <use href="/icons/symbol-defs.svg#icon-burger-menu" />
-          </svg>
+          {isMenuOpen ? (
+              <svg className={styles.menuIcon} aria-hidden="true" focusable="false">
+                <use href="/icons/symbol-defs.svg#icon-close" />
+              </svg>
+            ) : (
+              <svg className={styles.menuIcon} aria-hidden="true" focusable="false">
+                <use href="/icons/symbol-defs.svg#icon-burger-menu" />
+              </svg>
+            )}
         </button>
       </div>
 

@@ -45,12 +45,9 @@ export default function Login() {
 
       <div className={styles.sectionTitle}>
         <h1 className={styles.title} id="login-title">
-          Р’С…С–Рґ
+          Вхід
         </h1>
-        <p className={styles.lead}>
-          Р’С–С‚Р°С”РјРѕ Р·РЅРѕРІСѓ Сѓ СЃРїС–Р»СЊРЅРѕС‚С–
-          РјР°РЅРґСЂС–РІРЅРёРєС–РІ!
-        </p>
+        <p className={styles.lead}>Вітаємо знову у спільноті мандрівників!</p>
       </div>
 
       <Formik<LoginValues>
@@ -67,7 +64,7 @@ export default function Login() {
             setErrorMessage(
               error instanceof Error
                 ? error.message
-                : "РќРµ РІРґР°Р»РѕСЃСЏ СѓРІС–Р№С‚Рё. РЎРїСЂРѕР±СѓР№С‚Рµ С‰Рµ СЂР°Р·.",
+                : "Не вдалося увійти. Спробуйте ще раз.",
             );
           }
         }}
@@ -88,9 +85,9 @@ export default function Login() {
                   className={styles.toastClose}
                   type="button"
                   onClick={() => setErrorMessage(null)}
-                  aria-label="Р—Р°РєСЂРёС‚Рё РїРѕРІС–РґРѕРјР»РµРЅРЅСЏ"
+                  aria-label="Закрити повідомлення"
                 >
-                  Г—
+                  ×
                 </button>
               </div>
             )}
@@ -98,7 +95,7 @@ export default function Login() {
             <Form className={styles.form} noValidate>
               <div className={styles.field}>
                 <label className={styles.label} htmlFor="login-email">
-                  РџРѕС€С‚Р°*
+                  Пошта*
                 </label>
                 <Field
                   className={styles.input}
@@ -130,7 +127,7 @@ export default function Login() {
 
               <div className={styles.field}>
                 <label className={styles.label} htmlFor="login-password">
-                  РџР°СЂРѕР»СЊ*
+                  Пароль*
                 </label>
                 <Field
                   className={styles.input}
@@ -166,8 +163,8 @@ export default function Login() {
                 disabled={isSubmitting || loginMutation.isPending}
               >
                 {isSubmitting || loginMutation.isPending
-                  ? "Р’С…РѕРґРёРјРѕвЂ¦"
-                  : "РЈРІС–Р№С‚Рё"}
+                  ? "Входимо…"
+                  : "Увійти"}
               </button>
             </Form>
           </>
