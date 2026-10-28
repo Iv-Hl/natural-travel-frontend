@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { routes } from "@/constants/routes";
-import styles from "./Layout.module.css";
+import styles from "./Header.module.css";
 import Modal from "@/components/modals/Modal";
 import MobileMenu from "@/components/authbar/AuthBar";
 import ThemeToggle from "../themeswitcher/ThemeSwitcher";
@@ -44,10 +44,7 @@ export default function Header() {
       </Link>
 
       <div className={styles.actions}>
-        <nav
-          aria-label="Основна навігація"
-          className={styles.navigation}
-        >
+        <nav aria-label="Основна навігація" className={styles.navigation}>
           <Link href={routes.home}>Головна</Link>
           <Link href={routes.stories}>Статті</Link>
           <Link href={routes.travellers}>Еко-Мандрівники</Link>

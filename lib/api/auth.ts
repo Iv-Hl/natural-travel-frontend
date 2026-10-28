@@ -1,35 +1,35 @@
+import axios from "axios";
+
 type AuthResponse = {
   message?: string;
 };
+
+function localizeAuthError(message?: string) {
+  if (message === "User with this email already exists") {
+    return "Користувач із таким email уже зареєстрований";
+  }
+  if (message === "Invalid credentials" || message === "Unauthorized") {
+    return "Неправильний email або пароль";
+  }
+  return message || "Не вдалося виконати запит. Спробуйте ще раз.";
+}
 
 export async function submitAuthForm(
   endpoint: "/api/auth/register" | "/api/auth/login",
   values: Record<string, string>,
 ) {
-  let response: Response;
-
   try {
-    response = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "same-origin",
-      body: JSON.stringify(values),
+    await axios.post<AuthResponse>(endpoint, values, {
+      withCredentials: true,
+      headers: { Accept: "application/json" },
     });
-  } catch {
-    throw new Error("Не вдалося з’єднатися із сервером. Спробуйте ще раз.");
-  }
-
-  const result = (await response.json().catch(() => ({}))) as AuthResponse;
-
-  if (!response.ok) {
-    const message = result.message;
-    const localizedMessage =
-      message === "User with this email already exists"
-        ? "Користувач із таким email уже зареєстрований"
-        : message === "Invalid credentials"
-          ? "Неправильний email або пароль"
-          : message || "Не вдалося виконати запит. Спробуйте ще раз.";
-
-    throw new Error(localizedMessage);
+  } catch (error) {
+    if (axios.isAxiosError<AuthResponse>(error)) {
+      if (!error.response) {
+        throw new Error("Не вдалося з’єднатися із сервером. Спробуйте ще раз.");
+      }
+      throw new Error(localizeAuthError(error.response.data?.message));
+    }
+    throw new Error("Не вдалося виконати запит. Спробуйте ще раз.");
   }
 }

@@ -163,6 +163,11 @@
   --profile-hover-text: var(--color-primary-hover-text);
 }
 
+:global([data-theme="dark"]) .profileLink:hover,
+:global([data-theme="dark"]) .profileLink:focus-visible {
+  color: #000;
+}
+
 .profileLink:active {
   background-color: var(--color-primary-active-bg);
   border-color: var(--color-primary-active-bg);
@@ -321,4 +326,65 @@
   .profileLink {
     font-size: 14px;
   }
+}
+/* Explicit CTA states requested for the light theme. */
+
+:global(html:not([data-theme="dark"])) .linkAll {
+  border-color: #4a9849;
+  background-color: #4a9849;
+  color: #fff;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+  border: 1px solid var(--color-mantis-dark);
+  border-radius: 6px;
+}
+
+:global(html:not([data-theme="dark"])) .linkAll:hover,
+:global(html:not([data-theme="dark"])) .linkAll:focus-visible {
+  border-color: #def2de;
+  border: 1px solid var(--color-mantis-dark);
+  background-color: #def2de;
+  color: #1b391b;
+}
+
+:global(html:not([data-theme="dark"])) .linkAll:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+:global(html:not([data-theme="dark"])) .linkAll:active {
+  border-color: #254c24;
+  background-color: #254c24;
+  color: #fff;
+}
+/* Dark-theme CTA colors requested. */
+:global(html[data-theme="dark"]) .linkAll {
+  border: 1px solid #72ca70;
+  border-radius: 6px;
+  background-color: #68db68;
+  color: #102010;
+}
+
+:global(html[data-theme="dark"]) .linkAll:hover:not(:disabled),
+:global(html[data-theme="dark"]) .linkAll:focus-visible:not(:disabled) {
+  border: 1px solid #72ca70;
+  background-color: #a3cba3;
+  color: #102010;
+}
+
+:global(html[data-theme="dark"]) .linkAll:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+:global(html[data-theme="dark"]) .linkAll:active:not(:disabled) {
+  border: 1px solid #72ca70;
+  background-color: #275c26;
+  color: #fff;
+}
+
+:global([data-theme="dark"]) .profileLink:active {
+  color: #fff;
 }

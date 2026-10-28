@@ -260,3 +260,34 @@
     display: flex;
   }
 }
+/* Dark-theme CTA colors requested. */
+:global(html[data-theme="dark"]) .allStoriesButton,
+:global(html[data-theme="dark"]) .endStoriesButton {
+  border: 1px solid #72ca70;
+  border-radius: 6px;
+  background-color: #68db68;
+  color: #102010;
+}
+
+:global(html[data-theme="dark"]) .allStoriesButton:hover:not(:disabled),
+:global(html[data-theme="dark"]) .endStoriesButton:hover:not(:disabled),
+:global(html[data-theme="dark"]) .allStoriesButton:focus-visible:not(:disabled),
+:global(html[data-theme="dark"])
+  .endStoriesButton:focus-visible:not(:disabled) {
+  border: 1px solid #72ca70;
+  background-color: #a3cba3;
+  color: #102010;
+}
+
+:global(html[data-theme="dark"]) .allStoriesButton:focus-visible,
+:global(html[data-theme="dark"]) .endStoriesButton:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+:global(html[data-theme="dark"]) .allStoriesButton:active:not(:disabled),
+:global(html[data-theme="dark"]) .endStoriesButton:active:not(:disabled) {
+  border: 1px solid #72ca70;
+  background-color: #275c26;
+  color: #fff;
+}

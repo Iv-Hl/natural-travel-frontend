@@ -76,6 +76,15 @@
     color: #ffffff;
 }
 
+:global(html[data-theme="dark"]) .profileLink:hover,
+:global(html[data-theme="dark"]) .profileLink:focus-visible {
+    color: #000;
+}
+
+:global(html[data-theme="dark"]) .profileLink:active {
+    color: #fff;
+}
+
 @media (min-width: 768px) {
     .card {
         min-height: 317px;

@@ -114,6 +114,7 @@ export default async function TravellerPage({ params }: TravellerPageProps) {
         <MessageNoStories
           text={result.message}
           buttonText="Назад до історій"
+          buttonVariant="back"
           linkTo={routes.stories}
         />
       </div>
