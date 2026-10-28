@@ -2,15 +2,12 @@
   background-color: var(--color-block-bg);
   color: var(--color-main-text);
   padding: 30px 0 20px;
-  border-top: 1px solid var(--color-border);
   width: 100%;
 }
 
-.container {
+.footerContainer {
   width: 100%;
-  max-width: 1440px;
   margin: 0 auto;
-  padding: 0 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -75,12 +72,21 @@
 .navList a {
   text-decoration: none;
   color: var(--color-main-text);
+  display: inline-block;
   font-size: 0.95rem;
-  transition: color 0.2s;
+  transform-origin: center;
+  transition:
+    color 0.2s,
+    transform 180ms ease;
 }
 
 .navList a:hover {
   color: var(--color-brand);
+  transform: scale(1.05);
+}
+
+.navList a:active {
+  transform: scale(0.98);
 }
 
 .socialList {
@@ -104,7 +110,10 @@
   text-decoration: none;
   font-size: 0.75rem;
   font-weight: bold;
-  transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
 }
 
 .socialIcon {
@@ -127,8 +136,7 @@
 
 /* Планшетна версія (від 768px до 1439px) */
 @media (min-width: 768px) and (max-width: 1439px) {
-  .container {
-    padding: 0 40px;
+  .footerContainer {
     display: grid;
     grid-template-columns: auto auto;
     grid-template-rows: auto auto auto;
@@ -155,7 +163,7 @@
     margin-top: 0;
   }
 
-  .container nav {
+  .footerContainer nav {
     grid-column: 1 / -1;
     grid-row: 2;
     width: 100%;
@@ -195,8 +203,7 @@
 
 /* Десктопна версія (від 1440px і більше) */
 @media (min-width: 1440px) {
-  .container {
-    padding: 0 64px;
+  .footerContainer {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     grid-template-rows: auto auto;
@@ -261,7 +268,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .logoLink, .logoText { transition: none; }
+  .logoLink,
+  .logoText,
+  .navList a {
+    transition: none;
+  }
 }
 
 :global([data-theme="dark"]) .socialList a:hover,
