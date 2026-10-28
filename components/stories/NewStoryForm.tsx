@@ -155,9 +155,9 @@ export default function NewStoryForm() {
                   <Image
                     src="/images/placeholder-image.png"
                     alt="Плейсхолдер зображення"
-                    width={335}
-                    height={223}
-
+                    width={2182}
+                    height={1454}
+                    sizes="(min-width: 1440px) 1091px, (min-width: 768px) calc(100vw - 64px), calc(100vw - 40px)"
                     className={styles.placeholder}
                   />
                 )}
@@ -232,7 +232,9 @@ export default function NewStoryForm() {
                   as="select"
                   id="category"
                   name="category"
-                  className={styles.input}
+                  className={`${styles.input} ${
+                    !values.category ? styles.selectPlaceholder : ""
+                  }`}
                 >
                   <option value="">Категорія</option>
                   {categories.map((category) => (
