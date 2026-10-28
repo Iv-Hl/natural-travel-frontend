@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useRef, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import ErrorWhileSavingModal from "@/components/ErrorWhileSavingModal/ErrorWhileSavingModal";
+import { useAuth } from "@/components/providers/AuthProvider";
 import StoryCard, {
   type Story as StoryCardStory,
 } from "@/components/stories/StoryCard";
@@ -10,11 +12,14 @@ import {
   getStories,
   type Story as ApiStory,
 } from "@/lib/api/stories";
+import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
 import styles from "./StoriesPage.module.css";
 
 const STORIES_LIMIT = 10;
 
-function toCardStory(story: ApiStory): StoryCardStory {
+type CatalogStory = ApiStory & { savesCount?: number };
+
+function toCardStory(story: CatalogStory): StoryCardStory {
   return {
     _id: story._id,
     title: story.title,
@@ -22,12 +27,20 @@ function toCardStory(story: ApiStory): StoryCardStory {
     date: story.date,
     ownerId: story.ownerId._id,
     authorName: story.ownerId.name,
-    savesCount: story.rate,
+    savesCount: story.savesCount ?? story.rate,
   };
 }
 
 export default function StoriesPage() {
+  const queryClient = useQueryClient();
+  const { user, isLoading: isAuthLoading, updateSavedStory } = useAuth();
+  const savedIds = user?.savedArticles ?? [];
+
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [savingIds, setSavingIds] = useState<string[]>([]);
+  const [saveError, setSaveError] = useState("");
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const pendingSaves = useRef(new Set<string>());
 
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
@@ -44,8 +57,67 @@ export default function StoriesPage() {
       }),
   });
 
-  const handleSave = (storyId: string) => {
-    console.info("Saving stories is not implemented yet:", storyId);
+  const handleSave = async (storyId: string) => {
+    if (isAuthLoading) return;
+
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (pendingSaves.current.has(storyId)) return;
+
+    pendingSaves.current.add(storyId);
+    setSavingIds((current) => [...current, storyId]);
+    setSaveError("");
+
+    const wasSaved = savedIds.includes(storyId);
+
+    try {
+      const response = await fetchWithAuth(
+        `/api/users/me/saved-stories/${encodeURIComponent(storyId)}`,
+        { method: wasSaved ? "DELETE" : "POST" },
+      );
+
+      if (!response.ok) {
+        throw new Error("Не вдалося змінити збережену історію.");
+      }
+
+      const result: unknown = await response.json().catch(() => null);
+      const rate =
+        result && typeof result === "object" && "rate" in result
+          ? result.rate
+          : undefined;
+
+      updateSavedStory(user._id, storyId, !wasSaved);
+
+      if (typeof rate === "number" && Number.isFinite(rate) && rate >= 0) {
+        queryClient.setQueriesData<Awaited<ReturnType<typeof getStories>>>(
+          { queryKey: ["stories"] },
+          (current) => {
+            if (!current?.stories.some((story) => story._id === storyId)) {
+              return current;
+            }
+
+            return {
+              ...current,
+              stories: current.stories.map((story) =>
+                story._id === storyId
+                  ? { ...story, savesCount: rate, rate }
+                  : story,
+              ),
+            };
+          },
+        );
+      } else {
+        void queryClient.invalidateQueries({ queryKey: ["stories"] });
+      }
+    } catch {
+      setSaveError("Не вдалося змінити збережену історію. Спробуйте ще раз.");
+    } finally {
+      pendingSaves.current.delete(storyId);
+      setSavingIds((current) => current.filter((id) => id !== storyId));
+    }
   };
 
   const stories = (storiesQuery.data?.stories ?? []).map(toCardStory);
@@ -139,14 +211,29 @@ export default function StoriesPage() {
           <p className={styles.status}>У цій категорії поки немає історій.</p>
         )}
 
+      {saveError && (
+        <p className={styles.error} role="alert">
+          {saveError}
+        </p>
+      )}
+
       {stories.length > 0 && (
         <ul className={styles.list}>
           {stories.map((story) => (
             <li key={story._id} className={styles.item}>
-              <StoryCard story={story} isSaved={false} onSave={handleSave} />
+              <StoryCard
+                story={story}
+                isSaved={savedIds.includes(story._id)}
+                isSaving={isAuthLoading || savingIds.includes(story._id)}
+                onSave={handleSave}
+              />
             </li>
           ))}
         </ul>
+      )}
+
+      {showAuthModal && (
+        <ErrorWhileSavingModal onClose={() => setShowAuthModal(false)} />
       )}
     </section>
   );
