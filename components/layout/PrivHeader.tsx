@@ -112,7 +112,7 @@ export default function PrivHeader() {
 
           <button
             className={styles.menuButton}
-            aria-label={isMenuOpen ? "Çàêðèòè ìåíþ" : "Â³äêðèòè ìåíþ"}
+            aria-label={isMenuOpen ? "Ð—Ð°ÐºÑ€Ð¸Ñ‚Ð¸ Ð¼ÐµÐ½ÑŽ" : "Ð’Ñ–Ð´ÐºÑ€Ð¸Ñ‚Ð¸ Ð¼ÐµÐ½ÑŽ"}
             type="button"
             aria-expanded={isMenuOpen}
             aria-controls="mobile-navigation"
@@ -132,7 +132,7 @@ export default function PrivHeader() {
 
         <button
           className={`${styles.menuButton} ${styles.mobileMenuButton}`}
-          aria-label={isMenuOpen ? "Çàêðèòè ìåíþ" : "Â³äêðèòè ìåíþ"}
+          aria-label={isMenuOpen ? "Ð—Ð°ÐºÑ€Ð¸Ñ‚Ð¸ Ð¼ÐµÐ½ÑŽ" : "Ð’Ñ–Ð´ÐºÑ€Ð¸Ñ‚Ð¸ Ð¼ÐµÐ½ÑŽ"}
           type="button"
           aria-expanded={isMenuOpen}
           aria-controls="mobile-navigation"
