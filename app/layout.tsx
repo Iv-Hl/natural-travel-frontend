@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "modern-normalize/modern-normalize.css";
 import "./globals.css";
 import { Montserrat } from "next/font/google";
@@ -21,6 +22,25 @@ export const metadata: Metadata = {
   description: "Історії подорожей Україною та спільнота мандрівників.",
 };
 
+const themeInitializationScript = `try {
+  const cookieTheme = document.cookie
+    .split(";")
+    .map((cookie) => cookie.trim())
+    .find((cookie) => cookie.startsWith("theme="))
+    ?.slice(6);
+  const savedTheme = localStorage.getItem("theme");
+  const theme =
+    cookieTheme === "dark" || cookieTheme === "light"
+      ? cookieTheme
+      : savedTheme;
+
+  if (theme === "dark" || theme === "light") {
+    document.documentElement.dataset.theme = theme;
+    document.cookie = "theme=" + theme + "; Path=/; Max-Age=31536000; SameSite=Lax";
+  }
+} catch {}
+`;
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -29,9 +49,20 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const hasSessionCookie =
     cookieStore.has("sessionId") && cookieStore.has("refreshToken");
+  const initialTheme = cookieStore.get("theme")?.value === "dark" ? "dark" : "light";
 
   return (
-    <html lang="uk" className={montserrat.variable}>
+    <html
+      lang="uk"
+      className={montserrat.variable}
+      data-theme={initialTheme}
+      suppressHydrationWarning
+    >
+      <Script
+        id="theme-initializer"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{ __html: themeInitializationScript }}
+      />
       <body>
         <QueryProvider>
           <AuthProvider hasSessionCookie={hasSessionCookie}>
