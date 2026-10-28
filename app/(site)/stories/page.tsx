@@ -1,7 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useRef, useState } from "react";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+  type InfiniteData,
+} from "@tanstack/react-query";
 import ErrorWhileSavingModal from "@/components/ErrorWhileSavingModal/ErrorWhileSavingModal";
 import { useAuth } from "@/components/providers/AuthProvider";
 import StoryCard, {
@@ -14,8 +19,6 @@ import {
 } from "@/lib/api/stories";
 import { fetchWithAuth } from "@/lib/api/fetchWithAuth";
 import styles from "./StoriesPage.module.css";
-
-const STORIES_LIMIT = 10;
 
 type CatalogStory = ApiStory & { savesCount?: number };
 
@@ -37,25 +40,64 @@ export default function StoriesPage() {
   const savedIds = user?.savedArticles ?? [];
 
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [limit, setLimit] = useState<number | null>(null);
   const [savingIds, setSavingIds] = useState<string[]>([]);
   const [saveError, setSaveError] = useState("");
   const [showAuthModal, setShowAuthModal] = useState(false);
   const pendingSaves = useRef(new Set<string>());
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1440px)");
+    const updateLimit = () => {
+      const nextLimit = mediaQuery.matches ? 9 : 8;
+      queryClient.removeQueries({
+        queryKey: ["stories", nextLimit],
+        type: "inactive",
+      });
+      setLimit(nextLimit);
+    };
+
+    updateLimit();
+    mediaQuery.addEventListener("change", updateLimit);
+    return () => mediaQuery.removeEventListener("change", updateLimit);
+  }, [queryClient]);
 
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
   });
 
-  const storiesQuery = useQuery({
-    queryKey: ["stories", selectedCategory],
-    queryFn: () =>
+  const storiesQuery = useInfiniteQuery({
+    queryKey: ["stories", limit, selectedCategory],
+    enabled: limit !== null,
+    initialPageParam: 1,
+    queryFn: ({ pageParam }) =>
       getStories({
-        page: 1,
-        limit: STORIES_LIMIT,
+        page: pageParam,
+        limit: limit ?? 8,
         category: selectedCategory || undefined,
       }),
+    getNextPageParam: (lastPage) => {
+      const meta = lastPage.meta;
+      return meta && meta.currentPage < meta.totalPages
+        ? meta.currentPage + 1
+        : undefined;
+    },
   });
+
+  const handleCategoryChange = (category: string) => {
+    void queryClient.resetQueries({
+      queryKey: ["stories", limit, category],
+      exact: true,
+    });
+    setSelectedCategory(category);
+  };
+
+  const handleLoadMore = () => {
+    if (!storiesQuery.hasNextPage || storiesQuery.isFetching) return;
+
+    void storiesQuery.fetchNextPage({ cancelRefetch: false });
+  };
 
   const handleSave = async (storyId: string) => {
     if (isAuthLoading) return;
@@ -92,23 +134,29 @@ export default function StoriesPage() {
       updateSavedStory(user._id, storyId, !wasSaved);
 
       if (typeof rate === "number" && Number.isFinite(rate) && rate >= 0) {
-        queryClient.setQueriesData<Awaited<ReturnType<typeof getStories>>>(
-          { queryKey: ["stories"] },
-          (current) => {
-            if (!current?.stories.some((story) => story._id === storyId)) {
-              return current;
-            }
+        queryClient.setQueriesData<
+          InfiniteData<Awaited<ReturnType<typeof getStories>>>
+        >({ queryKey: ["stories"] }, (current) => {
+          if (
+            !current?.pages?.some((page) =>
+              page.stories.some((story) => story._id === storyId),
+            )
+          ) {
+            return current;
+          }
 
-            return {
-              ...current,
-              stories: current.stories.map((story) =>
+          return {
+            ...current,
+            pages: current.pages.map((page) => ({
+              ...page,
+              stories: page.stories.map((story) =>
                 story._id === storyId
                   ? { ...story, savesCount: rate, rate }
                   : story,
               ),
-            };
-          },
-        );
+            })),
+          };
+        });
       } else {
         void queryClient.invalidateQueries({ queryKey: ["stories"] });
       }
@@ -120,7 +168,15 @@ export default function StoriesPage() {
     }
   };
 
-  const stories = (storiesQuery.data?.stories ?? []).map(toCardStory);
+  const seenIds = new Set<string>();
+  const stories = (storiesQuery.data?.pages ?? [])
+    .flatMap((page) => page.stories)
+    .filter((story) => {
+      if (seenIds.has(story._id)) return false;
+      seenIds.add(story._id);
+      return true;
+    })
+    .map(toCardStory);
 
   return (
     <section className={styles.container}>
@@ -145,7 +201,7 @@ export default function StoriesPage() {
               id="story-category"
               className={styles.categorySelect}
               value={selectedCategory}
-              onChange={(event) => setSelectedCategory(event.target.value)}
+              onChange={(event) => handleCategoryChange(event.target.value)}
             >
               <option value="">Всі статті</option>
               {categoriesQuery.data?.map((category) => (
@@ -162,7 +218,7 @@ export default function StoriesPage() {
                   selectedCategory === "" ? styles.categoryButtonActive : ""
                 }`}
                 aria-pressed={selectedCategory === ""}
-                onClick={() => setSelectedCategory("")}
+                onClick={() => handleCategoryChange("")}
               >
                 Всі статті
               </button>
@@ -176,7 +232,7 @@ export default function StoriesPage() {
                       : ""
                   }`}
                   aria-pressed={selectedCategory === category.id}
-                  onClick={() => setSelectedCategory(category.id)}
+                  onClick={() => handleCategoryChange(category.id)}
                 >
                   {category.category}
                 </button>
@@ -186,7 +242,7 @@ export default function StoriesPage() {
         )}
       </div>
 
-      {storiesQuery.isLoading && (
+      {storiesQuery.isPending && (
         <p className={styles.status} role="status">
           Завантаження історій...
         </p>
@@ -198,18 +254,21 @@ export default function StoriesPage() {
           <button
             type="button"
             className={styles.retryButton}
-            onClick={() => void storiesQuery.refetch()}
+            disabled={storiesQuery.isFetching}
+            onClick={() =>
+              storiesQuery.isFetchNextPageError
+                ? handleLoadMore()
+                : void storiesQuery.refetch()
+            }
           >
-            Спробувати ще раз
+            {storiesQuery.isFetching ? "Завантаження..." : "Спробувати ще раз"}
           </button>
         </div>
       )}
 
-      {!storiesQuery.isLoading &&
-        !storiesQuery.isError &&
-        stories.length === 0 && (
-          <p className={styles.status}>У цій категорії поки немає історій.</p>
-        )}
+      {storiesQuery.isSuccess && stories.length === 0 && (
+        <p className={styles.status}>У цій категорії поки немає історій.</p>
+      )}
 
       {saveError && (
         <p className={styles.error} role="alert">
@@ -231,6 +290,22 @@ export default function StoriesPage() {
           ))}
         </ul>
       )}
+
+      {storiesQuery.hasNextPage &&
+        stories.length > 0 &&
+        !storiesQuery.isError && (
+          <div className={styles.actions}>
+            <button
+              type="button"
+              className={styles.loadMore}
+              onClick={handleLoadMore}
+              disabled={storiesQuery.isFetching}
+              aria-busy={storiesQuery.isFetching}
+            >
+              {storiesQuery.isFetching ? "Завантаження..." : "Показати ще"}
+            </button>
+          </div>
+        )}
 
       {showAuthModal && (
         <ErrorWhileSavingModal onClose={() => setShowAuthModal(false)} />
