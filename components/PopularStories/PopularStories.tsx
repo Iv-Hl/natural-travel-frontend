@@ -172,7 +172,23 @@ export const PopularStories = () => {
         throw new Error("Не вдалося змінити збережену статтю.");
       }
 
+      const result: unknown = await response.json().catch(() => null);
+      const rate =
+        result && typeof result === "object" && "rate" in result
+          ? result.rate
+          : undefined;
+
       updateSavedStory(user._id, storyId, !wasSaved);
+
+      if (typeof rate === "number" && Number.isFinite(rate) && rate >= 0) {
+        setStories((current) =>
+          current.map((story) =>
+            story._id === storyId
+              ? { ...story, savesCount: rate, rate }
+              : story,
+          ),
+        );
+      }
     } catch (err) {
       setSaveError(
         err instanceof Error
