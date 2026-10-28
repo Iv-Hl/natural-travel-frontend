@@ -7,8 +7,9 @@
   box-sizing: border-box;
   overflow: hidden;
   border-radius: 12px;
-  border: 1px solid var(--color-scheme-1-border);
-  background-color: var(--color-scheme-2-foreground);
+  gap: 0;
+  background-color: var(--color-block-bg);
+  border: 1px solid var(--color-border);
 }
 
 .imageWrapper {
@@ -50,11 +51,11 @@
   flex-wrap: wrap;
   gap: 8px;
   margin: 0;
-  color: var(--color-scheme-1-text);
+  color: var(--color-scheme-2-text);
   font-size: 12px;
   font-weight: 600;
   line-height: 1.5;
-  overflow-wrap: anywhere;
+  color: var(--color-main-text);
 }
 
 .saves {
@@ -78,11 +79,13 @@
   font-size: 18px;
   font-weight: 700;
   line-height: 1.5;
-  overflow-wrap: anywhere;
+  color: var(--color-main-text);
+
+  display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
-  color: var(--color-scheme-1-text);
+  color: var(--color-scheme-2-text);
 }
 
 .cardActions {
@@ -99,20 +102,21 @@
   flex: 1;
   align-items: center;
   justify-content: center;
-  min-width: 0;
-  min-height: 48px;
-  box-sizing: border-box;
-  padding: 8px 12px;
+  flex-direction: row;
+  gap: 8px;
+
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  background: var(--opacity-neutral-darkest-5);
-  color: var(--color-scheme-2-text);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.3;
-  text-align: center;
+  padding: 6px 12px;
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  background-color: var(--color-control-bg);
   text-decoration: none;
-  overflow-wrap: anywhere;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-main-text);
   transition:
     background-color 0.25s ease,
     color 0.25s ease,
@@ -124,64 +128,89 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
+  flex-direction: row;
+  flex-shrink: 0;
+  gap: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 6px;
   width: 48px;
   height: 48px;
-  padding: 6px;
-  box-sizing: border-box;
-  border: 1px solid var(--color-scheme-1-border);
-  border-radius: 6px;
-  background: var(--opacity-white-5);
-  color: var(--color-scheme-1-text);
-  cursor: pointer;
+  background-color: var(--color-control-bg);
+  color: var(--color-main-text);
   transition:
     background-color 0.25s ease,
     color 0.25s ease,
     border-color 0.25s ease;
 }
-.saveButton img {
-  display: block;
-  transition: filter 0.25s ease;
+.buttonSvg {
+  fill: var(--color-scheme-1-text);
+  stroke: var(--color-scheme-1-text);
 }
 
-[data-theme="dark"] .saveButton img,
-[data-theme="dark"] .saves img {
-  filter: brightness(0) invert(1);
+.saveButton {
+  display: block;
+  transition: filter 0.25s ease;
 }
 
 .viewButton:hover,
 .saveButton:hover,
 .viewButton:focus-visible,
 .saveButton:focus-visible {
-  border-color: var(--color-scheme-1-accent);
-  background-color: var(--color-mantis-dark);
-  color: var(--color-white);
-}
-.saveButton .buttonSvg {
-  fill: var(--color-scheme-1-text);
-  stroke: var(--color-scheme-1-text);
-}
-.saveButton .buttonSvg:hover,
-.saveButton .buttonSvg:focus {
-  fill: var(--color-white);
-  stroke: var(--color-white);
+  background-color: var(--color-primary-hover-bg);
+  border-color: var(--color-primary-hover-bg);
+  color: var(--color-primary-hover-text);
 }
 
 .viewButton:active,
 .saveButton:active {
-  border-color: var(--color-scheme-1-accent);
   background-color: var(--color-mantis-darker);
-  color: var(--color-white);
+  border-color: var(--opacity-transparent);
+  color: var(--color-primary-active-text);
 }
 
-.saveButton:active img,
-.saveButton.saved img {
+.saveButton:active img {
   filter: brightness(0) invert(1);
 }
 
 .saveButton.saved {
-  border-color: var(--color-scheme-1-accent);
-  background-color: var(--color-scheme-1-accent);
+  border-color: var(--color-mantis-darker);
+  background-color: var(--color-mantis-darker);
   color: var(--color-white);
+}
+
+.saveButton:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.saveButton[aria-pressed="true"] {
+  background-color: var(--color-primary-active-bg);
+  border-color: var(--color-primary-active-bg);
+  color: var(--color-primary-active-text);
+}
+
+/* Bookmark icon colors for both theme modes. */
+:global(html:not([data-theme="dark"])) .buttonSvg {
+  fill: #000;
+  stroke: #000;
+}
+
+:global(html:not([data-theme="dark"])) .saveButton:hover .buttonSvg,
+:global(html:not([data-theme="dark"])) .saveButton:focus-visible .buttonSvg {
+  fill: #fff;
+  stroke: #fff;
+}
+
+:global(html[data-theme="dark"]) .buttonSvg {
+  fill: #fff;
+  stroke: #fff;
+}
+
+:global(html[data-theme="dark"]) .saveButton:hover .buttonSvg,
+:global(html[data-theme="dark"]) .saveButton:focus-visible .buttonSvg {
+  fill: #000;
+  stroke: #000;
 }
 
 .saveButton:disabled {
@@ -207,7 +236,7 @@
 
 @media (min-width: 768px) {
   .card {
-    width: 100%;
+    width: 340px;
     height: 522px;
   }
 
@@ -231,7 +260,7 @@
 
 @media (min-width: 1440px) {
   .card {
-    width: 100%;
+    width: 421px;
     height: 633px;
   }
 
