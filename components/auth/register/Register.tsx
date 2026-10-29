@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -21,6 +22,14 @@ const initialValues: RegisterValues = { name: "", email: "", password: "" };
 export default function Register() {
   const router = useRouter();
   const { refreshAuth } = useAuth();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!errorMessage) return;
+    const timeoutId = window.setTimeout(() => setErrorMessage(null), 5000);
+    return () => window.clearTimeout(timeoutId);
+  }, [errorMessage]);
+
   const registerMutation = useMutation({
     mutationFn: (values: RegisterValues) =>
       submitAuthForm("/api/auth/register", values),
@@ -45,8 +54,8 @@ export default function Register() {
       <Formik<RegisterValues>
         initialValues={initialValues}
         validationSchema={registerSchema}
-        onSubmit={async (values, { setStatus }) => {
-          setStatus(undefined);
+        onSubmit={async (values) => {
+          setErrorMessage(null);
           try {
             await registerMutation.mutateAsync({
               ...values,
@@ -54,7 +63,7 @@ export default function Register() {
               email: values.email.trim().toLowerCase(),
             });
           } catch (error) {
-            setStatus(
+            setErrorMessage(
               error instanceof Error
                 ? error.message
                 : "Не вдалося зареєструватися. Спробуйте ще раз.",
@@ -62,8 +71,29 @@ export default function Register() {
           }
         }}
       >
-        {({ errors, touched, isSubmitting, status }) => (
+        {({ errors, touched, isSubmitting }) => (
           <Form className={styles.form} noValidate>
+            {errorMessage && (
+              <div
+                className={styles.errorToast}
+                role="alert"
+                aria-live="assertive"
+              >
+                <span className={styles.toastIcon} aria-hidden="true">
+                  !
+                </span>
+                <p className={styles.toastMessage}>{errorMessage}</p>
+                <button
+                  className={styles.toastClose}
+                  type="button"
+                  onClick={() => setErrorMessage(null)}
+                  aria-label="Закрити повідомлення"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+
             <div className={styles.field}>
               <label className={styles.label} htmlFor="register-name">
                 Ім’я та Прізвище*
@@ -159,12 +189,6 @@ export default function Register() {
                 )}
               </ErrorMessage>
             </div>
-
-            {typeof status === "string" && (
-              <p className={styles.formError} role="alert">
-                {status}
-              </p>
-            )}
 
             <button
               className={styles.submitButton}

@@ -11,15 +11,19 @@ export default function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    const appliedTheme = document.documentElement.dataset.theme;
     const savedTheme = localStorage.getItem("theme");
 
     const initialTheme: Theme =
-      savedTheme === "dark" || savedTheme === "light"
-        ? savedTheme
-        : "light";
+      appliedTheme === "dark" || appliedTheme === "light"
+        ? appliedTheme
+        : savedTheme === "dark" || savedTheme === "light"
+          ? savedTheme
+          : "light";
 
     setTheme(initialTheme);
     document.documentElement.dataset.theme = initialTheme;
+    localStorage.setItem("theme", initialTheme);
     setMounted(true);
   }, []);
 
@@ -29,6 +33,7 @@ export default function ThemeToggle() {
     setTheme(nextTheme);
     document.documentElement.dataset.theme = nextTheme;
     localStorage.setItem("theme", nextTheme);
+    document.cookie = `theme=${nextTheme}; Path=/; Max-Age=31536000; SameSite=Lax`;
   }
 
   return (
